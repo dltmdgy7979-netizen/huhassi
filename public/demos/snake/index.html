@@ -341,16 +341,17 @@
     if (dead) return;
     var d = DIRS[name];
     if (!d) return;
-    if (paused) { setPaused(false, true); }
-    var ref = queued.length ? queued[queued.length - 1] : dir;
-    if (ref.x === -d.x && ref.y === -d.y) return;       /* 뒤돌기 — 받지 않습니다 */
-    if (ref.x === d.x && ref.y === d.y) return;         /* 같은 방향 — 쌓을 것이 없습니다 */
-    if (queued.length < 2) queued.push(d);              /* 많아도 두 개까지만 */
+    if (paused) setPaused(false, true);
+    /* 가고 있는 쪽을 눌렀더라도 아직 출발하지 않았으면 출발시킵니다 */
     if (!started) {
       started = true;
       startLoop();
       say(t("출발합니다.", "Off we go."));
     }
+    var ref = queued.length ? queued[queued.length - 1] : dir;
+    if (ref.x === -d.x && ref.y === -d.y) return;       /* 뒤돌기 — 받지 않습니다 */
+    if (ref.x === d.x && ref.y === d.y) return;         /* 같은 방향 — 쌓을 것이 없습니다 */
+    if (queued.length < 2) queued.push(d);              /* 많아도 두 개까지만 */
   }
 
   function finish(whyKo, whyEn) {

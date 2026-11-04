@@ -166,7 +166,7 @@
   });
   document.addEventListener("huhassi:lang", function () { if (DATA.length) { drawBar(); draw(); } });
 
-  window.huhassi.load("").then(function (items) {
+  window.huhassi.load("", "demos").then(function (items) {
     DATA = items.filter(function (i) { return i.cat === "prompt"; }).sort(function (a, b) { return a.n - b.n; });
     drawBar(); draw();
   }, function () { if (fail) fail.hidden = false; });
