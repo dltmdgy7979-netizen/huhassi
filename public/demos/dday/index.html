@@ -95,6 +95,7 @@
     <nav>
       <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
       <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../about.html" data-ko="소개" data-en="About">소개</a>
       <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
       <button class="langbtn" type="button">EN</button>
     </nav>
@@ -226,6 +227,7 @@
   <div class="wrap row">
     <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
     <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+    <a href="../../privacy.html" data-ko="개인정보 처리 안내" data-en="Privacy">개인정보 처리 안내</a>
   </div>
 </footer>
 
@@ -254,8 +256,9 @@
   var form = $("dd-form"), nameIn = $("dd-name"), dateIn = $("dd-date");
   var listEl = $("dd-list"), emptyEl = $("dd-empty"), msgEl = $("dd-msg"), countEl = $("dd-count");
 
-  var items = [];        /* { id, name, date:"YYYY-MM-DD" } */
+  var items = [];        /* { id, name, date:"YYYY-MM-DD", sample? } */
   var filter = "all";    /* all | up | past */
+  var booted = false;    /* 말이 정해진 뒤에야 참이 됩니다 (맨 아래 시작 부분) */
 
   /* ============================================================
      날수 세기 — 여기가 이 도구의 핵심입니다.
@@ -299,13 +302,15 @@
       if (raw === null) return null;
       var got = JSON.parse(raw);
       if (!Array.isArray(got)) return null;
-      return checkList(got).items;
+      return checkList(got, true).items;
     } catch (e) { return null; }
   }
   function save() {
     try {
       localStorage.setItem(KEY, JSON.stringify(items.map(function (it) {
-        return { name: it.name, date: it.date };
+        var row = { name: nameOf(it), date: it.date };
+        if (it.sample) row.sample = it.sample;   /* 예시는 자리표로 남깁니다 */
+        return row;
       })));
       return true;
     } catch (e) {
@@ -324,7 +329,9 @@
      한 칸이라도 모양이 다르면 그 줄 번호와 이유를 돌려주고,
      부르는 쪽에서 목록을 건드리지 않도록 합니다.
      ============================================================ */
-  function checkList(arr) {
+  /* keepSamples 가 true 면(이 브라우저에 저장해 둔 것을 읽을 때만)
+     예시의 자리표를 이어받습니다. 바깥에서 불러온 파일에는 쓰지 않습니다. */
+  function checkList(arr, keepSamples) {
     var out = [], bad = [];
     if (!Array.isArray(arr)) return { items: [], bad: ["not-array"], tooMany: false };
     for (var i = 0; i < arr.length; i++) {
@@ -335,19 +342,53 @@
       var nm = it.name.replace(/\s+/g, " ").trim().slice(0, 40);
       var dt = parseYmd(it.date);
       if (!nm || !dt) { bad.push(i + 1); continue; }
-      out.push({ id: nextId(), name: nm, date: ymd(dt) });
+      var row = { id: nextId(), name: nm, date: ymd(dt) };
+      if (keepSamples) {
+        /* 자리표가 적혀 있으면 그대로, 없으면 이름을 보고 알아봅니다.
+           (말을 모르던 때에 한국어로 굳어 저장된 예시를 되살리는 자리입니다) */
+        var key = (typeof it.sample === "string" && SAMPLE_TEXT[it.sample]) ? it.sample : sampleKeyOf(nm);
+        if (key) { row.sample = key; row.name = ""; }
+      }
+      out.push(row);
     }
     return { items: out, bad: bad, tooMany: arr.length > MAX_ITEMS };
   }
 
-  /* ---------- 처음 볼 예시 두 개 ---------- */
+  /* ============================================================
+     처음 볼 예시 두 개.
+     예시의 이름만은 글자로 굳히지 않고 '자리표(sample)' 로 둡니다.
+     굳혀서 저장해 버리면 영어로 보는 사람에게 한국어가 저장되고,
+     말을 바꿔도 되돌릴 수 없습니다. 자리표로 두면 볼 때마다
+     그때의 말로 적힙니다.
+     ============================================================ */
+  var SAMPLE_TEXT = {
+    dayoff: { ko: "한 달 뒤 쉬는 날", en: "A day off in a month" },
+    start:  { ko: "이 사이트를 만들기 시작한 날", en: "The day this site was started" }
+  };
+
+  /* 예시의 이름은 자리표에서, 직접 적은 날은 적은 그대로 */
+  function nameOf(it) {
+    var sm = it && it.sample && SAMPLE_TEXT[it.sample];
+    return sm ? t(sm.ko, sm.en) : (it ? it.name : "");
+  }
+
+  /* 예전에 이미 한국어로 굳어 저장된 예시를 알아봅니다.
+     이름이 두 말 중 하나와 똑같으면 그 예시로 보고 자리표를 붙입니다
+     (날짜는 그대로 둡니다 — 쓰던 값을 바꾸지 않습니다). */
+  function sampleKeyOf(name) {
+    for (var k in SAMPLE_TEXT) {
+      if (SAMPLE_TEXT[k].ko === name || SAMPLE_TEXT[k].en === name) return k;
+    }
+    return "";
+  }
+
   function samples() {
     var n = todayMidnight();
     var a = new Date(n.getTime()); a.setDate(a.getDate() + 30);
     var b = new Date(n.getTime()); b.setDate(b.getDate() - 100);
     return [
-      { id: nextId(), name: t("한 달 뒤 쉬는 날", "A day off in a month"), date: ymd(a) },
-      { id: nextId(), name: t("이 사이트를 만들기 시작한 날", "The day this site was started"), date: ymd(b) }
+      { id: nextId(), sample: "dayoff", name: "", date: ymd(a) },
+      { id: nextId(), sample: "start",  name: "", date: ymd(b) }
     ];
   }
 
@@ -424,7 +465,7 @@
 
       var h = document.createElement("p");
       h.className = "d-name";
-      h.textContent = it.name;      /* textContent 라 적은 글자가 그대로 글자로만 들어갑니다 */
+      h.textContent = nameOf(it);   /* textContent 라 적은 글자가 그대로 글자로만 들어갑니다 */
       li.appendChild(h);
 
       var dd = document.createElement("p");
@@ -452,9 +493,9 @@
       del.className = "d-del";
       del.type = "button";
       del.textContent = "×";
-      del.setAttribute("aria-label", t(it.name + " 지우기", "Delete " + it.name));
+      del.setAttribute("aria-label", t(nameOf(it) + " 지우기", "Delete " + nameOf(it)));
       del.addEventListener("click", function () {
-        var gone = it.name;
+        var gone = nameOf(it);
         items = items.filter(function (x) { return x.id !== it.id; });
         save(); render();
         say(t("‘" + gone + "’ 을(를) 지웠습니다.", "Deleted “" + gone + "”."), false);
@@ -534,7 +575,7 @@
             "Nothing to export yet. Add a day first."), true);
       return;
     }
-    var plain = items.map(function (it) { return { name: it.name, date: it.date }; });
+    var plain = items.map(function (it) { return { name: nameOf(it), date: it.date }; });
     var blob = new Blob([JSON.stringify(plain, null, 2)], { type: "application/json" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
@@ -588,7 +629,7 @@
         return;
       }
 
-      var checked = checkList(arr);
+      var checked = checkList(arr, false);
       if (!checked.items.length) {
         say(t("쓸 수 있는 날짜가 하나도 없었습니다 — name 은 글자, date 는 2026-05-20 모양이어야 합니다. 목록은 그대로 두었습니다.",
               "Not one usable day was found — name must be text and date must look like 2026-05-20. Your list was left untouched."), true);
@@ -636,17 +677,41 @@
     say(t("예시 두 개로 되돌렸습니다.", "Back to the two samples."), false);
   });
 
-  document.addEventListener("huhassi:lang", function () { render(); });
+  /* 말이 바뀌면 다시 그리고, 예시 이름도 그때의 말로 고쳐 적습니다.
+     아직 시작하지 않았으면(목록이 비어 있으면) 건드리지 않습니다 —
+     빈 목록을 저장해 버리면 '전부 지운 사람' 으로 읽혀 예시가 안 나옵니다. */
+  document.addEventListener("huhassi:lang", function () {
+    if (!booted) return;
+    render(); save();
+  });
 
-  /* ---------- 시작 ---------- */
-  var kept = load();
-  if (kept) {
-    items = kept;                 /* 전부 지운 뒤 다시 와도 예시가 되살아나지 않습니다 */
-  } else {
-    items = samples();            /* 처음 온 사람에게는 예시 두 개를 보여 줍니다 */
-    save();
+  /* ============================================================
+     시작 — 말이 정해진 뒤에 합니다.
+     이 덩어리는 쪽 안에 바로 적혀 있어서 i18n.js(defer) 보다 먼저 돕니다.
+     그때는 window.huhassi 가 아직 없어 t() 가 무조건 한국어로 떨어지므로,
+     영어로 보는 사람에게 한국어 예시가 생기고 그대로 저장되어 버립니다.
+     그래서 말이 정해졌다는 기별(huhassi:lang)을 기다렸다가 시작합니다.
+     i18n.js 를 못 불러온 경우에도 쪽이 비지 않게 뒷문을 둡니다.
+     ============================================================ */
+  function boot() {
+    var kept = load();
+    if (kept) {
+      items = kept;               /* 전부 지운 뒤 다시 와도 예시가 되살아나지 않습니다 */
+      save();                     /* 한국어로 굳어 있던 예시를 자리표로 고쳐 적습니다 */
+    } else {
+      items = samples();          /* 처음 온 사람에게는 예시 두 개를 보여 줍니다 */
+      save();
+    }
+    render();
   }
-  render();
+
+  function bootOnce() { if (booted) return; booted = true; boot(); }
+  if (window.huhassi && window.huhassi.lang) bootOnce();
+  else {
+    document.addEventListener("huhassi:lang", bootOnce);
+    window.addEventListener("load", bootOnce);     /* 뒷문 ① */
+    setTimeout(bootOnce, 1200);                    /* 뒷문 ② */
+  }
 })();
 </script>
 </body>

@@ -95,6 +95,7 @@
     <nav>
       <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
       <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../about.html" data-ko="소개" data-en="About">소개</a>
       <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
       <button class="langbtn" type="button">EN</button>
     </nav>
@@ -276,6 +277,7 @@
   <div class="wrap row">
     <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
     <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+    <a href="../../privacy.html" data-ko="개인정보 처리 안내" data-en="Privacy">개인정보 처리 안내</a>
   </div>
 </footer>
 
@@ -353,6 +355,19 @@
     }
     msgEl.appendChild(document.createTextNode(text));
   }
+  /* 내려받을 것과 '줄인 사진' 쪽만 비웁니다 (원래 사진은 그대로).
+     만들기가 실패했을 때 앞 사진의 파일이 단추에 남아 있지 않게 하는 자리입니다. */
+  function clearResult() {
+    clearTimeout(timer);
+    freeUrl("afterUrl");
+    cur.afterBlob = null;
+    afterImg.removeAttribute("src");
+    apx.textContent = akb.textContent = aname.textContent = "—";
+    savedEl.hidden = true;
+    savedEl.textContent = "";
+    setDownload(false);
+  }
+
   function setDownload(on) {
     if (on) { dlBtn.removeAttribute("aria-disabled"); dlBtn.classList.remove("d-off"); }
     else {
@@ -431,8 +446,10 @@
     canvas.toBlob(function (blob) {
       running = false;
       if (!blob) {
-        msg(t("이 브라우저는 그 형식으로 저장하지 못합니다. 다른 형식을 골라 주세요.",
-               "This browser cannot save that format. Please choose another one."), "bad");
+        /* 앞의 결과가 남아 있으면 '지금 고른 것'으로 잘못 읽힙니다 — 먼저 비웁니다 */
+        clearResult();
+        msg(t("이 브라우저는 그 형식으로 저장하지 못했습니다. 내려받을 것을 비웠습니다 — 다른 형식을 골라 주세요.",
+               "This browser could not save that format. The result was cleared — please choose another one."), "bad");
         return;
       }
       /* WebP 를 못 만드는 브라우저는 PNG 를 돌려주기도 합니다 */
@@ -505,6 +522,13 @@
   }
 
   function accept(blob, name) {
+    /* ★ 여기가 핵심입니다.
+       무엇이 들어왔든 먼저 화면을 비웁니다. 그래야 받아들이지 못한 파일을 넣었을 때
+       앞 사진의 미리보기·숫자·내려받기 단추가 남아 있어서
+       '지금 고른 파일'로 잘못 읽히는 일이 없습니다.
+       비운 다음에야 안 되는 까닭을 적습니다. */
+    clearAll(true);
+
     if (!blob) {
       msg(t("파일을 찾지 못했습니다. 다시 한 번 넣어 주세요.",
              "No file was found. Please try again."), "bad");
@@ -567,26 +591,25 @@
 
       encode();
     }).catch(function () {
-      msg(t("이 사진은 읽을 수 없었습니다. 파일이 깨졌거나 이 브라우저가 모르는 형식일 수 있습니다.",
-             "That photo could not be read. The file may be damaged, or in a format this browser does not know."), "bad");
+      /* 여기까지 오면 화면은 accept() 맨 앞에서 이미 비워져 있습니다.
+         그래도 읽는 중에 무언가 반쯤 들어갔을 수 있으니 한 번 더 비웁니다. */
+      clearAll(true);
+      msg(t("이 사진은 읽을 수 없었습니다. 파일이 깨졌거나 이 브라우저가 모르는 형식일 수 있습니다. 내려받을 것은 비웠습니다.",
+             "That photo could not be read. The file may be damaged, or in a format this browser does not know. The result was cleared."), "bad");
     });
   }
 
   /* ---------- 비우기 ---------- */
   function clearAll(quiet) {
-    clearTimeout(timer);
     if (cur.src && cur.src.close) { try { cur.src.close(); } catch (e) {} }
-    freeUrl("beforeUrl"); freeUrl("afterUrl");
-    cur.blob = null; cur.src = null; cur.afterBlob = null;
+    clearResult();                 /* 줄인 사진·숫자·내려받기 단추를 비웁니다 */
+    freeUrl("beforeUrl");
+    cur.blob = null; cur.src = null;
     cur.w = cur.h = cur.ow = cur.oh = 0; cur.shrunk = false;
-    beforeImg.removeAttribute("src"); afterImg.removeAttribute("src");
+    beforeImg.removeAttribute("src");
     bpx.textContent = bkb.textContent = bname.textContent = "—";
-    apx.textContent = akb.textContent = aname.textContent = "—";
     baEl.hidden = true;
     emptyEl.hidden = false;
-    savedEl.hidden = true;
-    savedEl.textContent = "";
-    setDownload(false);
     fileIn.value = "";
     maxIn.max = "4000";
     if (!quiet) msg(t("비웠습니다. 새 사진을 넣어 보세요.", "Cleared. Add another photo."), "");
@@ -619,9 +642,10 @@
     x.fillText("huhassi", 90, 170);
     msg(t("예시 사진을 만드는 중…", "Drawing a sample photo…"), "busy");
     c.toBlob(function (b) {
-      if (b) accept(b, t("예시-사진.jpg", "sample-photo.jpg"));
-      else msg(t("예시 사진을 만들지 못했습니다. 직접 사진을 넣어 주세요.",
-                  "The sample could not be drawn. Please add a photo of your own."), "bad");
+      if (b) { accept(b, t("예시-사진.jpg", "sample-photo.jpg")); return; }
+      clearAll(true);
+      msg(t("예시 사진을 만들지 못했습니다. 직접 사진을 넣어 주세요.",
+             "The sample could not be drawn. Please add a photo of your own."), "bad");
     }, "image/jpeg", 0.95);
   }
 
@@ -639,7 +663,11 @@
   pickBtn.addEventListener("click", function () { fileIn.click(); });
   fileIn.addEventListener("change", function () {
     var f = fileIn.files && fileIn.files[0];
-    if (f) accept(f, f.name);
+    if (f) { accept(f, f.name); return; }
+    /* 고른 것을 지운 경우 — 앞 사진이 남아 있지 않게 비웁니다 */
+    clearAll(true);
+    msg(t("고른 사진을 지웠습니다. 새 사진을 넣어 보세요.",
+           "The chosen photo was cleared. Add another one."), "");
   });
   sampleBtn.addEventListener("click", function () { fileIn.value = ""; makeSample(); });
   clearBtn.addEventListener("click", function () { clearAll(false); });
@@ -666,7 +694,8 @@
     var dt = e.dataTransfer;
     var f = dt && dt.files && dt.files[0];
     if (f) { accept(f, f.name); return; }
-    /* 파일이 아니라 글자나 링크를 떨어뜨린 경우 */
+    /* 파일이 아니라 글자나 링크를 떨어뜨린 경우 — 이것도 '받지 못한 입력'이라 먼저 비웁니다 */
+    clearAll(true);
     msg(t("파일이 아니라 다른 것이 떨어졌습니다. 사진 파일을 끌어다 놓아 주세요.",
            "That was not a file. Please drag a photo file instead."), "bad");
   });
@@ -698,6 +727,7 @@
     }
     /* 글자만 복사해 온 경우 — 조용히 넘기지 않고 이유를 적습니다 */
     if (cd.getData && cd.getData("text")) {
+      clearAll(true);
       msg(t("복사판에 사진이 아니라 글자가 들어 있습니다. 사진을 복사해서 다시 붙여 넣어 주세요.",
              "The clipboard holds text, not an image. Copy a photo and paste again."), "bad");
     }
