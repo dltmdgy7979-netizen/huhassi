@@ -14,12 +14,30 @@
   var chips = document.getElementById("chips");
   var empty = document.getElementById("empty");
   var q = document.getElementById("q");
+  var sortSel = document.getElementById("sort");
   var fail = document.getElementById("loadfail");
   if (!grid) return;
 
-  var ALL = [], state = { cat: "all", q: "" };
+  var SORTS = [
+    { v: "num",  ko: "번호순",   en: "By number" },
+    { v: "name", ko: "이름순",   en: "By name" },
+    { v: "kind", ko: "종류별",   en: "By kind" }
+  ];
+  var ALL = [], state = { cat: "all", q: "", sort: "num" };
   var pad = window.huhassi.pad;
   function L() { return window.huhassi.lang(); }
+
+  function drawSorts() {
+    if (!sortSel) return;
+    var lang = L();
+    sortSel.innerHTML = "";
+    SORTS.forEach(function (o) {
+      var op = document.createElement("option");
+      op.value = o.v; op.textContent = o[lang];
+      sortSel.appendChild(op);
+    });
+    sortSel.value = state.sort;
+  }
 
   function drawChips() {
     var lang = L();
@@ -92,9 +110,25 @@
       var hay = (i.ko.title + " " + i.ko.desc + " " + i.en.title + " " + i.en.desc + " " + pad(i.n)).toLowerCase();
       return hay.indexOf(term) !== -1;
     });
+    var order = ORDER.slice(1);
+    list.sort(function (a, b) {
+      if (state.sort === "name") return a[lang].title.localeCompare(b[lang].title, lang === "ko" ? "ko" : "en");
+      if (state.sort === "kind") {
+        var d = order.indexOf(a.cat) - order.indexOf(b.cat);
+        return d !== 0 ? d : a.n - b.n;
+      }
+      return a.n - b.n;
+    });
+
     grid.innerHTML = "";
     list.forEach(function (i) { grid.appendChild(card(i, lang)); });
     empty.hidden = list.length > 0;
+    if (empty.hidden === false) {
+      empty.textContent = state.q
+        ? window.huhassi.t("‘" + state.q + "’ 로 찾은 게 없습니다. 다른 낱말로 찾아보세요.",
+                           "Nothing matches \u201c" + state.q + "\u201d. Try another word.")
+        : window.huhassi.t("이 종류에는 아직 아무것도 없습니다.", "Nothing in this kind yet.");
+    }
   }
 
   chips.addEventListener("click", function (e) {
@@ -102,10 +136,13 @@
     state.cat = b.dataset.cat; drawChips(); draw();
   });
   q.addEventListener("input", function () { state.q = q.value; draw(); });
-  document.addEventListener("huhassi:lang", function () { if (ALL.length) { drawChips(); draw(); } });
+  if (sortSel) sortSel.addEventListener("change", function () { state.sort = sortSel.value; draw(); });
+  document.addEventListener("huhassi:lang", function () {
+    if (ALL.length) { drawSorts(); drawChips(); draw(); }
+  });
 
   window.huhassi.load("").then(function (items) {
     ALL = items.slice().sort(function (a, b) { return a.n - b.n; });
-    drawChips(); draw();
+    drawSorts(); drawChips(); draw();
   }, function () { if (fail) fail.hidden = false; });
 })();

@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>가게 소개 한 장 — 후하씨 huhassi</title>
 <meta name="description" content="작은 가게의 소개·영업시간·찾아오는 길이 담긴 한 장짜리 페이지 틀. 파일 하나 고쳐 쓰면 끝입니다.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/demo.css">
 <script src="../../assets/i18n.js" defer></script>
@@ -17,8 +16,25 @@
     background:#fff;box-shadow:var(--shadow);overflow:hidden}
   .d-frame iframe{display:block;width:100%;height:100%;border:0;background:#fff}
   .d-open{display:block;text-align:center;margin-top:12px;font-size:14px}
+  .d-readme{
+    margin:14px 0 0;padding:11px 14px;background:var(--soft);
+    border:1px solid var(--line);border-radius:var(--radius-s);
+    font-size:13.5px;color:var(--ink-2)}
+  .d-readme a{font-weight:700}
   .d-note{font-size:13.5px;color:var(--ink-2);margin:0 0 14px}
 </style>
+<link rel="canonical" href="https://huhassi-web-production.up.railway.app/demos/shop-page/index.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/shop-page/index.html">
+<meta property="og:title" content="가게 소개 한 장 — 후하씨 huhassi">
+<meta property="og:description" content="작은 가게의 소개·영업시간·찾아오는 길이 담긴 한 장짜리 페이지 틀. 파일 하나 고쳐 쓰면 끝입니다.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
@@ -54,17 +70,19 @@
       <iframe src="template.html" title="가게 소개 한 장 틀 미리보기" data-ko-title="가게 소개 한 장 틀 미리보기" data-en-title="Shop one-pager template preview" loading="lazy"></iframe>
     </div>
     <a class="d-open" href="template.html" target="_blank" rel="noopener" data-ko="새 창에서 크게 보기 ↗" data-en="Open it full size in a new tab ↗">새 창에서 크게 보기 ↗</a>
+    <p class="d-readme" data-lang-ko>이 틀을 처음 고쳐 보신다면 폴더 안의 README.md 를 먼저 보세요. 색 바꾸기부터 인터넷에 올리기까지 번호대로 적어 두었습니다 — <a href="https://github.com/dltmdgy7979-netizen/huhassi/blob/main/public/demos/shop-page/README.md" rel="noopener">README.md 보기 ↗</a></p>
+    <p class="d-readme" data-lang-en>If this is your first time editing the template, read the README.md in the folder first: it walks through colours, text and putting it online, step by numbered step — <a href="https://github.com/dltmdgy7979-netizen/huhassi/blob/main/public/demos/shop-page/README.md" rel="noopener">read README.md ↗</a></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 하나만 꺼냅니다." data-en="Download the ZIP below and pull out the single file template.html."></li>
-      <li data-ko="메모장 같은 글 편집기로 열어, 맨 위 주석에 적힌 다섯 군데를 차례로 찾습니다." data-en="Open it in any plain text editor and find the five spots listed in the comment at the top."></li>
-      <li data-ko="가게 이름·한 줄 소개·이야기 두 문단을 우리 가게 말로 바꿉니다." data-en="Replace the shop name, the one-line intro and the two story paragraphs with your own."></li>
-      <li data-ko="영업시간 표의 요일별 시간과 휴무, 주소·주차·대중교통 안내, 전화번호를 바꿉니다." data-en="Change the hours table, the closed days, the address, parking and transit notes, and the phone number."></li>
-      <li data-ko="사진 자리에 사진을 넣고, 회색 지도 칸에 지도 퍼가기 코드를 붙여넣은 뒤 저장하면 끝입니다." data-en="Drop a photo into the photo slot, paste a map embed into the grey map box, save, and you're done."></li>
+      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 과 README.md 를 꺼냅니다." data-en="Download the ZIP below and pull out template.html and README.md."></li>
+      <li data-ko="template.html 을 메모장 같은 글 편집기로 열고, 맨 위 ‘여기만 바꾸세요’ 칸에서 --point 색 한 줄을 고칩니다. 제목줄·단추 색이 함께 따라옵니다." data-en="Open template.html in any plain text editor and change the one --point line in the ‘change only this’ block at the top; the headings and buttons follow it."></li>
+      <li data-ko="같은 칸의 --radius 로 모서리 둥글기를, --font 로 글꼴을 바꿉니다. 이 칸 밖의 CSS 는 손대지 않아도 됩니다." data-en="In the same block, --radius sets the corner rounding and --font the typeface. Nothing outside that block needs touching."></li>
+      <li data-ko="글은 본문의 【1】부터 【10】까지 번호 붙은 주석을 차례로 찾아 바꿉니다. 가게 이름·이야기·반찬·영업시간·주소·전화번호 순서입니다." data-en="For the words, work through the numbered 【1】–【10】 comments in the body: name, story, items, hours, address, phone."></li>
+      <li data-ko="필요 없는 묶음은 section 하나를 통째로 지우고, 저장한 뒤 파일을 더블클릭하면 그대로 열립니다. 올리는 방법은 README.md 6단계에 있습니다." data-en="Delete a whole section you don't need, save, and double-click the file to see it. Step 6 of the README covers putting it online."></li>
     </ol>
   </section>
 
@@ -94,7 +112,13 @@
           <td data-ko="가능" data-en="Allowed">가능</td>
         </tr>
         <tr>
-          <td data-ko="틀 안의 예시 글과 도형 (가게 이름·이야기·주소 등)" data-en="The placeholder text and shapes inside the template (shop name, story, address)">틀 안의 예시 글과 도형 (가게 이름·이야기·주소 등)</td>
+          <td data-ko="안내 문서 README.md" data-en="The guide README.md">안내 문서 README.md</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 안의 예시 글과 도형 (가게 이름·이야기·반찬·주소 등)" data-en="The sample text and shapes inside the template (shop name, story, items, address)">틀 안의 예시 글과 도형 (가게 이름·이야기·반찬·주소 등)</td>
           <td data-ko="후하씨가 직접 만듦 · 실제 가게가 아닌 지어낸 예시" data-en="Made by huhassi · invented, not a real business">후하씨가 직접 만듦 · 실제 가게가 아닌 지어낸 예시</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>

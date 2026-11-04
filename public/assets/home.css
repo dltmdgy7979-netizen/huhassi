@@ -29,10 +29,13 @@
 .chip[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff;
   font-variation-settings:"wght" 660}
 .chip .c{font-variant-numeric:tabular-nums;opacity:.72;margin-left:6px;font-size:12.5px}
-.search{display:block}
+.tools{display:flex;gap:8px;align-items:center}
+.search{display:block;flex:1 1 auto;min-width:0}
 .search input{background:#fff;border:1px solid var(--line-2);border-radius:999px;
   padding:9px 15px;width:100%}
-@media (min-width:760px){.search{flex:0 1 250px}}
+.sort select{background:#fff;border:1px solid var(--line-2);border-radius:999px;
+  padding:9px 12px;max-width:150px}
+@media (min-width:760px){.tools{flex:0 1 420px}}
 
 .grid{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}
 @media (min-width:620px){.grid{grid-template-columns:repeat(2,1fr)}}

@@ -36,7 +36,7 @@ const RAW_DIR = process.env.NOTES_DIR || "";
 
 const 허용확장자 = new Set([".md", ".txt"]);
 
-const MAX_FILE_BYTES = 512 * 1024;   // 파일 하나 최대 512KB
+const MAX_FILE_BYTES = 512 * 1024;   // 파일 하나에서 읽어 들이는 최대 512KB
 const MAX_READ_CHARS = 60000;        // read_note 가 돌려줄 최대 글자수
 const MAX_WALK_FILES = 4000;         // 폴더를 훑을 때 최대 파일 수
 const MAX_WALK_DEPTH = 8;            // 폴더 깊이 상한
@@ -124,14 +124,40 @@ async function 안전한경로(상대) {
 
   const st = await fs.stat(진짜);
   if (!st.isFile()) throw new 사용자오류("파일이 아닙니다.");
-  if (st.size > MAX_FILE_BYTES) {
-    throw new 사용자오류(
-      `파일이 너무 큽니다 (${Math.round(st.size / 1024)}KB). ` +
-        `${Math.round(MAX_FILE_BYTES / 1024)}KB 까지만 읽습니다.`
-    );
-  }
 
   return { 진짜, 상대경로: path.relative(root, 진짜), 크기: st.size, 고친때: st.mtime };
+}
+
+/**
+ * 파일의 앞부분만 읽습니다. 아무리 큰 파일이어도 메모리를 넘치게 하지 않습니다.
+ * 잘린 자리에서 한글이 반 토막 나는 것도 정리합니다.
+ */
+async function 앞부분읽기(경로, 최대바이트 = MAX_FILE_BYTES) {
+  let 손잡이;
+  try {
+    손잡이 = await fs.open(경로, "r");
+  } catch {
+    throw new 사용자오류("파일을 열지 못했습니다. 읽을 권한이 있는지 확인해 주세요.");
+  }
+  try {
+    const 통 = Buffer.alloc(최대바이트);
+    const { bytesRead } = await 손잡이.read(통, 0, 최대바이트, 0);
+    const 읽은바이트 = bytesRead;
+    // fatal:false → 잘린 글자는 U+FFFD 로 바뀝니다. 끝에 붙은 것만 떼어 냅니다.
+    let 글 = new TextDecoder("utf-8", { fatal: false }).decode(통.subarray(0, 읽은바이트));
+    글 = 글.replace(/�+$/, "");
+    return { 글, 읽은바이트 };
+  } finally {
+    await 손잡이.close().catch(() => {});
+  }
+}
+
+/** 0바이트 / 1KB 미만도 솔직하게 적습니다. */
+function 크기글자(바이트) {
+  const n = Number(바이트) || 0;
+  if (n === 0) return "0바이트";
+  if (n < 1024) return `${n}바이트`;
+  return `${Math.round(n / 1024)}KB`;
 }
 
 /** 어떤 경로가 뿌리 폴더 안에 있나? (뿌리 자신도 안으로 봅니다) */
@@ -185,13 +211,13 @@ async function 파일모으기() {
       } catch {
         continue;
       }
-      if (st.size > MAX_FILE_BYTES) continue;
-
+      // 큰 파일도 목록에서 빼지 않습니다. 읽을 때 앞부분만 읽습니다.
       모음.push({
         상대경로: path.relative(root, 전체),
         전체경로: 전체,
         크기: st.size,
         고친때: st.mtime,
+        큰파일: st.size > MAX_FILE_BYTES,
       });
     }
   }
@@ -292,7 +318,8 @@ async function 도구실행(name, args = {}) {
 
       let 글;
       try {
-        글 = await fs.readFile(f.전체경로, "utf8");
+        // 큰 파일도 건너뛰지 않고, 앞 512KB 안에서 찾습니다.
+        글 = (await 앞부분읽기(f.전체경로)).글;
       } catch {
         continue;
       }
@@ -328,19 +355,33 @@ async function 도구실행(name, args = {}) {
   if (name === "read_note") {
     const { 진짜, 상대경로, 크기, 고친때 } = await 안전한경로(args.path);
 
-    let 글 = await fs.readFile(진짜, "utf8");
-    let 잘림 = "";
+    const 머리 =
+      `파일: ${상대경로}\n` +
+      `크기: ${크기글자(크기)} · 고친 때: ${때글자(고친때)}\n` +
+      `${"─".repeat(28)}\n`;
+
+    // 빈 파일은 빈 화면 대신 빈 파일이라고 말해 줍니다.
+    if (크기 === 0) return 머리 + "(내용이 없는 빈 파일입니다.)";
+
+    const { 글: 원글, 읽은바이트 } = await 앞부분읽기(진짜);
+    let 글 = 원글;
+    const 잘림사유 = [];
+
+    if (읽은바이트 < 크기) {
+      잘림사유.push(`파일이 커서 앞 ${크기글자(읽은바이트)}만 읽었습니다`);
+    }
     if (글.length > MAX_READ_CHARS) {
       글 = 글.slice(0, MAX_READ_CHARS);
-      잘림 = `\n\n…(길어서 앞 ${MAX_READ_CHARS}글자만 보여 드립니다)`;
+      잘림사유.push(`앞 ${MAX_READ_CHARS}글자만 보여 드립니다`);
     }
 
+    // 공백만 들어 있는 파일도 빈 화면처럼 보이지 않게 합니다.
+    if (글.trim() === "") return 머리 + "(빈 줄과 공백만 들어 있습니다.)";
+
     return (
-      `파일: ${상대경로}\n` +
-      `크기: ${Math.max(1, Math.round(크기 / 1024))}KB · 고친 때: ${때글자(고친때)}\n` +
-      `${"─".repeat(28)}\n` +
+      머리 +
       글 +
-      잘림
+      (잘림사유.length ? `\n\n…(${잘림사유.join(" · ")})` : "")
     );
   }
 
@@ -361,8 +402,8 @@ async function 도구실행(name, args = {}) {
       보여줄것
         .map(
           (f) =>
-            `- ${f.상대경로} · ${때글자(f.고친때)} · ` +
-            `${Math.max(1, Math.round(f.크기 / 1024))}KB`
+            `- ${f.상대경로} · ${때글자(f.고친때)} · ${크기글자(f.크기)}` +
+            (f.큰파일 ? " (커서 앞부분만 읽습니다)" : "")
         )
         .join("\n")
     );

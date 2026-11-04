@@ -4,13 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QR 코드 만들기 QR Code Maker — 후하씨 huhassi</title>
-<meta name="description" content="주소나 글을 QR 코드로 만들어 PNG로 내려받습니다. 색과 크기를 고를 수 있고, 모든 일이 브라우저 안에서 끝납니다.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<meta name="description" content="주소나 글을 QR 코드로 만들어 PNG로 내려받습니다. 색과 크기를 고를 수 있고, 적은 글은 아무 곳에도 올라가지 않습니다.">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/demo.css">
 <script src="../../assets/i18n.js" defer></script>
 <style>
   /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
+  .d-intro{margin:0 0 14px;font-size:14.5px;line-height:1.65}
+  .d-intro b{font-variation-settings:"wght" 700}
+
   .d-grid{display:grid;gap:18px}
   @media (min-width:720px){.d-grid{grid-template-columns:1fr minmax(0,300px)}}
 
@@ -18,16 +20,42 @@
     background:var(--soft);border:1px solid var(--line);border-radius:var(--radius-s);padding:16px}
   .d-canvas{display:block;width:100%;max-width:260px;height:auto;image-rendering:pixelated;
     border:1px solid var(--line);border-radius:6px;background:#fff}
-  .d-size-out{font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+  /* 빈 칸일 때는 차분한 안내 자리로 — 깨진 그림을 보이지 않는다 */
+  .d-canvas[hidden]{display:none}
 
-  .d-colors{display:flex;flex-wrap:wrap;gap:14px;margin-top:4px}
+  .d-rest{display:grid;place-items:center;text-align:center;width:100%;max-width:260px;
+    aspect-ratio:1/1;background:#fff;border:1px dashed var(--line-2);border-radius:6px;
+    padding:18px;color:var(--ink-2);font-size:14px;line-height:1.6}
+  .d-rest[hidden]{display:none}
+  .d-rest svg{width:46px;height:46px;margin-bottom:10px;display:block}
+
+  .d-size-out{font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+  .d-dlrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}
+  .d-dlrow .btn{min-height:44px}
+
+  .d-colors{display:flex;flex-wrap:wrap;gap:14px;margin-top:4px;align-items:flex-end}
   .d-color{display:flex;align-items:center;gap:8px}
   .d-color span{font-size:13px;color:var(--ink-2);font-variation-settings:"wght" 560}
 
-  .d-warn{margin-top:10px;font-size:13.5px;color:var(--orange-ink);
-    background:var(--orange-soft);border-radius:var(--radius-s);padding:8px 11px}
-  .d-warn[hidden]{display:none}
-  .d-warn::before{content:"! ";font-family:var(--mono);font-variation-settings:"wght" 700}
+  /* 알림 자리. 색만으로 뜻을 전하지 않도록 머리글자를 붙인다 */
+  .d-msg{margin-top:10px;font-size:13.5px;border-radius:var(--radius-s);padding:9px 12px;
+    line-height:1.6}
+  .d-msg[hidden]{display:none}
+  .d-msg::before{font-family:var(--mono);font-variation-settings:"wght" 700;margin-right:5px}
+  .d-msg[data-kind="warn"]{color:var(--orange-ink);background:var(--orange-soft)}
+  .d-msg[data-kind="warn"]::before{content:"주의 /"}
+  .d-msg[data-kind="stop"]{color:var(--orange-ink);background:var(--orange-soft);
+    border:1px solid var(--orange)}
+  .d-msg[data-kind="stop"]::before{content:"안 됨 /"}
+  .d-msg[data-kind="ok"]{color:var(--ok);background:var(--soft);border:1px solid var(--line)}
+  .d-msg[data-kind="ok"]::before{content:"좋음 /"}
+  html[lang="en"] .d-msg[data-kind="warn"]::before{content:"Careful —"}
+  html[lang="en"] .d-msg[data-kind="stop"]::before{content:"Cannot —"}
+  html[lang="en"] .d-msg[data-kind="ok"]::before{content:"Good —"}
+
+  .d-count{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:6px}
+  .d-count b{color:var(--orange-ink)}
+  .d-count[data-over="1"] b{color:var(--orange-ink);text-decoration:underline}
 
   .d-fail{border:1px solid var(--line-2);border-radius:var(--radius-s);padding:16px;
     background:var(--soft);font-size:14.5px}
@@ -36,14 +64,26 @@
   .d-fail small{color:var(--ink-2);display:block;font-size:13.5px}
 
   .d-swatches{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-  .d-swatch{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);
+  .d-swatch{width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);
     cursor:pointer;padding:0}
   .d-swatch:hover{border-color:var(--orange)}
 
   @media (prefers-reduced-motion:reduce){
-    .d-swatch,.d-canvas,.d-warn{transition:none;animation:none}
+    .d-swatch,.d-canvas,.d-msg{transition:none;animation:none}
   }
 </style>
+<link rel="canonical" href="https://huhassi-web-production.up.railway.app/demos/qr-maker/index.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/qr-maker/index.html">
+<meta property="og:title" content="QR 코드 만들기 QR Code Maker — 후하씨 huhassi">
+<meta property="og:description" content="주소나 글을 QR 코드로 만들어 PNG로 내려받습니다. 색과 크기를 고를 수 있고, 적은 글은 아무 곳에도 올라가지 않습니다.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
@@ -66,7 +106,7 @@
       <span class="tag free" data-ko="무료" data-en="Free">무료</span>
       <span class="tag">MIT</span>
       <span class="tag" data-ko="설치 없음" data-en="No install">설치 없음</span>
-      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+      <span class="tag" data-ko="올리지 않음" data-en="Nothing uploaded">올리지 않음</span>
     </div>
   </div>
 
@@ -74,95 +114,127 @@
   <section class="panel" aria-labelledby="h-demo">
     <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
 
+    <!-- 꾸러미를 못 불러왔을 때. 빈 화면을 보여 주지 않고 사정을 적는다 -->
     <div class="d-fail" id="qr-fail" hidden>
       <div data-lang-ko>
-        <p>QR 만드는 꾸러미를 불러오지 못했습니다.</p>
-        <small>인터넷 연결을 확인하고 이 쪽을 다시 열어 주세요. 연결이 막혀 있으면 이 데모만 돌아가지 않습니다. 코드를 내려받아 컴퓨터에서 쓰실 때도 꾸러미 파일 하나가 함께 있어야 합니다.</small>
+        <p>QR 무늬를 셈하는 꾸러미를 불러오지 못했습니다.</p>
+        <small>인터넷 연결을 확인하고 이 쪽을 다시 열어 주세요. 연결이 막혀 있으면 이 데모만 돌아가지 않고 사이트의 다른 곳은 그대로 쓸 수 있습니다. 코드를 내려받아 컴퓨터에서 쓰실 때도 <code>qrcode.min.js</code> 파일 하나가 함께 있어야 합니다.</small>
       </div>
       <div data-lang-en>
-        <p>The QR library could not be loaded.</p>
-        <small>Check your connection and open this page again. If the network is blocked, only this one demo stops working. If you download the code, keep the library file next to it.</small>
+        <p>The library that works out the QR pattern could not be loaded.</p>
+        <small>Check your connection and open this page again. If the network is blocked, only this one demo stops working — the rest of the site is fine. If you download the code, keep the <code>qrcode.min.js</code> file next to it.</small>
       </div>
     </div>
 
-    <div class="d-grid" id="qr-ui">
-      <div>
-        <div class="field">
-          <span data-ko="주소나 글" data-en="Link or text">주소나 글</span>
-          <textarea id="qr-text" rows="3" maxlength="900"
-            data-ko-ph="https://example.com 또는 전하고 싶은 글"
-            data-en-ph="https://example.com or any text you like">https://huhassi.example/hello</textarea>
-        </div>
+    <div id="qr-ui">
+      <!-- 쓰기 전에 먼저 읽는 한 줄 -->
+      <p class="d-intro">
+        <span data-lang-ko><b>칸에 주소나 글을 넣으면</b> 그 자리에서 QR 코드가 그려집니다. PNG 로 내려받거나 그림째 복사할 수 있고, <b>적은 글은 아무 곳에도 올라가지 않습니다.</b></span>
+        <span data-lang-en><b>Put a link or some text in the box</b> and the code is drawn right here. Save it as a PNG or copy the image itself — and <b>nothing you type is uploaded anywhere.</b></span>
+      </p>
 
-        <div class="controls" style="margin-top:14px">
+      <div class="d-grid">
+        <div>
           <div class="field">
-            <span><span data-ko="크기" data-en="Size">크기</span> <span class="d-size-out" id="qr-size-out">320px</span></span>
-            <input type="range" id="qr-size" min="160" max="880" step="40" value="320"
-              data-ko-aria="그림 크기" data-en-aria="Image size">
+            <label for="qr-text"><span data-ko="주소나 글" data-en="Link or text">주소나 글</span></label>
+            <textarea id="qr-text" rows="3"
+              data-ko-ph="https://example.com 또는 전하고 싶은 글"
+              data-en-ph="https://example.com or any text you like">https://huhassi.example/hello</textarea>
           </div>
-          <div class="field">
-            <span data-ko="오류 고침 수준" data-en="Error correction">오류 고침 수준</span>
-            <select id="qr-ec">
-              <option value="L" data-ko="L — 가장 작게" data-en="L — smallest">L — 가장 작게</option>
-              <option value="M" selected data-ko="M — 보통 (권함)" data-en="M — normal (recommended)">M — 보통 (권함)</option>
-              <option value="Q" data-ko="Q — 조금 튼튼하게" data-en="Q — sturdier">Q — 조금 튼튼하게</option>
-              <option value="H" data-ko="H — 가장 튼튼하게" data-en="H — sturdiest">H — 가장 튼튼하게</option>
-            </select>
+          <p class="d-count" id="qr-count"></p>
+
+          <div class="controls" style="margin-top:14px">
+            <div class="field">
+              <label for="qr-size"><span data-ko="크기" data-en="Size">크기</span>
+                <span class="d-size-out" id="qr-size-out">320px</span></label>
+              <input type="range" id="qr-size" min="160" max="880" step="40" value="320">
+            </div>
+            <div class="field">
+              <label for="qr-ec"><span data-ko="오류 고침 수준" data-en="Error correction">오류 고침 수준</span></label>
+              <select id="qr-ec">
+                <option value="L" data-ko="L — 가장 많이 담김" data-en="L — holds the most">L — 가장 많이 담김</option>
+                <option value="M" selected data-ko="M — 보통 (권함)" data-en="M — normal (recommended)">M — 보통 (권함)</option>
+                <option value="Q" data-ko="Q — 조금 튼튼하게" data-en="Q — sturdier">Q — 조금 튼튼하게</option>
+                <option value="H" data-ko="H — 가장 튼튼, 가장 적게 담김" data-en="H — sturdiest, holds the least">H — 가장 튼튼, 가장 적게 담김</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-colors">
+            <label class="d-color" for="qr-fg">
+              <input type="color" id="qr-fg" value="#1A1A1A">
+              <span data-ko="무늬 색" data-en="Pattern colour">무늬 색</span>
+            </label>
+            <label class="d-color" for="qr-bg">
+              <input type="color" id="qr-bg" value="#FFFFFF">
+              <span data-ko="바탕 색" data-en="Background colour">바탕 색</span>
+            </label>
+            <button class="btn btn-sm" type="button" id="qr-default"
+              data-ko="기본 색으로" data-en="Default colours">기본 색으로</button>
+          </div>
+
+          <div class="d-swatches" role="group" data-ko-aria="미리 고른 무늬 색" data-en-aria="Preset pattern colours">
+            <button class="d-swatch" type="button" data-fg="#1A1A1A" style="background:#1A1A1A"
+              data-ko-aria="무늬 색을 먹색으로" data-en-aria="Use ink for the pattern"
+              data-ko-title="먹색" data-en-title="Ink"></button>
+            <button class="d-swatch" type="button" data-fg="#D14E00" style="background:#D14E00"
+              data-ko-aria="무늬 색을 진한 주황으로" data-en-aria="Use deep orange for the pattern"
+              data-ko-title="진한 주황" data-en-title="Deep orange"></button>
+            <button class="d-swatch" type="button" data-fg="#FF6A13" style="background:#FF6A13"
+              data-ko-aria="무늬 색을 주황으로" data-en-aria="Use orange for the pattern"
+              data-ko-title="주황" data-en-title="Orange"></button>
+            <button class="d-swatch" type="button" data-fg="#17794C" style="background:#17794C"
+              data-ko-aria="무늬 색을 초록으로" data-en-aria="Use green for the pattern"
+              data-ko-title="초록" data-en-title="Green"></button>
+          </div>
+
+          <!-- 길이·대비 알림이 여기에 뜬다. alert() 는 쓰지 않는다 -->
+          <p class="d-msg" id="qr-len" hidden></p>
+          <p class="d-msg" id="qr-con" hidden></p>
+          <p class="hint" id="qr-note"></p>
+        </div>
+
+        <div class="d-out">
+          <canvas id="qr-canvas" class="d-canvas" width="320" height="320"
+            data-ko-aria="만들어진 QR 코드 그림" data-en-aria="The QR code image"></canvas>
+          <div class="d-rest" id="qr-rest" hidden>
+            <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <rect x="6" y="6" width="13" height="13" rx="2" fill="none" stroke="#FFC29A" stroke-width="3"/>
+              <rect x="29" y="6" width="13" height="13" rx="2" fill="none" stroke="#FFC29A" stroke-width="3"/>
+              <rect x="6" y="29" width="13" height="13" rx="2" fill="none" stroke="#FFC29A" stroke-width="3"/>
+              <rect x="29" y="29" width="5" height="5" fill="#FFD7BC"/>
+              <rect x="37" y="37" width="5" height="5" fill="#FFD7BC"/>
+            </svg>
+            <span data-lang-ko>여기에 주소나 글을 넣으세요</span>
+            <span data-lang-en>Put a link or some text in the box</span>
+          </div>
+
+          <div class="d-dlrow">
+            <button class="btn btn-solid" type="button" id="qr-dl"
+              data-ko="PNG 로 내려받기" data-en="Download as PNG">PNG 로 내려받기</button>
+            <!-- 그림 복사는 되는 브라우저에서만 보인다 -->
+            <button class="btn" type="button" id="qr-copy" hidden
+              data-ko="그림 복사" data-en="Copy the image">그림 복사</button>
           </div>
         </div>
-
-        <div class="d-colors">
-          <label class="d-color">
-            <input type="color" id="qr-fg" value="#1A1A1A"
-              data-ko-aria="무늬 색" data-en-aria="Pattern colour">
-            <span data-ko="무늬 색" data-en="Pattern colour">무늬 색</span>
-          </label>
-          <label class="d-color">
-            <input type="color" id="qr-bg" value="#FFFFFF"
-              data-ko-aria="바탕 색" data-en-aria="Background colour">
-            <span data-ko="바탕 색" data-en="Background colour">바탕 색</span>
-          </label>
-          <button class="btn btn-sm" type="button" id="qr-default"
-            data-ko="기본 색으로" data-en="Default colours">기본 색으로</button>
-        </div>
-
-        <div class="d-swatches" role="group" data-ko-aria="미리 고른 무늬 색" data-en-aria="Preset pattern colours">
-          <button class="d-swatch" type="button" data-fg="#1A1A1A" style="background:#1A1A1A"
-            data-ko-title="먹색" data-en-title="Ink"></button>
-          <button class="d-swatch" type="button" data-fg="#D14E00" style="background:#D14E00"
-            data-ko-title="진한 주황" data-en-title="Deep orange"></button>
-          <button class="d-swatch" type="button" data-fg="#FF6A13" style="background:#FF6A13"
-            data-ko-title="주황" data-en-title="Orange"></button>
-          <button class="d-swatch" type="button" data-fg="#17794C" style="background:#17794C"
-            data-ko-title="초록" data-en-title="Green"></button>
-        </div>
-
-        <p class="d-warn" id="qr-warn" hidden></p>
-        <p class="hint" id="qr-note"></p>
-      </div>
-
-      <div class="d-out">
-        <canvas id="qr-canvas" class="d-canvas" width="320" height="320"
-          data-ko-aria="만들어진 QR 코드 그림" data-en-aria="The QR code image"></canvas>
-        <button class="btn btn-solid" type="button" id="qr-dl"
-          data-ko="PNG 로 내려받기" data-en="Download as PNG">PNG 로 내려받기</button>
       </div>
     </div>
 
+    <!-- 상태가 바뀔 때마다 여기에 적는다 (화면 낭독기용) -->
     <p class="sr" id="qr-live" role="status" aria-live="polite"></p>
 
-    <p class="hint" data-ko="적은 글은 아무 곳에도 보내지 않습니다. QR 은 이 기기 안에서 그려지고, 내려받기도 브라우저가 바로 저장합니다." data-en="Nothing you type is sent anywhere. The code is drawn on this device and the download is saved straight by your browser."></p>
+    <p class="hint" data-ko="적은 글은 아무 곳에도 올라가지 않습니다. QR 은 이 기기 안에서 그려지고, 내려받기도 브라우저가 바로 저장합니다. 서버로 보내는 것이 하나도 없습니다." data-en="Nothing you type is uploaded. The code is worked out and drawn on this device, and the download is saved straight by your browser — nothing is sent to a server."></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="칸에 주소나 전하고 싶은 글을 적습니다." data-en="Type a link or some text into the box."></li>
-      <li data-ko="막대를 끌어 그림 크기를 정합니다." data-en="Drag the slider to set the image size."></li>
-      <li data-ko="오류 고침 수준을 고릅니다. 잘 모르면 M 으로 둡니다." data-en="Choose an error-correction level — leave it on M if unsure."></li>
-      <li data-ko="무늬 색과 바탕 색을 고르고, 경고가 뜨면 더 진하게 바꿉니다." data-en="Pick the pattern and background colours, and darken them if a warning appears."></li>
-      <li data-ko="‘PNG 로 내려받기’를 눌러 그림을 저장합니다." data-en="Press download as PNG to save the image."></li>
+      <li data-ko="칸에 주소나 전하고 싶은 글을 적습니다. 비어 있으면 안내만 보입니다." data-en="Type a link or some text into the box; while it is empty you just see a prompt."></li>
+      <li data-ko="막대를 끌어 크기를, 목록에서 오류 고침 수준을 고릅니다 (모르면 M)." data-en="Drag the slider for the size and pick an error-correction level — leave it on M if unsure."></li>
+      <li data-ko="무늬 색과 바탕 색을 고릅니다. ‘너무 비슷하다’는 줄이 뜨면 더 진하게 바꿉니다." data-en="Choose the pattern and background colours; if a line says they are too close, darken one."></li>
+      <li data-ko="‘글이 너무 길다’는 줄이 뜨면 글을 줄이거나 수준을 L 로 낮춥니다." data-en="If a line says the text is too long, shorten it or drop the level towards L."></li>
+      <li data-ko="‘PNG 로 내려받기’로 저장하거나, ‘그림 복사’로 바로 붙여 씁니다." data-en="Press download as PNG to save it, or copy the image to paste it straight somewhere."></li>
     </ol>
   </section>
 
@@ -187,7 +259,13 @@
         </tr>
         <tr>
           <td data-ko="QR 무늬를 셈하는 꾸러미" data-en="The QR pattern library">QR 무늬를 셈하는 꾸러미</td>
-          <td><code>kazuhikoarase/qrcode-generator</code></td>
+          <td><code>kazuhikoarase/qrcode-generator</code> 1.4.4</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="칸 그림·안내 도형" data-en="Canvas drawing and the placeholder shape">칸 그림·안내 도형</td>
+          <td data-ko="후하씨가 직접 만듦 — 그림 파일 없음" data-en="Made by huhassi — no image files">후하씨가 직접 만듦 — 그림 파일 없음</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>
         </tr>
@@ -199,12 +277,16 @@
         </tr>
       </tbody>
     </table>
+    <p class="hint">
+      <span data-lang-ko>‘QR 코드’는 DENSO WAVE 주식회사의 등록 상표입니다. 이 쪽은 그 회사와 아무 관계가 없습니다.</span>
+      <span data-lang-en>“QR Code” is a registered trademark of DENSO WAVE INCORPORATED. This page is not connected with that company.</span>
+    </p>
   </section>
 
   <!-- 4) 코드 가져가기 -->
   <section class="panel soft" aria-labelledby="h-take">
     <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
-    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="Download it, open index.html, and it runs. Change it, sell it, whatever you like."></p>
+    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 바깥 꾸러미 하나(qrcode-generator, MIT)를 인터넷에서 불러오니, 연결 없이 쓰시려면 그 파일을 같은 칸에 두고 주소만 바꿔 주세요." data-en="Download it, open index.html, and it runs. It fetches one outside library (qrcode-generator, MIT) from the internet — to use it offline, save that file next to the page and point the script tag at it."></p>
     <div class="takeit">
       <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/qr-maker" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
       <a class="btn btn-solid" href="../../api/zip/qr-maker.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
@@ -243,7 +325,7 @@
   var elFail = document.getElementById("qr-fail");
   var elUI   = document.getElementById("qr-ui");
 
-  /* 꾸러미를 못 불러왔으면 빈 화면을 보여 주지 않고 사정을 적는다 */
+  /* 꾸러미를 못 불러왔으면 빈 화면을 보여 주지 않고 한·영으로 사정을 적는다 */
   if (typeof window.qrcode !== "function") {
     elFail.hidden = false;
     elUI.hidden = true;
@@ -256,14 +338,48 @@
   var elEc   = document.getElementById("qr-ec");
   var elFg   = document.getElementById("qr-fg");
   var elBg   = document.getElementById("qr-bg");
-  var elWarn = document.getElementById("qr-warn");
+  var elLen  = document.getElementById("qr-len");
+  var elCon  = document.getElementById("qr-con");
   var elNote = document.getElementById("qr-note");
+  var elCount= document.getElementById("qr-count");
   var elLive = document.getElementById("qr-live");
+  var elRest = document.getElementById("qr-rest");
   var cv     = document.getElementById("qr-canvas");
   var ctx    = cv.getContext("2d");
   var btnDl  = document.getElementById("qr-dl");
+  var btnCp  = document.getElementById("qr-copy");
 
-  var QUIET = 4;          /* QR 규격이 요구하는 테두리 여백 (칸 수) */
+  /* QR 규격이 요구하는 테두리 여백(칸 수). 이게 없으면 카메라가 잘 못 읽는다 */
+  var QUIET = 4;
+
+  /* ---- 꾸러미가 기본으로 쓰는 바이트 셈은 글자를 한 바이트로 잘라 버려서
+         한글이 깨진다. UTF-8 로 바르게 바꿔 끼운다. ---- */
+  function utf8Bytes(s) {
+    if (typeof TextEncoder === "function") {
+      try { return Array.prototype.slice.call(new TextEncoder().encode(s)); } catch (e) {}
+    }
+    var out = [];
+    for (var i = 0; i < s.length; i++) {
+      var c = s.codePointAt(i);
+      if (c > 0xFFFF) i++;
+      if (c < 0x80) out.push(c);
+      else if (c < 0x800) out.push(0xC0 | (c >> 6), 0x80 | (c & 63));
+      else if (c < 0x10000) out.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+      else out.push(0xF0 | (c >> 18), 0x80 | ((c >> 12) & 63), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+    }
+    return out;
+  }
+  if (window.qrcode.stringToBytesFuncs && window.qrcode.stringToBytesFuncs["UTF-8"]) {
+    window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs["UTF-8"];
+  } else {
+    window.qrcode.stringToBytes = utf8Bytes;
+  }
+
+  /* 수준마다 담을 수 있는 바이트가 다르다 (가장 큰 40형 기준, 바이트 꼴).
+     글자 수가 아니라 바이트 수가 기준이어서, 한글은 한 자에 3바이트를 쓴다. */
+  var CAP = { L: 2953, M: 2331, Q: 1663, H: 1273 };
+  var EC_ORDER = ["H", "Q", "M", "L"];
+
   var lastOk = false;
 
   /* ---- 색 밝기와 맞비침 (WCAG 식) ---- */
@@ -271,6 +387,7 @@
     h = String(h).replace("#", "");
     if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
     var n = parseInt(h, 16);
+    if (!isFinite(n)) return [0, 0, 0];
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   }
   function lum(h) {
@@ -287,6 +404,40 @@
 
   function say(msg) { elLive.textContent = msg; }
 
+  function msg(el, kind, text) {
+    if (!text) { el.hidden = true; el.textContent = ""; el.removeAttribute("data-kind"); return; }
+    el.hidden = false;
+    el.setAttribute("data-kind", kind);
+    el.textContent = text;
+  }
+
+  /* 쉬는 자리(빈 칸)를 보여 준다 — 깨진 그림이나 오류가 아니라 차분한 안내 */
+  function restState() {
+    cv.hidden = true;
+    elRest.hidden = false;
+    btnDl.disabled = true;
+    btnCp.disabled = true;
+    lastOk = false;
+  }
+  function liveState() {
+    elRest.hidden = true;
+    cv.hidden = false;
+    btnDl.disabled = false;
+    btnCp.disabled = false;
+    lastOk = true;
+  }
+
+  /* 글 길이를 바이트로 셈해 보여 준다 */
+  function countLine(chars, bytes, cap, over) {
+    elCount.textContent = "";
+    elCount.setAttribute("data-over", over ? "1" : "0");
+    var a = document.createElement("span");
+    a.textContent = t("글자 " + chars + "자 · ", chars + " characters · ");
+    var b = document.createElement("b");
+    b.textContent = t(bytes + " / " + cap + " 바이트", bytes + " / " + cap + " bytes");
+    elCount.appendChild(a); elCount.appendChild(b);
+  }
+
   /* ---- 그리기 ---- */
   function draw() {
     var text = elText.value;
@@ -296,77 +447,104 @@
 
     elSizeOut.textContent = px + "px";
 
-    /* 색이 너무 비슷하면 카메라가 못 읽는다 */
+    /* --- 색이 너무 비슷하면 카메라가 못 읽는다. 색이 아니라 글로 알린다 --- */
     var r = ratio(fg, bg);
-    var dark = lum(fg) < lum(bg);
-    if (r < 4) {
-      elWarn.hidden = false;
-      elWarn.textContent = t(
-        "두 색이 너무 비슷해서(대비 " + r.toFixed(1) + ":1) 카메라가 못 읽을 수 있습니다. 무늬를 더 진하게 하거나 바탕을 더 밝게 해 주세요.",
-        "These two colours are too close (contrast " + r.toFixed(1) + ":1) and a camera may fail to read it. Darken the pattern or lighten the background."
-      );
-    } else if (!dark) {
-      elWarn.hidden = false;
-      elWarn.textContent = t(
-        "무늬가 바탕보다 밝습니다. 대부분의 카메라는 어두운 무늬 + 밝은 바탕만 읽습니다.",
-        "The pattern is lighter than the background. Most cameras only read a dark pattern on a light background."
-      );
+    var darkOnLight = lum(fg) < lum(bg);
+    if (r < 3) {
+      msg(elCon, "stop", t(
+        "무늬 색과 바탕 색이 너무 비슷해서(대비 " + r.toFixed(1) + " 대 1) 카메라가 읽지 못합니다. 무늬를 더 진하게 하거나 바탕을 더 밝게 해 주세요.",
+        "The pattern and background are too close (contrast " + r.toFixed(1) + " to 1) for a camera to read. Darken the pattern or lighten the background."
+      ));
+    } else if (!darkOnLight) {
+      msg(elCon, "warn", t(
+        "무늬가 바탕보다 밝습니다. 대부분의 카메라는 어두운 무늬 + 밝은 바탕만 읽으니 두 색을 바꿔 주세요.",
+        "The pattern is lighter than the background. Most cameras only read a dark pattern on a light background, so swap the two colours."
+      ));
     } else if (r < 7) {
-      elWarn.hidden = false;
-      elWarn.textContent = t(
-        "읽히기는 하지만 대비가 넉넉하지 않습니다(" + r.toFixed(1) + ":1). 인쇄할 거라면 더 진한 색이 좋습니다.",
-        "Readable, but the contrast is not generous (" + r.toFixed(1) + ":1). For print, a darker colour is safer."
-      );
+      msg(elCon, "warn", t(
+        "읽히기는 하지만 대비가 넉넉하지 않습니다(" + r.toFixed(1) + " 대 1). 종이에 인쇄할 거라면 더 진한 색이 안전합니다.",
+        "Readable, but the contrast is not generous (" + r.toFixed(1) + " to 1). For print, a darker colour is safer."
+      ));
     } else {
-      elWarn.hidden = true;
-      elWarn.textContent = "";
+      msg(elCon, "", "");
     }
 
+    /* --- 빈 칸: 잘못이 아니다. 조용한 안내 자리를 보여 준다 --- */
     if (!text.trim()) {
-      /* 빈 화면 금지: 안내만 그려 둔다 */
-      cv.width = px; cv.height = px;
-      ctx.fillStyle = bg; ctx.fillRect(0, 0, px, px);
-      ctx.fillStyle = "#6E6A66";
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.font = Math.max(12, Math.round(px / 20)) + "px sans-serif";
-      ctx.fillText(t("글을 적어 주세요", "Type something"), px / 2, px / 2);
-      elNote.textContent = t("칸이 비어 있습니다.", "The box is empty.");
-      btnDl.disabled = true;
-      lastOk = false;
+      msg(elLen, "", "");
+      countLine(0, 0, CAP[ec], false);
+      elNote.textContent = t(
+        "칸이 비어 있습니다. 주소나 글을 넣으면 바로 그려집니다.",
+        "The box is empty. Put in a link or some text and it will be drawn at once."
+      );
+      restState();
       return;
     }
 
+    var bytes = utf8Bytes(text).length;
+    var cap = CAP[ec] || CAP.M;
+
+    /* --- 너무 긴 글: 담기지 않는다. 무엇을 하면 되는지 글로 말해 준다 --- */
+    if (bytes > cap) {
+      /* 지금 글이 들어갈 수 있는 수준이 있으면 그걸 짚어 준다 */
+      var fitsAt = "";
+      for (var i = EC_ORDER.length - 1; i >= 0; i--) {
+        if (bytes <= CAP[EC_ORDER[i]]) { fitsAt = EC_ORDER[i]; break; }
+      }
+      var over = bytes - cap;
+      countLine(text.length, bytes, cap, true);
+      msg(elLen, "stop", t(
+        "글이 " + ec + " 수준에 담기지 않습니다. " + cap + "바이트까지 들어가는데 지금 " + bytes +
+          "바이트(" + over + "바이트 넘침, 글자 " + text.length + "자)입니다. " +
+          (fitsAt
+            ? "글을 줄이거나, 오류 고침 수준을 " + fitsAt + " 로 낮추면 들어갑니다."
+            : "가장 많이 담기는 L 수준에도 넘치니 글을 줄여 주세요. 한글은 한 자에 3바이트를 씁니다."),
+        "This text does not fit at level " + ec + ". That level holds " + cap + " bytes and you have " +
+          bytes + " (" + over + " over, " + text.length + " characters). " +
+          (fitsAt
+            ? "Shorten it, or drop the error-correction level to " + fitsAt + " and it will fit."
+            : "It is over even at L, which holds the most, so the text has to be shorter. Korean characters take 3 bytes each.")
+      ));
+      elNote.textContent = t(
+        "담기는 양은 글자 수가 아니라 바이트 수로 정해집니다. 수준을 튼튼하게 올릴수록 담기는 양은 줄어듭니다.",
+        "Capacity is counted in bytes, not characters, and the sturdier the level the less it holds."
+      );
+      restState();
+      say(t("글이 " + ec + " 수준에 담기지 않습니다. " + over + "바이트 넘쳤습니다.",
+            "Too long for level " + ec + " — " + over + " bytes over."));
+      return;
+    }
+
+    msg(elLen, "", "");
+    countLine(text.length, bytes, cap, false);
+
+    /* --- 무늬 셈하기. 이 꾸러미는 Error 가 아니라 글자를 던지므로 그대로 받아 둔다 --- */
     var qr;
     try {
-      qr = window.qrcode(0, ec);        /* 0 = 글 길이에 맞춰 알아서 */
+      qr = window.qrcode(0, ec);      /* 0 = 글 길이에 맞춰 알아서 */
       qr.addData(text);
       qr.make();
     } catch (e) {
-      cv.width = px; cv.height = px;
-      ctx.fillStyle = "#FFF5EE"; ctx.fillRect(0, 0, px, px);
-      ctx.fillStyle = "#D14E00";
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.font = Math.max(12, Math.round(px / 22)) + "px sans-serif";
-      ctx.fillText(t("글이 너무 깁니다", "That text is too long"), px / 2, px / 2);
-      elNote.textContent = t(
-        "글이 너무 길어 QR 하나에 담기지 않습니다. 줄이거나 오류 고침 수준을 L 로 낮춰 보세요.",
-        "The text is too long for one QR code. Shorten it, or drop the error-correction level to L."
-      );
-      btnDl.disabled = true;
-      lastOk = false;
-      say(t("글이 너무 길어 만들지 못했습니다.", "Too long to encode."));
+      msg(elLen, "stop", t(
+        "이 글로는 QR 코드를 만들지 못했습니다. 글을 조금 줄이거나 오류 고침 수준을 L 로 낮춰 보세요.",
+        "This text could not be turned into a QR code. Shorten it a little, or drop the error-correction level to L."
+      ));
+      elNote.textContent = String(e && e.message ? e.message : e);
+      restState();
+      say(t("QR 코드를 만들지 못했습니다.", "Could not build the QR code."));
       return;
     }
 
     var n = qr.getModuleCount();
-    var total = n + QUIET * 2;
-    /* 칸 하나를 정수 픽셀로 맞춰 흐려지지 않게 하고, 남는 만큼은 여백으로 둔다 */
+    var total = n + QUIET * 2;                 /* 사방 여백을 칸 수에 더한다 */
+    /* 칸 하나를 정수 픽셀로 맞춰 흐려지지 않게 한다 */
     var cell = Math.max(1, Math.floor(px / total));
     var side = cell * total;
 
     cv.width = side; cv.height = side;
     cv.style.maxWidth = Math.min(side, 260) + "px";
 
+    /* 바탕을 먼저 칠한다 — 이 바탕이 그대로 사방 여백이 된다 */
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, side, side);
     ctx.fillStyle = fg;
@@ -379,11 +557,12 @@
     }
 
     elNote.textContent = t(
-      "무늬 " + n + "×" + n + " 칸, 그림 " + side + "×" + side + "px, 오류 고침 " + ec + ". 글자 " + text.length + "자.",
-      n + "×" + n + " modules, " + side + "×" + side + "px, error correction " + ec + ", " + text.length + " characters."
+      "무늬 " + n + "×" + n + " 칸, 사방에 " + QUIET + "칸 여백, 그림 " + side + "×" + side +
+        "px, 오류 고침 " + ec + ".",
+      n + "×" + n + " modules with a " + QUIET + "-module quiet zone, " + side + "×" + side +
+        "px, error correction " + ec + "."
     );
-    btnDl.disabled = false;
-    lastOk = true;
+    liveState();
   }
 
   /* 글을 칠 때마다 바로 그리지 않고 조금 기다린다 */
@@ -411,19 +590,35 @@
     b.addEventListener("click", function () { elFg.value = b.dataset.fg; draw(); });
   });
 
+  /* ---- 내려받기 ---- */
+  function fileName() {
+    var d = new Date();
+    var p = function (v) { return v < 10 ? "0" + v : String(v); };
+    /* 적은 글의 앞머리를 파일 이름에 조금 넣어 여러 장을 구별하게 한다 */
+    var slug = elText.value.trim()
+      .replace(/^https?:\/\//i, "")
+      .replace(/[^0-9A-Za-z가-힣]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 24);
+    return "qr-" + (slug ? slug + "-" : "") +
+      d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes()) + ".png";
+  }
+
   btnDl.addEventListener("click", function () {
     if (!lastOk) return;
-    var name = "qr-" + new Date().toISOString().slice(0, 10) + ".png";
+    var name = fileName();
     try {
-      cv.toBlob(function (blob) {
-        if (!blob) { fallbackDl(name); return; }
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
-        a.href = url; a.download = name;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-        say(t("PNG 로 내려받았습니다.", "Saved as a PNG."));
-      }, "image/png");
+      if (cv.toBlob) {
+        cv.toBlob(function (blob) {
+          if (!blob) { fallbackDl(name); return; }
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = name;
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+          say(t(name + " 으로 내려받았습니다.", "Saved as " + name + "."));
+        }, "image/png");
+      } else { fallbackDl(name); }
     } catch (e) { fallbackDl(name); }
   });
 
@@ -432,11 +627,44 @@
       var a = document.createElement("a");
       a.href = cv.toDataURL("image/png"); a.download = name;
       document.body.appendChild(a); a.click(); a.remove();
-      say(t("PNG 로 내려받았습니다.", "Saved as a PNG."));
+      say(t(name + " 으로 내려받았습니다.", "Saved as " + name + "."));
     } catch (e) {
       say(t("내려받기가 막혔습니다. 그림을 길게 눌러 저장해 주세요.",
             "The download was blocked. Press and hold the image to save it."));
     }
+  }
+
+  /* ---- 그림 복사: 되는 브라우저에서만 단추를 보인다 (안 되면 아예 숨긴다) ---- */
+  var canCopy = (typeof window.ClipboardItem === "function") &&
+                !!(navigator.clipboard && navigator.clipboard.write) &&
+                !!cv.toBlob;
+  if (canCopy) {
+    btnCp.hidden = false;
+    btnCp.addEventListener("click", function () {
+      if (!lastOk) return;
+      cv.toBlob(function (blob) {
+        if (!blob) { say(t("그림을 복사하지 못했습니다.", "The image could not be copied.")); return; }
+        try {
+          navigator.clipboard.write([new window.ClipboardItem({ "image/png": blob })]).then(function () {
+            var was = btnCp.textContent;
+            btnCp.classList.add("copied");
+            btnCp.textContent = t("복사했어요", "Copied");
+            say(t("QR 그림을 복사했습니다. 붙여넣기로 쓰실 수 있습니다.",
+                  "The QR image is on your clipboard — paste it wherever you need."));
+            setTimeout(function () {
+              btnCp.classList.remove("copied");
+              btnCp.textContent = was;
+            }, 1600);
+          }, function () {
+            say(t("브라우저가 복사를 막았습니다. ‘PNG 로 내려받기’를 써 주세요.",
+                  "The browser blocked the copy. Use download as PNG instead."));
+          });
+        } catch (e) {
+          say(t("이 브라우저에서는 그림 복사가 안 됩니다. ‘PNG 로 내려받기’를 써 주세요.",
+                "This browser cannot copy images. Use download as PNG instead."));
+        }
+      }, "image/png");
+    });
   }
 
   document.addEventListener("huhassi:lang", draw);

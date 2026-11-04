@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="2048 숫자 합치기 — 4×4 말판에 2, 4, 8, 16 같은 숫자 칸이 놓여 있고 옆에 점수가 보입니다. 2048 number-merging game: a 4 by 4 board of numbered tiles with the score beside it.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="2048 숫자 합치기 — 4×4 말판에 2, 4, 8 부터 2048 까지 숫자 칸이 놓여 있고, 옆에 점수·최고 점수·방향 단추·되돌리기 단추가 보입니다. 2048 number-merging game: a 4 by 4 board of numbered tiles with score, best score, direction buttons and an undo button beside it.">
   <rect width="640" height="360" fill="#FFFFFF"/>
   <rect x="0" y="0" width="640" height="360" fill="none" stroke="#E9E5E1" stroke-width="2"/>
 
@@ -56,10 +56,14 @@
     <rect x="508" y="214" width="62" height="54" rx="14" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
     <path d="M553 241 l-16 -13 v26 Z" fill="#FF6A13"/>
 
-    <!-- 쓸기 표시 -->
-    <path d="M384 300 h150" stroke="#FFEBDD" stroke-width="12" stroke-linecap="round"/>
-    <path d="M384 300 h150" stroke="#FF6A13" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 9"/>
-    <circle cx="384" cy="300" r="9" fill="#FF6A13"/>
-    <path d="M534 292 l14 8 l-14 8 Z" fill="#FF6A13"/>
+    <!-- 한 수 되돌리기 / 멈춤 단추 -->
+    <rect x="368" y="282" width="112" height="44" rx="22" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
+    <path d="M390 302 a9 9 0 1 1 1 9" fill="none" stroke="#FF6A13" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M390 295 v10 h-10 Z" fill="#FF6A13"/>
+    <text x="412" y="309" font-family="sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">되돌리기</text>
+    <rect x="490" y="282" width="80" height="44" rx="22" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
+    <rect x="508" y="296" width="5" height="16" rx="2" fill="#FF6A13"/>
+    <rect x="517" y="296" width="5" height="16" rx="2" fill="#FF6A13"/>
+    <text x="530" y="310" font-family="sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">P</text>
   </g>
 </svg>

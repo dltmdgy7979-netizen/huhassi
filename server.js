@@ -30,6 +30,8 @@ function send(res, code, body, type, extra) {
     "Content-Type": type || "text/plain; charset=utf-8",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "no-referrer",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
     "Cache-Control": code === 200 ? "public, max-age=300" : "no-store"
   }, extra || {});
   res.writeHead(code, headers);
@@ -71,6 +73,7 @@ async function handleRequestForm(req, res) {
   catch { return json(res, 400, { error: "bad_json" }); }
 
   if (data.website) return json(res, 200, { ok: true });           // 로봇용 미끼 칸
+  if (data.consent !== true) return json(res, 400, { error: "no_consent" });
   const trim = (v, max) => String(v == null ? "" : v).trim().slice(0, max);
   const row = {
     name: trim(data.name, 100),
@@ -79,7 +82,8 @@ async function handleRequestForm(req, res) {
     body: trim(data.body, 4000),
     lang: data.lang === "en" ? "en" : "ko",
     source: "huhassi-site",
-    status: "new"
+    status: "new",
+    consent_at: new Date().toISOString()
   };
   if (row.contact.length < 3 || row.body.length < 5) return json(res, 400, { error: "too_short" });
 
@@ -109,13 +113,28 @@ async function handleRequestForm(req, res) {
   }
 }
 
-async function collect(dir, base, out) {
+/* ZIP 에 넣지 않는 것 — 누가 데모 폴더에서 npm install 을 해도 5MB 짜리가 되지 않게 */
+const ZIP_SKIP_DIRS = new Set(["node_modules", ".git", ".cache", "dist", "build", ".next", "__pycache__"]);
+const ZIP_SKIP_FILES = new Set(["package-lock.json", ".DS_Store", "yarn.lock", "pnpm-lock.yaml"]);
+const ZIP_MAX_BYTES = 8 * 1024 * 1024;
+
+async function collect(dir, base, out, state) {
+  state = state || { bytes: 0, skipped: [] };
   for (const entry of await fsp.readdir(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     const rel = base ? base + "/" + entry.name : entry.name;
-    if (entry.isDirectory()) await collect(full, rel, out);
-    else if (entry.isFile()) out.push({ name: rel, data: await fsp.readFile(full) });
+    if (entry.isDirectory()) {
+      if (ZIP_SKIP_DIRS.has(entry.name)) { state.skipped.push(rel + "/"); continue; }
+      await collect(full, rel, out, state);
+    } else if (entry.isFile()) {
+      if (ZIP_SKIP_FILES.has(entry.name) || entry.name.endsWith(".log")) { state.skipped.push(rel); continue; }
+      const stat = await fsp.stat(full);
+      if (state.bytes + stat.size > ZIP_MAX_BYTES) { state.skipped.push(rel); continue; }
+      state.bytes += stat.size;
+      out.push({ name: rel, data: await fsp.readFile(full) });
+    }
   }
+  out.__state = state;
   return out;
 }
 
@@ -129,6 +148,9 @@ async function handleZip(res, slug) {
   if (!dir) return send(res, 404, "Not found");
 
   const entries = await collect(dir, slug, []);
+  if (entries.__state && entries.__state.skipped.length) {
+    console.log("[huhassi] zip " + slug + " 에서 제외: " + entries.__state.skipped.join(", "));
+  }
   for (const extra of [
     { from: path.join(__dirname, "LICENSE"), as: slug + "/LICENSE" },
     { from: path.join(ROOT, "assets", "base.css"), as: slug + "/assets/base.css" },

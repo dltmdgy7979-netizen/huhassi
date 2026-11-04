@@ -40,12 +40,14 @@
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    var consent = document.getElementById("consent");
     var data = {
       name: form.name.value.trim(),
       contact: form.contact.value.trim(),
       kind: kind.value,
       body: body.value.trim(),
       lang: window.huhassi.lang(),
+      consent: !!(consent && consent.checked),
       website: form.website.value
     };
     if (data.contact.length < 3) {
@@ -56,6 +58,13 @@
     if (data.body.length < 5) {
       show("bad", "무엇이 필요한지 조금만 더 적어 주세요.", "Please say a little more about what you need.");
       body.focus();
+      return;
+    }
+    if (!data.consent) {
+      show("bad",
+        "답장을 드리려면 개인정보 수집·이용 동의가 필요합니다. 아래 네모를 체크해 주세요.",
+        "I need your agreement to use your details to reply. Please tick the box below.");
+      if (consent) consent.focus();
       return;
     }
     send.disabled = true;
@@ -70,9 +79,22 @@
     }).then(function (res) {
       if (res.ok) {
         form.reset(); count.textContent = "0"; fillKinds();
+        if (consent) consent.checked = false;
         show("ok",
           "잘 받았습니다. 답장 받을 곳으로 연락드리겠습니다. 바로 답하지 못할 수도 있습니다.",
           "Got it. I'll reply where you told me to — though maybe not straight away.");
+      } else if (res.j && res.j.error === "too_many") {
+        show("bad",
+          "조금 전에 여러 번 보내셨습니다. 10분 뒤에 다시 시도해 주세요.",
+          "That's a few in a row. Please try again in ten minutes.");
+      } else if (res.j && res.j.error === "no_consent") {
+        show("bad",
+          "동의 네모를 체크해 주세요.",
+          "Please tick the agreement box.");
+      } else if (res.j && res.j.error === "not_configured") {
+        show("bad",
+          "지금은 신청을 받지 못하는 상태입니다. 잠시 뒤 다시 시도해 주세요.",
+          "The form is not able to take requests right now. Please try again later.");
       } else {
         show("bad",
           "보내지 못했습니다. 잠시 뒤 다시 눌러 주세요.",

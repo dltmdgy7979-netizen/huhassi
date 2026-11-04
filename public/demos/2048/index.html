@@ -4,67 +4,105 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>2048 숫자 합치기 — 후하씨 huhassi</title>
-<meta name="description" content="같은 숫자를 밀어 붙여 2048을 만드는 4×4 놀이. 손가락으로 쓸거나 방향키로 움직입니다.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<meta name="description" content="같은 숫자를 밀어 붙여 2048을 만드는 4×4 놀이. 손가락으로 쓸거나 방향키·WASD로 움직이고, 한 수 되돌리기와 멈춤이 있습니다.">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/demo.css">
 <script src="../../assets/i18n.js" defer></script>
 <style>
   /* 이 쪽에만 필요한 CSS — 클래스는 d- 로 시작 */
-  .d-game{max-width:420px;margin:0 auto}
-  .d-top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-bottom:14px}
+  .d-game{max-width:440px;margin:0 auto}
+  .d-what{display:flex;gap:9px;align-items:flex-start;background:var(--soft);
+    border:1px solid var(--line);border-radius:var(--radius-s);padding:11px 13px;margin:0 0 14px;
+    font-size:14px;line-height:1.6}
+  .d-what b{flex:none;color:var(--orange-ink);font-variation-settings:"wght" 740}
+  .d-top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-bottom:12px}
   .d-top .statline{flex:1 1 auto}
-  .d-stage{position:relative}
+  .d-stage{position:relative;width:100%;max-width:440px;margin:0 auto}
+
   .d-board{
-    display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);
-    gap:2.2%;padding:2.2%;width:100%;max-width:420px;aspect-ratio:1/1;
+    position:relative;width:100%;aspect-ratio:1/1;padding:2.4%;
     background:var(--soft);border:1px solid var(--line);border-radius:var(--radius);
-    touch-action:none;container-type:inline-size;margin:0 auto;
+    touch-action:none;container-type:inline-size;
   }
   .d-board:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
-  .d-cell{
-    border:1px solid var(--line);border-radius:10px;background:#fff;
-    display:grid;place-items:center;overflow:hidden;
+  .d-slots{position:absolute;inset:2.4%;display:grid;
+    grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)}
+  /* 바탕 칸과 숫자 칸의 틈을 같은 6% 로 맞춰 자리가 어긋나지 않게 합니다 */
+  .d-slot{margin:6%;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .d-tiles{position:absolute;inset:2.4%}
+  .d-tile{position:absolute;left:0;top:0;width:25%;height:25%;
+    transform:translate(0,0);transition:transform .1s ease-out}
+  .d-tile b{
+    position:absolute;inset:6%;border-radius:10px;display:grid;place-items:center;
     font-variation-settings:"wght" 820;font-variant-numeric:tabular-nums;
-    letter-spacing:-.04em;line-height:1;font-size:clamp(17px,8.6cqw,34px);
+    letter-spacing:-.04em;line-height:1;font-size:clamp(16px,9cqw,34px);overflow:hidden;
   }
-  .d-cell.d-d3{font-size:clamp(14px,6.8cqw,27px)}
-  .d-cell.d-d4{font-size:clamp(11px,5.4cqw,22px)}
-  .d-cell.d-t{border-color:transparent}
-  /* 숫자 칸 — 옅은 주황에서 진한 주황으로. 숫자가 늘 적혀 있어 색만으로 뜻을 전하지 않습니다. */
-  .d-v2{background:#FFF5EE;color:#1A1A1A;border-color:var(--line) !important}
-  .d-v4{background:#FFEBDD;color:#1A1A1A}
-  .d-v8{background:#FFDCC4;color:#1A1A1A}
-  .d-v16{background:#FFCBA8;color:#1A1A1A}
-  .d-v32{background:#FFB488;color:#1A1A1A}
-  .d-v64{background:#FF9A60;color:#1A1A1A}
-  .d-v128{background:#F2600D;color:#fff}
-  .d-v256{background:#E65A09;color:#fff}
-  .d-v512{background:#DC5505;color:#fff}
-  .d-v1024{background:#D14E00;color:#fff}
-  .d-v2048{background:#B04200;color:#fff}
-  .d-v4096{background:#8F3600;color:#fff}
-  .d-pop{animation:d-pop .16s ease-out}
-  @keyframes d-pop{from{transform:scale(.72)}to{transform:scale(1)}}
+  .d-tile.d-d3 b{font-size:clamp(13px,7cqw,27px)}
+  .d-tile.d-d4 b{font-size:clamp(11px,5.4cqw,22px)}
+  /* 숫자 칸 — 옅은 주황에서 진한 주황으로. 숫자가 늘 적혀 있어 색만으로 뜻을 전하지 않습니다.
+     진한 칸에서는 글자를 흰색으로 뒤집어 대비를 지킵니다. */
+  .d-v2    b{background:#FFF5EE;color:#1A1A1A;box-shadow:inset 0 0 0 1px #E9E5E1}
+  .d-v4    b{background:#FFEBDD;color:#1A1A1A}
+  .d-v8    b{background:#FFDCC4;color:#1A1A1A}
+  .d-v16   b{background:#FFCBA8;color:#1A1A1A}
+  .d-v32   b{background:#FFB488;color:#1A1A1A}
+  .d-v64   b{background:#FF9A60;color:#1A1A1A}
+  .d-v128  b{background:#F2600D;color:#fff}
+  .d-v256  b{background:#E65A09;color:#fff}
+  .d-v512  b{background:#DC5505;color:#fff}
+  .d-v1024 b{background:#D14E00;color:#fff}
+  .d-v2048 b{background:#B04200;color:#fff}
+  .d-v4096 b{background:#8F3600;color:#fff}
+  .d-new b{animation:d-pop .16s ease-out}
+  .d-pop b{animation:d-bump .16s ease-out}
+  @keyframes d-pop{from{transform:scale(.6);opacity:.2}to{transform:scale(1);opacity:1}}
+  @keyframes d-bump{0%{transform:scale(1)}45%{transform:scale(1.16)}100%{transform:scale(1)}}
+
   .d-over{
     position:absolute;inset:0;display:grid;place-items:center;text-align:center;
-    background:rgba(255,255,255,.9);border-radius:var(--radius);padding:16px;
+    background:rgba(255,255,255,.93);border-radius:var(--radius);padding:16px;
   }
   .d-over[hidden]{display:none}
   .d-over h3{margin-bottom:4px}
-  .d-over p{color:var(--ink-2);font-size:14px;margin:6px 0 14px}
+  .d-over p{color:var(--ink-2);font-size:14px;margin:6px 0 6px}
+  .d-over .d-final{color:var(--ink);font-size:15px;font-variation-settings:"wght" 680;margin:2px 0 12px}
   .d-over .row{justify-content:center}
-  .d-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:264px;margin:14px auto 0}
-  .d-pad .btn{min-height:52px;padding:11px 8px;font-size:19px}
+
+  .d-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:270px;margin:14px auto 0}
+  .d-pad .btn{min-height:52px;min-width:52px;padding:11px 8px;font-size:19px}
   .d-pad .d-up{grid-column:2;grid-row:1}
   .d-pad .d-left{grid-column:1;grid-row:2}
   .d-pad .d-down{grid-column:2;grid-row:2}
   .d-pad .d-right{grid-column:3;grid-row:2}
-  .d-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+  .d-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+  .d-actions .btn{min-height:44px}
+  .d-rise{margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.6}
+  /* 375px 폭에서 출처·라이선스 표가 가로로 넘치지 않게 — 머리칸 줄바꿈을 풀어 줍니다
+     (공통 demo.css 는 건드리지 않고 이 쪽에서만 고칩니다) */
+  .lic-table{table-layout:fixed}
+  .lic-table th,.lic-table td{white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
+  @media (max-width:420px){
+    .lic-table th,.lic-table td{padding:8px 6px;font-size:13px}
+    .lic-table th{font-size:11.5px}
+  }
+
   @media (prefers-reduced-motion:reduce){
-    .d-pop{animation:none}
+    .d-tile{transition:none}
+    .d-new b,.d-pop b{animation:none}
   }
 </style>
+<link rel="canonical" href="https://huhassi-web-production.up.railway.app/demos/2048/index.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/2048/index.html">
+<meta property="og:title" content="2048 숫자 합치기 — 후하씨 huhassi">
+<meta property="og:description" content="같은 숫자를 밀어 붙여 2048을 만드는 4×4 놀이. 손가락으로 쓸거나 방향키·WASD로 움직이고, 한 수 되돌리기와 멈춤이 있습니다.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
@@ -96,24 +134,44 @@
     <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
 
     <div class="d-game">
+      <p class="d-what">
+        <b data-ko="무엇을 하는 놀이인가" data-en="What is this">무엇을 하는 놀이인가</b>
+        <span data-ko="네 방향 가운데 하나로 칸을 전부 밀어붙입니다. 맞닿은 같은 숫자는 하나로 합쳐지고, 합쳐진 숫자만큼 점수가 오릅니다. 2048 칸을 만드는 것이 목표입니다." data-en="Push every tile to one of the four sides. Equal tiles that meet merge into one, and your score rises by the merged number. The goal is a 2048 tile."></span>
+      </p>
+
       <div class="d-top">
         <ul class="statline">
           <li><span class="k" data-ko="점수" data-en="Score">점수</span><span class="v" id="score">0</span></li>
           <li><span class="k" data-ko="최고 점수" data-en="Best">최고 점수</span><span class="v" id="best">0</span></li>
+          <li><span class="k" data-ko="가장 큰 칸" data-en="Biggest">가장 큰 칸</span><span class="v" id="top">2</span></li>
         </ul>
       </div>
 
       <div class="d-stage">
-        <div class="d-board" id="board" tabindex="0" role="group"
-             data-ko-aria="2048 말판. 방향키 또는 W A S D 로 움직입니다." 
-             data-en-aria="2048 board. Move with the arrow keys or W A S D."></div>
+        <!-- aria-label 은 스크립트가 말판의 지금 모습까지 적어 넣습니다 (describe 함수) -->
+        <div class="d-board" id="board" tabindex="0" role="group" aria-label="2048 말판">
+          <div class="d-slots" id="slots" aria-hidden="true"></div>
+          <div class="d-tiles" id="tiles"></div>
+        </div>
+
+        <div class="d-over" id="pauseover" hidden>
+          <div>
+            <h3 data-ko="멈췄습니다" data-en="Paused">멈췄습니다</h3>
+            <p data-ko="놀이가 그대로 멈춰 있습니다. 이어서 하기를 누르면 계속됩니다." data-en="The game is frozen exactly as it was. Tap Resume to carry on."></p>
+            <div class="row">
+              <button class="btn btn-solid" type="button" id="resume" data-ko="이어서 하기" data-en="Resume">이어서 하기</button>
+            </div>
+          </div>
+        </div>
 
         <div class="d-over" id="over" hidden>
           <div>
             <h3 id="over-title" data-ko="끝났습니다" data-en="Game over">끝났습니다</h3>
             <p id="over-text" data-ko="더 움직일 곳이 없습니다." data-en="No move is left."></p>
+            <p class="d-final" id="over-final"></p>
             <div class="row">
               <button class="btn" type="button" id="keep" hidden data-ko="계속하기" data-en="Keep going">계속하기</button>
+              <button class="btn" type="button" id="undo-over" data-ko="한 수 되돌리기" data-en="Undo one move">한 수 되돌리기</button>
               <button class="btn btn-solid" type="button" id="again" data-ko="다시 하기" data-en="Restart">다시 하기</button>
             </div>
           </div>
@@ -128,10 +186,14 @@
       </div>
 
       <div class="d-actions">
+        <button class="btn btn-sm" type="button" id="undo" data-ko="한 수 되돌리기" data-en="Undo one move">한 수 되돌리기</button>
+        <button class="btn btn-sm" type="button" id="pause" aria-pressed="false" data-ko="멈춤" data-en="Pause">멈춤</button>
         <button class="btn btn-sm" type="button" id="reset" data-ko="다시 하기" data-en="Restart">다시 하기</button>
       </div>
 
-      <p class="hint" data-ko="말판을 손가락으로 쓸어도 되고, 말판을 한 번 눌러 고른 뒤 방향키를 써도 됩니다." data-en="Swipe the board, or tap the board once to focus it and then use the arrow keys."></p>
+      <p class="hint" data-ko="말판을 손가락으로 쓸어도 되고, 말판을 한 번 눌러 고른 뒤 방향키를 써도 됩니다. 되돌리기는 바로 앞 한 수까지만 됩니다." data-en="Swipe the board, or tap it once to focus it and then use the arrow keys. Undo goes back one move only."></p>
+      <p class="d-rise" data-ko="어려워지는 방식: 처음에는 새 칸의 90%가 2 로 놓입니다. 점수가 오를수록 4 가 놓일 확률이 10%에서 30%까지 조금씩 올라가, 말판이 더 빨리 찹니다." data-en="How it gets harder: at the start 90% of new tiles are a 2. As your score climbs, the chance of a 4 rises gradually from 10% to 30%, so the board fills faster."></p>
+      <p class="hint" id="rate" style="margin-top:4px"></p>
       <p class="sr" id="live" role="status" aria-live="polite"></p>
     </div>
   </section>
@@ -140,11 +202,11 @@
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="말판을 위·아래·왼·오른으로 쓸거나, 아래 방향 단추 네 개를 누릅니다." data-en="Swipe the board up, down, left or right, or tap one of the four direction buttons."></li>
-      <li data-ko="키보드에서는 방향키 또는 W·A·S·D 를 누릅니다." data-en="On a keyboard, press the arrow keys or W, A, S, D."></li>
+      <li data-ko="말판을 위·아래·왼·오른으로 쓸거나, 방향 단추 네 개를 누릅니다." data-en="Swipe the board up, down, left or right, or tap one of the four direction buttons."></li>
+      <li data-ko="키보드에서는 말판을 한 번 누른 뒤 방향키 또는 W·A·S·D 를 누릅니다." data-en="On a keyboard, tap the board once, then press the arrow keys or W, A, S, D."></li>
       <li data-ko="같은 숫자 두 개가 부딪히면 하나로 합쳐지고 그만큼 점수가 올라갑니다." data-en="When two equal numbers collide they merge into one and your score rises by that amount."></li>
-      <li data-ko="2048 칸을 만들면 이깁니다. '계속하기'를 누르면 더 큰 숫자도 모을 수 있습니다." data-en="Make a 2048 tile to win, then tap Keep going to chase bigger numbers."></li>
-      <li data-ko="움직일 곳이 없으면 끝납니다. '다시 하기'로 처음부터 시작합니다." data-en="When no move is left the game ends; tap Restart to begin again."></li>
+      <li data-ko="잘못 밀었으면 '한 수 되돌리기'(Z), 잠깐 쉬려면 '멈춤'(P)을 누릅니다." data-en="Pushed the wrong way? Tap Undo one move (Z). Need a break? Tap Pause (P)."></li>
+      <li data-ko="2048 칸을 만들면 이기고, 움직일 곳이 없으면 끝납니다. '다시 하기'로 처음부터 시작합니다." data-en="Make a 2048 tile to win; when no move is left the game ends. Tap Restart to begin again."></li>
     </ol>
   </section>
 
@@ -211,99 +273,179 @@
 </footer>
 
 <script>
-/* 2048 숫자 합치기 — 후하씨가 직접 만듦. SPDX-License-Identifier: MIT */
+/* 2048 숫자 합치기 — 후하씨가 직접 만듦. SPDX-License-Identifier: MIT
+   - 칸을 하나씩 따로 둔 뒤 transform 으로 밀어, 미는 느낌과 합쳐질 때 커지는 느낌만 아주 짧게 줍니다.
+   - 움직임 줄이기(prefers-reduced-motion)를 켜 두면 애니메이션 없이 곧바로 자리를 잡습니다. */
 (function () {
   "use strict";
-  var N = 4, CELLS = N * N, KEY = "huhassi-2048-best", GOAL = 2048;
+  var N = 4, CELLS = N * N, GOAL = 2048;
+  var KEY = "huhassi-2048-best";
+  var MOVE_MS = 100;
 
-  var board = document.getElementById("board");
   var wrap = document.getElementById("gamewrap");
+  var board = document.getElementById("board");
+  var slots = document.getElementById("slots");
+  var layer = document.getElementById("tiles");
   var elScore = document.getElementById("score");
   var elBest = document.getElementById("best");
+  var elTop = document.getElementById("top");
+  var elRate = document.getElementById("rate");
   var elLive = document.getElementById("live");
   var over = document.getElementById("over");
   var overTitle = document.getElementById("over-title");
   var overText = document.getElementById("over-text");
+  var overFinal = document.getElementById("over-final");
+  var pauseOver = document.getElementById("pauseover");
   var btnKeep = document.getElementById("keep");
   var btnAgain = document.getElementById("again");
   var btnReset = document.getElementById("reset");
+  var btnUndo = document.getElementById("undo");
+  var btnUndoOver = document.getElementById("undo-over");
+  var btnPause = document.getElementById("pause");
+  var btnResume = document.getElementById("resume");
 
-  var grid = new Array(CELLS);
-  var fresh = new Array(CELLS);
-  var cells = [];
-  var score = 0, best = 0, won = false, dead = false;
+  /* 움직임 줄이기 */
+  var slow = false;
+  try {
+    var mq = window.matchMedia("(prefers-reduced-motion:reduce)");
+    slow = mq.matches;
+    if (mq.addEventListener) mq.addEventListener("change", function (e) { slow = e.matches; });
+  } catch (e) {}
+
+  var cells = new Array(CELLS);   /* 칸 번호 → 타일 객체 또는 0 */
+  var seq = 0;                    /* 타일에 붙이는 번호 */
+  var pending = [];               /* 합쳐져 사라질 차례인 타일들 */
+  var score = 0, best = 0, won = false, dead = false, paused = false;
+  var bestAtStart = 0;            /* 이번 판을 시작할 때의 최고 점수 — 깼는지 가리는 기준 */
+  var history = null;             /* 바로 앞 한 수만 기억합니다 */
 
   function t(ko, en) {
     return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
   }
+  function label(el, ko, en) {
+    el.setAttribute("data-ko", ko);
+    el.setAttribute("data-en", en);
+    el.textContent = t(ko, en);
+  }
   function readBest() {
-    try { return Math.max(0, parseInt(localStorage.getItem(KEY), 10) || 0); }
-    catch (e) { return 0; }
+    try {
+      var v = parseInt(localStorage.getItem(KEY), 10);
+      return (isFinite(v) && v > 0) ? v : 0;
+    } catch (e) { return 0; }
   }
-  function saveBest() {
-    try { localStorage.setItem(KEY, String(best)); } catch (e) {}
-  }
-  function say(msg) { elLive.textContent = msg; }
+  function saveBest() { try { localStorage.setItem(KEY, String(best)); } catch (e) {} }
+  function say(m) { elLive.textContent = m; }
 
-  /* 말판 칸을 한 번만 만들어 두고 다시 쓴다 */
-  for (var i = 0; i < CELLS; i++) {
-    var c = document.createElement("div");
-    c.className = "d-cell";
-    board.appendChild(c);
-    cells.push(c);
+  /* 바탕 칸 — 한 번만 만들어 둡니다 */
+  (function buildSlots() {
+    for (var i = 0; i < CELLS; i++) {
+      var d = document.createElement("div");
+      d.className = "d-slot";
+      slots.appendChild(d);
+    }
+  })();
+
+  /* 어려워지는 방식: 점수가 오르면 4 가 놓일 확률이 0.10 → 0.30 으로 천천히 오릅니다 */
+  function rateOfFour() {
+    return 0.10 + Math.min(0.20, (score / 20000) * 0.20);
+  }
+  function showRate() {
+    var pct = Math.round(rateOfFour() * 100);
+    elRate.textContent = t("4 가 놓일 확률 " + pct + "%  ·  2 가 놓일 확률 " + (100 - pct) + "%",
+                           "chance of a 4: " + pct + "%  ·  chance of a 2: " + (100 - pct) + "%");
+  }
+
+  function makeTile(v, idx, isNew) {
+    var el = document.createElement("div");
+    var tile = { id: ++seq, v: v, idx: idx, el: el };
+    el.className = "d-tile";
+    var b = document.createElement("b");
+    el.appendChild(b);
+    layer.appendChild(el);
+    placeTile(tile, true);
+    paintTile(tile, isNew ? "new" : "");
+    return tile;
+  }
+  function placeTile(tile, instant) {
+    var r = Math.floor(tile.idx / N), c = tile.idx % N;
+    if (instant) tile.el.style.transition = "none";
+    tile.el.style.transform = "translate(" + (c * 100) + "%," + (r * 100) + "%)";
+    if (instant) {
+      /* 다음 칠에서 다시 움직임이 붙도록 되돌립니다 */
+      void tile.el.offsetWidth;
+      tile.el.style.transition = "";
+    }
+  }
+  function paintTile(tile, mode) {
+    var cls = "d-tile d-v" + Math.min(tile.v, 4096);
+    var digits = String(tile.v).length;
+    if (digits === 3) cls += " d-d3";
+    else if (digits >= 4) cls += " d-d4";
+    if (!slow && mode === "new") cls += " d-new";
+    if (!slow && mode === "pop") cls += " d-pop";
+    tile.el.className = cls;
+    tile.el.firstChild.textContent = String(tile.v);
+    tile.el.setAttribute("aria-hidden", "true");
+  }
+  function dropTile(tile) {
+    if (tile.el && tile.el.parentNode) tile.el.parentNode.removeChild(tile.el);
+  }
+  function flushPending() {
+    while (pending.length) dropTile(pending.pop());
+  }
+  function clearBoard() {
+    flushPending();
+    for (var i = 0; i < CELLS; i++) {
+      if (cells[i]) dropTile(cells[i]);
+      cells[i] = 0;
+    }
   }
 
   function emptyIndexes() {
     var out = [];
-    for (var i = 0; i < CELLS; i++) if (!grid[i]) out.push(i);
+    for (var i = 0; i < CELLS; i++) if (!cells[i]) out.push(i);
     return out;
   }
   function spawn() {
     var free = emptyIndexes();
     if (!free.length) return;
     var at = free[Math.floor(Math.random() * free.length)];
-    grid[at] = Math.random() < 0.9 ? 2 : 4;
-    fresh[at] = 1;
+    var v = Math.random() < rateOfFour() ? 4 : 2;
+    cells[at] = makeTile(v, at, true);
   }
 
-  function render() {
-    for (var i = 0; i < CELLS; i++) {
-      var v = grid[i] || 0, c = cells[i];
-      var cls = "d-cell";
-      if (v) {
-        cls += " d-t d-v" + Math.min(v, 4096);
-        var digits = String(v).length;
-        if (digits === 3) cls += " d-d3";
-        else if (digits >= 4) cls += " d-d4";
-        if (fresh[i]) cls += " d-pop";
-      }
-      c.className = cls;
-      c.textContent = v ? String(v) : "";
-      if (v) c.removeAttribute("aria-label");
-      else c.setAttribute("aria-label", t("빈 칸", "empty"));
-    }
+  function biggest() {
+    var m = 0;
+    for (var i = 0; i < CELLS; i++) if (cells[i] && cells[i].v > m) m = cells[i].v;
+    return m;
+  }
+  function syncNums() {
     elScore.textContent = String(score);
     elBest.textContent = String(best);
+    elTop.textContent = String(biggest() || 0);
+    showRate();
+    btnUndo.disabled = !history;
+    btnUndoOver.disabled = !history;
+    describe();
   }
 
-  /* 한 줄을 앞쪽으로 밀고 같은 수를 합친다 */
-  function slide(vals) {
-    var out = [], flag = [], gained = 0, i;
-    var packed = [];
-    for (i = 0; i < vals.length; i++) if (vals[i]) packed.push(vals[i]);
-    for (i = 0; i < packed.length; i++) {
-      if (i + 1 < packed.length && packed[i] === packed[i + 1]) {
-        var sum = packed[i] * 2;
-        out.push(sum); flag.push(1); gained += sum; i++;
-      } else {
-        out.push(packed[i]); flag.push(0);
+  /* 말판의 지금 모습을 글로 적어 둡니다 — 화면 읽기 프로그램이 읽을 수 있게 */
+  function describe() {
+    var rows = [];
+    for (var r = 0; r < N; r++) {
+      var vals = [];
+      for (var c = 0; c < N; c++) {
+        var tile = cells[r * N + c];
+        vals.push(tile ? String(tile.v) : t("빈 칸", "empty"));
       }
+      rows.push(t((r + 1) + "번째 줄: ", "row " + (r + 1) + ": ") + vals.join(", "));
     }
-    while (out.length < N) { out.push(0); flag.push(0); }
-    return { vals: out, flag: flag, gained: gained };
+    var head = t("2048 말판. 방향키 또는 W A S D 로 밀고, Z 로 한 수 되돌리고, P 로 멈춥니다. ",
+                 "2048 board. Push with the arrow keys or W A S D, press Z to undo one move, P to pause. ");
+    board.setAttribute("aria-label", head + rows.join(". ") + ".");
   }
 
-  /* 방향마다 네 줄의 칸 번호를 뽑아 준다 */
+  /* 방향마다 네 줄의 칸 번호를 앞쪽부터 뽑아 줍니다 */
   function lines(dir) {
     var all = [], a, b;
     for (a = 0; a < N; a++) {
@@ -323,42 +465,101 @@
     if (emptyIndexes().length) return true;
     for (var r = 0; r < N; r++) {
       for (var c = 0; c < N; c++) {
-        var v = grid[r * N + c];
-        if (c + 1 < N && grid[r * N + c + 1] === v) return true;
-        if (r + 1 < N && grid[(r + 1) * N + c] === v) return true;
+        var v = cells[r * N + c].v;
+        if (c + 1 < N && cells[r * N + c + 1].v === v) return true;
+        if (r + 1 < N && cells[(r + 1) * N + c].v === v) return true;
       }
     }
     return false;
   }
 
+  function snapshot() {
+    var vals = [];
+    for (var i = 0; i < CELLS; i++) vals.push(cells[i] ? cells[i].v : 0);
+    return { vals: vals, score: score, won: won };
+  }
+  function restore(snap) {
+    clearBoard();
+    for (var i = 0; i < CELLS; i++) {
+      if (snap.vals[i]) cells[i] = makeTile(snap.vals[i], i, false);
+    }
+    score = snap.score;
+    won = snap.won;
+    dead = false;
+    over.hidden = true;
+    syncNums();
+  }
+
   function move(dir) {
-    if (dead) return;
-    var all = lines(dir), moved = false, gain = 0, i, j;
-    for (i = 0; i < CELLS; i++) fresh[i] = 0;
+    if (dead || paused) return;
+    flushPending();
+
+    var before = snapshot();
+    var all = lines(dir), moved = false, gain = 0, merged = [], i, j;
 
     for (i = 0; i < all.length; i++) {
-      var idx = all[i], before = [];
-      for (j = 0; j < N; j++) before.push(grid[idx[j]] || 0);
-      var res = slide(before);
-      gain += res.gained;
-      for (j = 0; j < N; j++) {
-        if (before[j] !== res.vals[j]) moved = true;
-        grid[idx[j]] = res.vals[j];
-        if (res.flag[j]) fresh[idx[j]] = 1;
+      var line = all[i], items = [], k;
+      for (k = 0; k < N; k++) if (cells[line[k]]) items.push(cells[line[k]]);
+      for (k = 0; k < N; k++) cells[line[k]] = 0;
+
+      var out = [], gone = [];
+      j = 0;
+      while (j < items.length) {
+        if (j + 1 < items.length && items[j].v === items[j + 1].v) {
+          var keep = items[j], eaten = items[j + 1];
+          keep.v *= 2;
+          gain += keep.v;
+          out.push(keep);
+          gone.push({ tile: eaten, slot: out.length - 1 });
+          merged.push(keep);
+          j += 2;
+        } else {
+          out.push(items[j]);
+          j += 1;
+        }
+      }
+      for (k = 0; k < out.length; k++) {
+        var tgt = line[k];
+        if (out[k].idx !== tgt) moved = true;
+        out[k].idx = tgt;
+        cells[tgt] = out[k];
+      }
+      for (k = 0; k < gone.length; k++) {
+        /* 먹힌 칸은 남는 칸 자리까지 미끄러져 들어간 뒤 사라집니다 */
+        moved = true;
+        var g = gone[k];
+        g.tile.idx = line[g.slot];
+        placeTile(g.tile, false);
+        pending.push(g.tile);
       }
     }
-    if (!moved) return;
 
+    if (!moved) {
+      /* 합쳐진 것도 옮겨진 것도 없으면 말판은 그대로입니다 (칸 배열만 같은 자리에 다시 담겼습니다) */
+      say(t("그 방향으로는 움직일 칸이 없습니다.", "Nothing can move that way."));
+      return;
+    }
+
+    history = before;
     score += gain;
     if (score > best) { best = score; saveBest(); }
+
+    for (i = 0; i < CELLS; i++) if (cells[i]) placeTile(cells[i], false);
+    for (i = 0; i < merged.length; i++) paintTile(merged[i], "pop");
+
+    if (slow) flushPending();
+    else window.setTimeout(flushPending, MOVE_MS + 20);
+
     spawn();
-    render();
+    syncNums();
+
+    if (gain) say(t(gain + "점을 얻어 모두 " + score + "점입니다.", "Gained " + gain + " for a total of " + score + "."));
 
     if (!won) {
       for (i = 0; i < CELLS; i++) {
-        if (grid[i] >= GOAL) {
+        if (cells[i] && cells[i].v >= GOAL) {
           won = true;
-          showPanel(
+          showEnd(
             t("2048 완성!", "You made 2048!"),
             t("계속하기를 누르면 더 큰 숫자도 모을 수 있습니다.", "Tap Keep going to chase bigger numbers."),
             true
@@ -370,46 +571,107 @@
     }
     if (!canMove()) {
       dead = true;
-      showPanel(t("끝났습니다", "Game over"), t("더 움직일 곳이 없습니다.", "No move is left."), false);
-      say(t("끝났습니다. 점수 " + score + "점, 최고 점수 " + best + "점.", "Game over. Score " + score + ", best " + best + "."));
+      showEnd(t("끝났습니다", "Game over"), t("더 움직일 곳이 없습니다.", "No move is left."), false);
     }
   }
 
-  function showPanel(title, text, keep) {
+  function showEnd(title, text, keep) {
     overTitle.textContent = title;
     overText.textContent = text;
+    var beat = (score > bestAtStart);
+    if (keep) {
+      overFinal.textContent = t("지금 점수 " + score + "점 · 최고 점수 " + best + "점",
+                                "Score " + score + " · best " + best);
+    } else {
+      overFinal.textContent = beat
+        ? t("점수 " + score + "점 — 최고 점수를 새로 세웠습니다!", "Score " + score + " — a new best!")
+        : t("점수 " + score + "점 · 최고 점수 " + best + "점", "Score " + score + " · best " + best);
+      say(t("끝났습니다. 점수 " + score + "점, 최고 점수 " + best + "점."
+              + (beat ? " 최고 점수를 새로 세웠습니다." : ""),
+            "Game over. Score " + score + ", best " + best + "." + (beat ? " That is a new best." : "")));
+    }
     btnKeep.hidden = !keep;
+    btnUndoOver.hidden = keep;
     over.hidden = false;
     (keep ? btnKeep : btnAgain).focus();
   }
-  function hidePanel() { over.hidden = true; }
 
   function reset() {
-    for (var i = 0; i < CELLS; i++) { grid[i] = 0; fresh[i] = 0; }
-    score = 0; won = false; dead = false;
-    hidePanel();
+    clearBoard();
+    score = 0; won = false; dead = false; history = null;
+    bestAtStart = best;
+    setPaused(false, true);
+    over.hidden = true;
     spawn(); spawn();
-    render();
+    syncNums();
     say(t("새 놀이를 시작했습니다.", "A new game has started."));
   }
+
+  function undo() {
+    if (!history) {
+      say(t("되돌릴 수가 없습니다.", "There is no move to undo."));
+      return;
+    }
+    var snap = history;
+    history = null;
+    restore(snap);
+    say(t("한 수 되돌렸습니다. 점수 " + score + "점.", "Undid one move. Score " + score + "."));
+    board.focus();
+  }
+
+  function setPaused(on, quiet) {
+    if (dead) on = false;
+    paused = !!on;
+    pauseOver.hidden = !paused;
+    btnPause.setAttribute("aria-pressed", paused ? "true" : "false");
+    label(btnPause, paused ? "이어서 하기" : "멈춤", paused ? "Resume" : "Pause");
+    if (!quiet) {
+      say(paused ? t("멈췄습니다.", "Paused.") : t("다시 시작합니다.", "Resumed."));
+    }
+    if (paused) btnResume.focus();
+  }
+  function togglePause() { setPaused(!paused, false); }
 
   /* 단추 */
   wrap.addEventListener("click", function (e) {
     var b = e.target.closest ? e.target.closest("[data-dir]") : null;
-    if (b) { move(b.getAttribute("data-dir")); return; }
+    if (b) { move(b.getAttribute("data-dir")); board.focus(); }
   });
   btnReset.addEventListener("click", function () { reset(); board.focus(); });
   btnAgain.addEventListener("click", function () { reset(); board.focus(); });
-  btnKeep.addEventListener("click", function () { hidePanel(); board.focus(); });
+  btnKeep.addEventListener("click", function () { over.hidden = true; board.focus(); });
+  btnUndo.addEventListener("click", undo);
+  btnUndoOver.addEventListener("click", undo);
+  btnPause.addEventListener("click", togglePause);
+  btnResume.addEventListener("click", function () { setPaused(false, false); board.focus(); });
 
-  /* 키보드 — 이 데모 칸 안에 초점이 있을 때만 받는다 (쪽 넘기기를 막지 않기 위해) */
-  var KEYS = {
-    ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right",
-    w: "up", a: "left", s: "down", d: "right"
-  };
-  wrap.addEventListener("keydown", function (e) {
+  /* 키보드 — 이 데모 칸 안에 초점이 있을 때, 또는 아무것도 고르지 않은 채
+     말판이 화면에 보일 때만 받습니다 (쪽 넘기기와 다른 칸을 방해하지 않습니다) */
+  var onScreen = true;
+  try {
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) {
+        onScreen = es[0].isIntersecting;
+      }, { threshold: 0.35 }).observe(board);
+    }
+  } catch (e) {}
+
+  var ARROWS = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
+  var LETTERS = { w: "up", a: "left", s: "down", d: "right" };
+  document.addEventListener("keydown", function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
-    var dir = KEYS[e.key] || KEYS[(e.key || "").toLowerCase()];
+    var inside = wrap.contains(e.target);
+    /* 아무것도 고르지 않았고 말판이 화면에 보일 때는 글자 키만 받습니다.
+       방향키는 쪽 넘기기에 쓰이니, 말판을 한 번 눌러 고른 뒤에만 받습니다. */
+    var loose = !inside && (!e.target || e.target === document.body) && onScreen;
+    if (!inside && !loose) return;
+    var key = e.key || "";
+    var low = key.toLowerCase();
+    if (low === "p") { e.preventDefault(); togglePause(); return; }
+    if (low === "z") { e.preventDefault(); undo(); return; }
+    if (LETTERS[low]) { e.preventDefault(); move(LETTERS[low]); return; }
+    if (!inside) return;
+    var dir = ARROWS[key];
     if (!dir) return;
     e.preventDefault();
     move(dir);
@@ -432,7 +694,7 @@
     move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
   }, { passive: true });
 
-  /* 마우스로도 끌어서 움직일 수 있게 */
+  /* 마우스로 끌어서도 움직입니다 */
   var mx = 0, my = 0, mdown = false;
   board.addEventListener("pointerdown", function (e) {
     if (e.pointerType === "touch") return;
@@ -446,7 +708,24 @@
     move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
   });
 
-  document.addEventListener("huhassi:lang", render);
+  /* 다른 쪽을 보거나 전화가 오면 스스로 멈춥니다 */
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && !paused && !dead) setPaused(true, true);
+  });
+
+  document.addEventListener("huhassi:lang", function () {
+    label(btnPause, paused ? "이어서 하기" : "멈춤", paused ? "Resume" : "Pause");
+    showRate();
+    describe();
+    if (!over.hidden) {
+      /* 끝 알림판의 글은 말이 바뀌면 다시 적어 줍니다 */
+      var keep = !btnKeep.hidden;
+      showEnd(keep ? t("2048 완성!", "You made 2048!") : t("끝났습니다", "Game over"),
+              keep ? t("계속하기를 누르면 더 큰 숫자도 모을 수 있습니다.", "Tap Keep going to chase bigger numbers.")
+                   : t("더 움직일 곳이 없습니다.", "No move is left."),
+              keep);
+    }
+  });
 
   best = readBest();
   reset();

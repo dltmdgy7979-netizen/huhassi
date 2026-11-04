@@ -48,10 +48,15 @@ input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line
   border-radius:50%;background:var(--orange-soft);color:var(--orange-ink);font-size:11.5px;
   font-family:var(--mono);display:grid;place-items:center}
 
-/* 출처·라이선스 */
-.lic-table{width:100%;border-collapse:collapse;font-size:14px}
-.lic-table th,.lic-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-.lic-table th{font-size:12.5px;color:var(--ink-2);font-variation-settings:"wght" 620;white-space:nowrap}
+/* 출처·라이선스 — 좁은 화면에서 표가 화면을 넘지 않게 */
+.lic-table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
+.lic-table th,.lic-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);
+  vertical-align:top;overflow-wrap:anywhere;word-break:keep-all}
+.lic-table th{font-size:12.5px;color:var(--ink-2);font-variation-settings:"wght" 620}
+@media (max-width:620px){
+  .lic-table{font-size:13.5px}
+  .lic-table th,.lic-table td{padding:7px 6px}
+}
 .lic-table tr:last-child td,.lic-table tr:last-child th{border-bottom:none}
 .lic-table code{font-family:var(--mono);font-size:12.5px}
 

@@ -5,13 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>프롬프트 25개 — 후하씨 huhassi</title>
 <meta name="description" content="그대로 복사해 쓰는 프롬프트 25개. 빈칸만 채우면 됩니다.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
 <link rel="stylesheet" href="assets/base.css">
 <link rel="stylesheet" href="assets/demo.css">
 <link rel="stylesheet" href="assets/prompts.css">
 <script src="assets/i18n.js" defer></script>
 <script src="assets/catalog.js" defer></script>
 <script src="assets/prompts-page.js" defer></script>
+<link rel="canonical" href="https://huhassi-web-production.up.railway.app/prompts.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/prompts.html">
+<meta property="og:title" content="프롬프트 25개 — 후하씨 huhassi">
+<meta property="og:description" content="그대로 복사해 쓰는 프롬프트 25개. 빈칸만 채우면 됩니다.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
@@ -31,12 +42,13 @@
     <span class="num">16 — 40</span>
     <h1 data-ko="프롬프트 25개" data-en="Twenty-five prompts">프롬프트 25개</h1>
     <p class="lede">
-      <span data-lang-ko>중괄호 <b>{ }</b> 안만 내 상황으로 바꾸고 그대로 붙여넣으면 됩니다. 어떤 AI에 넣어도 됩니다. 긴 답이 필요하면 그대로, 짧게 받고 싶으면 맨 끝에 "짧게"라고 한 줄 더 적으세요.</span>
-      <span data-lang-en>Change what is inside the <b>{ }</b> braces and paste the rest as it is, into any AI. Add "keep it short" at the end if the answer runs long.</span>
+      <span data-lang-ko><b>[대괄호]</b> 안만 내 상황으로 바꾸고 그대로 붙여넣으면 됩니다. 어떤 AI에 넣어도 됩니다. 프롬프트마다 언제 쓰는지, 실제로 돌려 본 예시, 잘 쓰는 법을 같이 적어 두었습니다.</span>
+      <span data-lang-en>Change what is inside the <b>[brackets]</b> and paste the rest as it is, into any AI. Each one comes with when to use it, a real example run, and the tips that matter.</span>
     </p>
   </div>
 
   <div class="pfilters" id="pgroups" role="group" data-ko-aria="주제로 거르기" data-en-aria="Filter by subject"></div>
+  <p class="pcount" id="pcount" aria-live="polite"></p>
   <ol class="plist" id="plist"></ol>
   <p id="loadfail" class="hint" hidden data-ko="목록을 불러오지 못했습니다. 새로고침해 보세요." data-en="The list did not load. Try refreshing."></p>
 

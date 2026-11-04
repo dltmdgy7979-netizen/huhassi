@@ -1,68 +1,72 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="카페 메뉴판 틀 미리보기 — 커피·논커피·디저트 세 묶음과 HOT·ICE 두 가격 칸">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="카페 메뉴판 틀 미리보기 — 카페 이름, HOT·ICE 두 값 칸, 커피·논커피 묶음, 시그니처 표시">
   <rect width="640" height="360" fill="#FFF5EE"/>
-  <!-- A4 종이 -->
-  <rect x="166" y="22" width="308" height="316" rx="8" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
 
-  <!-- 머리 -->
-  <text x="320" y="56" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" letter-spacing="2" fill="#1A1A1A">○○커피</text>
-  <rect x="262" y="64" width="116" height="4" rx="2" fill="#E9E5E1"/>
-  <line x1="188" y1="78" x2="452" y2="78" stroke="#1A1A1A" stroke-width="2"/>
+  <!-- A4 종이 두 장 느낌 -->
+  <rect x="158" y="26" width="328" height="308" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
 
-  <!-- HOT / ICE 머리글 -->
-  <text x="398" y="92" text-anchor="middle" font-family="sans-serif" font-size="7.5" letter-spacing="1.4" fill="#9A948E">HOT</text>
-  <text x="440" y="92" text-anchor="middle" font-family="sans-serif" font-size="7.5" letter-spacing="1.4" fill="#9A948E">ICE</text>
+  <!-- 머리: 카페 이름 + 굵은 밑줄 -->
+  <text x="322" y="66" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="700" letter-spacing="2" fill="#1A1A1A">○○커피</text>
+  <rect x="246" y="76" width="152" height="4" rx="2" fill="#E9E5E1"/>
+  <rect x="180" y="90" width="284" height="2.4" fill="#1A1A1A"/>
+
+  <!-- HOT / ICE 칸 머리글 -->
+  <rect x="380" y="100" width="26" height="4" rx="2" fill="#6E6A66" opacity="0.55"/>
+  <rect x="428" y="100" width="24" height="4" rx="2" fill="#6E6A66" opacity="0.55"/>
 
   <!-- 묶음 1: 커피 -->
-  <text x="188" y="110" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="1.6" fill="#D14E00">COFFEE</text>
-  <line x1="248" y1="107" x2="452" y2="107" stroke="#E9E5E1" stroke-width="1"/>
+  <rect x="180" y="116" width="52" height="5" rx="2.5" fill="#D14E00"/>
+  <rect x="240" y="118" width="224" height="1.4" fill="#E9E5E1"/>
+
+  <!-- 줄 1 (시그니처) -->
   <g>
-    <rect x="188" y="119" width="84" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="278" y="118" width="40" height="8" rx="4" fill="#FFEBDD"/>
-    <rect x="188" y="129" width="120" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="378" y="120" width="34" height="5" rx="2.5" fill="#1A1A1A" opacity="0.7"/>
-    <rect x="420" y="120" width="34" height="5" rx="2.5" fill="#D8D2CC"/>
+    <rect x="180" y="132" width="78" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="264" y="130" width="38" height="12" rx="6" fill="#FFEBDD"/>
+    <rect x="271" y="134.5" width="24" height="3.5" rx="1.75" fill="#D14E00"/>
+    <rect x="180" y="143" width="146" height="3.6" rx="1.8" fill="#E9E5E1"/>
+    <rect x="374" y="133" width="32" height="5" rx="2.5" fill="#1A1A1A"/>
+    <rect x="422" y="133" width="32" height="5" rx="2.5" fill="#6E6A66" opacity="0.6"/>
   </g>
+  <rect x="180" y="154" width="284" height="1" fill="#E9E5E1"/>
+
+  <!-- 줄 2 -->
   <g>
-    <rect x="188" y="146" width="66" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="188" y="156" width="104" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="378" y="147" width="34" height="5" rx="2.5" fill="#1A1A1A" opacity="0.7"/>
-    <rect x="420" y="147" width="34" height="5" rx="2.5" fill="#D8D2CC"/>
+    <rect x="180" y="162" width="66" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="180" y="173" width="122" height="3.6" rx="1.8" fill="#E9E5E1"/>
+    <rect x="374" y="163" width="32" height="5" rx="2.5" fill="#1A1A1A"/>
+    <rect x="422" y="163" width="32" height="5" rx="2.5" fill="#6E6A66" opacity="0.6"/>
   </g>
+  <rect x="180" y="184" width="284" height="1" fill="#E9E5E1"/>
+
+  <!-- 줄 3 — ICE 만 (HOT 자리는 줄표) -->
   <g>
-    <rect x="188" y="173" width="74" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="188" y="183" width="92" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="378" y="174" width="34" height="5" rx="2.5" fill="#1A1A1A" opacity="0.7"/>
-    <rect x="432" y="176" width="10" height="2.5" rx="1.25" fill="#D8D2CC"/>
+    <rect x="180" y="192" width="88" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="180" y="203" width="136" height="3.6" rx="1.8" fill="#E9E5E1"/>
+    <rect x="386" y="194" width="10" height="3" rx="1.5" fill="#6E6A66" opacity="0.45"/>
+    <rect x="422" y="193" width="32" height="5" rx="2.5" fill="#6E6A66" opacity="0.6"/>
   </g>
 
   <!-- 묶음 2: 논커피 -->
-  <text x="188" y="208" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="1.6" fill="#D14E00">NON-COFFEE</text>
-  <line x1="270" y1="205" x2="452" y2="205" stroke="#E9E5E1" stroke-width="1"/>
+  <rect x="180" y="226" width="68" height="5" rx="2.5" fill="#D14E00"/>
+  <rect x="256" y="228" width="208" height="1.4" fill="#E9E5E1"/>
   <g>
-    <rect x="188" y="217" width="78" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="272" y="216" width="40" height="8" rx="4" fill="#FFEBDD"/>
-    <rect x="188" y="227" width="112" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="378" y="218" width="34" height="5" rx="2.5" fill="#1A1A1A" opacity="0.7"/>
-    <rect x="420" y="218" width="34" height="5" rx="2.5" fill="#D8D2CC"/>
+    <rect x="180" y="242" width="74" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="180" y="253" width="118" height="3.6" rx="1.8" fill="#E9E5E1"/>
+    <rect x="374" y="243" width="32" height="5" rx="2.5" fill="#1A1A1A"/>
+    <rect x="422" y="243" width="32" height="5" rx="2.5" fill="#6E6A66" opacity="0.6"/>
   </g>
+  <rect x="180" y="264" width="284" height="1" fill="#E9E5E1"/>
   <g>
-    <rect x="188" y="244" width="60" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="188" y="254" width="88" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="378" y="245" width="34" height="5" rx="2.5" fill="#1A1A1A" opacity="0.7"/>
-    <rect x="420" y="245" width="34" height="5" rx="2.5" fill="#D8D2CC"/>
-  </g>
-
-  <!-- 묶음 3: 디저트 -->
-  <text x="188" y="279" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="1.6" fill="#D14E00">DESSERT</text>
-  <line x1="254" y1="276" x2="452" y2="276" stroke="#E9E5E1" stroke-width="1"/>
-  <g>
-    <rect x="188" y="288" width="68" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="188" y="298" width="98" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="378" y="289" width="34" height="5" rx="2.5" fill="#1A1A1A" opacity="0.7"/>
-    <rect x="432" y="291" width="10" height="2.5" rx="1.25" fill="#D8D2CC"/>
+    <rect x="180" y="272" width="60" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="374" y="273" width="32" height="5" rx="2.5" fill="#1A1A1A"/>
+    <rect x="422" y="273" width="32" height="5" rx="2.5" fill="#6E6A66" opacity="0.6"/>
   </g>
 
-  <!-- 바닥: 영업시간 -->
-  <line x1="188" y1="314" x2="452" y2="314" stroke="#1A1A1A" stroke-width="1.6"/>
-  <rect x="268" y="322" width="104" height="5" rx="2.5" fill="#D8D2CC"/>
+  <!-- 안내 칸 -->
+  <rect x="180" y="282" width="284" height="20" rx="5" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="1.4"/>
+  <rect x="188" y="287" width="200" height="3.4" rx="1.7" fill="#E9E5E1"/>
+  <rect x="188" y="295" width="156" height="3.4" rx="1.7" fill="#E9E5E1"/>
+
+  <!-- 영업시간 꼬리 -->
+  <rect x="180" y="312" width="284" height="2" fill="#1A1A1A"/>
+  <rect x="262" y="320" width="120" height="4" rx="2" fill="#E9E5E1"/>
 </svg>

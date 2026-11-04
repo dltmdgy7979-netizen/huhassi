@@ -2,16 +2,19 @@
    SPDX-License-Identifier: MIT */
 (function () {
   window.huhassi = window.huhassi || {};
-  var cache = null;
-  window.huhassi.load = function (base) {
-    if (cache) return cache;
-    cache = fetch((base || "") + "demos.json", { cache: "no-cache" })
+  var cache = {};
+  /* which: "catalog" = 갤러리용 가벼운 목록(기본), "demos" = 프롬프트 본문까지 든 원본 */
+  window.huhassi.load = function (base, which) {
+    var file = which === "demos" ? "demos.json" : "catalog.json";
+    var key = (base || "") + file;
+    if (cache[key]) return cache[key];
+    cache[key] = fetch(key, { cache: "no-cache" })
       .then(function (r) {
-        if (!r.ok) throw new Error("demos.json " + r.status);
+        if (!r.ok) throw new Error(file + " " + r.status);
         return r.json();
       })
       .then(function (d) { return d.items || []; });
-    return cache;
+    return cache[key];
   };
   window.huhassi.pad = function (n) { return n < 10 ? "0" + n : String(n); };
   window.huhassi.priceLabel = function (item, lang) {

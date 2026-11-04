@@ -105,10 +105,22 @@ server.js           정적 파일 + /api/request + /api/zip
 docs/runbook.md     배포와 키 설정 절차
 ```
 
+## 8-2. 자동으로 만들어지는 파일 (직접 고치지 말 것)
+
+| 파일 | 무엇 | 다시 만드는 법 |
+|---|---|---|
+| `public/catalog.json` | 첫 화면 갤러리용 가벼운 목록 | `npm run catalog` |
+| `public/sitemap.xml`, `public/robots.txt` | 검색용 | `npm run seo` |
+| 각 쪽의 canonical·공유 미리보기(OG) 태그 | 검색·공유용 | `npm run seo` |
+
+`demos.json` 을 고쳤으면 **`npm run build` 를 한 번 돌리고 커밋**하세요.
+세 개를 한꺼번에 다시 만듭니다. 도메인이 바뀌면 `SITE_BASE=https://새주소 npm run seo`.
+
 ## 9. 일하는 순서
 
 1. `public/demos.json` 에 항목을 먼저 적는다 (번호·제목·설명·라이선스).
 2. 폴더를 만들고 `index.html` 과 `preview.svg` 를 만든다.
-3. `npm start` 로 띄워 휴대폰 폭(360px)에서 눈으로 확인한다.
-4. 커밋 → Railway 가 알아서 배포한다.
-5. 주인에게 **번호로** 확인받고, 지적받은 번호만 고친다.
+3. `npm run build` 를 돌린다 (갤러리 목록·sitemap·공유 태그 갱신).
+4. `npm start` 로 띄워 휴대폰 폭(360px)에서 눈으로 확인한다.
+5. 커밋 → Railway 가 알아서 배포한다.
+6. 주인에게 **번호로** 확인받고, 지적받은 번호만 고친다.

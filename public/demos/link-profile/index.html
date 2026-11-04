@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>링크 프로필 — 후하씨 huhassi</title>
 <meta name="description" content="SNS 프로필에 걸어 두는 링크 모음 페이지 틀. 색 한 줄만 바꾸면 분위기가 바뀝니다.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/demo.css">
 <script src="../../assets/i18n.js" defer></script>
@@ -17,8 +16,25 @@
     background:#fff;box-shadow:var(--shadow);overflow:hidden}
   .d-frame iframe{display:block;width:100%;height:100%;border:0;background:#fff}
   .d-open{display:block;text-align:center;margin-top:12px;font-size:14px}
+  .d-readme{
+    margin:14px 0 0;padding:11px 14px;background:var(--soft);
+    border:1px solid var(--line);border-radius:var(--radius-s);
+    font-size:13.5px;color:var(--ink-2)}
+  .d-readme a{font-weight:700}
   .d-note{font-size:13.5px;color:var(--ink-2);margin:0 0 14px}
 </style>
+<link rel="canonical" href="https://huhassi-web-production.up.railway.app/demos/link-profile/index.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/link-profile/index.html">
+<meta property="og:title" content="링크 프로필 — 후하씨 huhassi">
+<meta property="og:description" content="SNS 프로필에 걸어 두는 링크 모음 페이지 틀. 색 한 줄만 바꾸면 분위기가 바뀝니다.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
@@ -54,17 +70,19 @@
       <iframe src="template.html" title="링크 프로필 틀 미리보기" data-ko-title="링크 프로필 틀 미리보기" data-en-title="Link profile template preview" loading="lazy"></iframe>
     </div>
     <a class="d-open" href="template.html" target="_blank" rel="noopener" data-ko="새 창에서 크게 보기 ↗" data-en="Open it full size in a new tab ↗">새 창에서 크게 보기 ↗</a>
+    <p class="d-readme" data-lang-ko>이 틀을 처음 고쳐 보신다면 폴더 안의 README.md 를 먼저 보세요. 설정 덩어리 고치는 법과 인터넷에 올리는 법을 번호대로 적어 두었습니다 — <a href="https://github.com/dltmdgy7979-netizen/huhassi/blob/main/public/demos/link-profile/README.md" rel="noopener">README.md 보기 ↗</a></p>
+    <p class="d-readme" data-lang-en>If this is your first time editing the template, read the README.md in the folder first: how to edit the settings block and how to put it online, step by numbered step — <a href="https://github.com/dltmdgy7979-netizen/huhassi/blob/main/public/demos/link-profile/README.md" rel="noopener">read README.md ↗</a></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 하나만 꺼냅니다." data-en="Download the ZIP below and pull out the single file template.html."></li>
-      <li data-ko="글 편집기로 열어, 맨 위 ‘여기만 바꾸세요’ 주석에 적힌 자리를 찾습니다." data-en="Open it in a text editor and find the spots listed in the ‘change only these’ comment at the top."></li>
-      <li data-ko="--point 한 줄에 원하는 색을 적습니다. 바탕·단추·글자 색이 함께 따라옵니다." data-en="Put the colour you want on the single --point line; the background, buttons and text all follow it."></li>
-      <li data-ko="이름과 한 줄 소개를 바꾸고, 사진 자리에 정사각형 사진을 넣습니다." data-en="Change the name and the one-line intro, and drop a square photo into the photo slot."></li>
-      <li data-ko="링크 단추 여섯 개의 제목·부제·주소를 고칩니다. 단추 덩어리를 복사하거나 지워 개수도 바꿀 수 있습니다." data-en="Rewrite the six buttons' titles, subtitles and addresses — copy or delete a button block to change how many there are."></li>
+      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 과 README.md 를 꺼냅니다." data-en="Download the ZIP below and pull out template.html and README.md."></li>
+      <li data-ko="template.html 을 글 편집기로 열고, 위쪽 ‘여기만 바꾸세요 ①’ 칸에서 --point 색 한 줄을 고칩니다. 바탕·단추 색이 모두 그 한 줄에서 만들어집니다." data-en="Open template.html in a text editor and change the single --point line in ‘change only this ①’; the background and every button colour are built from it."></li>
+      <li data-ko="같은 칸의 --radius 로 단추 모서리를, --font 로 글꼴을 바꿉니다. 이 칸 밖의 CSS 는 손대지 않아도 됩니다." data-en="In the same block, --radius rounds the buttons and --font sets the typeface. Nothing outside that block needs touching."></li>
+      <li data-ko="글은 바로 아래 ‘여기만 바꾸세요 ②’ 칸의 PROFILE 덩어리 하나에 다 있습니다. 큰따옴표 안의 글자만 바꾸고 쉼표는 지우지 않습니다. HTML 은 건드리지 않습니다." data-en="All the words live in the single PROFILE block under ‘change only this ②’. Edit only what's inside the quotes and keep the commas — you never touch the HTML."></li>
+      <li data-ko="링크는 { } 한 줄이 단추 하나입니다. 복사해 늘리고 통째로 지워 줄이며, main:true 를 붙인 한 줄만 꽉 찬 색으로 보입니다. 단추 높이는 48px 이상으로 잡혀 있습니다." data-en="Each { } line is one button: copy a line to add one, delete a line to remove one, and the one line with main:true shows in the filled colour. Buttons are at least 48px tall."></li>
     </ol>
   </section>
 
@@ -94,7 +112,13 @@
           <td data-ko="가능" data-en="Allowed">가능</td>
         </tr>
         <tr>
-          <td data-ko="틀 안의 예시 글과 도형 (이름·소개·링크 등)" data-en="The placeholder text and shapes inside the template (name, intro, links)">틀 안의 예시 글과 도형 (이름·소개·링크 등)</td>
+          <td data-ko="안내 문서 README.md" data-en="The guide README.md">안내 문서 README.md</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 안의 예시 글과 도형 (이름·소개·링크 등)" data-en="The sample text and shapes inside the template (name, intro, links)">틀 안의 예시 글과 도형 (이름·소개·링크 등)</td>
           <td data-ko="후하씨가 직접 만듦 · 실제 사람이나 서비스가 아닌 지어낸 예시" data-en="Made by huhassi · invented, not a real person or service">후하씨가 직접 만듦 · 실제 사람이나 서비스가 아닌 지어낸 예시</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>

@@ -8,245 +8,304 @@
      이력서·포트폴리오 (Resume & Portfolio) — 후하씨 huhassi
      SPDX-License-Identifier: MIT
 
-     ▶ 여기만 바꾸세요
-       1) <title> — 내 이름
-       2) .r-head — 이름, 한 줄 소개, 연락처(메일·전화·사는 곳)
-       3) .r-skills — 핵심 역량 세~네 개
-       4) .r-jobs — 경력: 회사·기간·한 일 불릿
-       5) .r-works — 작업물 세 개 카드 (제목·설명·링크)
-       6) .r-edu — 학력과 자격
-     ▶ 색은 :root 의 --point 한 줄만 바꾸면 전체가 바뀝니다.
-     ▶ PDF 로 저장: 화면의 '인쇄 → PDF 로 저장' 단추를 누르고,
-       인쇄 창에서 'A4 · 세로 · 머리글/바닥글 끄기 · 배경 그래픽 끄기' 로 하세요.
-       인쇄본에는 링크 주소가 글자로 같이 나옵니다.
-     ▶ 적혀 있는 이름·회사·연락처는 모두 예시용 가짜입니다.
+     이 파일 하나가 전부입니다. 바깥에서 불러오는 것이 없습니다.
+     고치는 방법은 같은 폴더의 README.md 에 번호대로 적어 두었습니다.
+
+     색·글꼴·둥글기 → 아래 <style> 맨 위 '여기만 바꾸세요' 칸
+     글(이름·경력·작업물·학력) → <body> 안의 【 】 주석 칸
+
+     PDF 로 저장: 화면 위 '인쇄 → PDF 로 저장' 단추를 누르고, 인쇄 창에서
+       'A4 · 세로 · 머리글/바닥글 끄기 · 배경 그래픽 끄기' 로 하세요.
+       인쇄본에는 메일·링크 주소가 글자로 같이 나옵니다.
+
+     ▶ 적혀 있는 이름·회사·연락처·링크는 모두 지어낸 예시입니다.
      =========================================================== -->
 
-<title>김민서 — 이력서</title>
-<meta name="description" content="김민서 이력서와 작업물 한 장 요약.">
+<!-- 【1】 브라우저 탭에 보이는 제목과 검색 설명 -->
+<title>한지우 — 이력서 · 서비스 기획</title>
+<meta name="description" content="작은 가게용 주문 서비스를 기획해 온 서비스 기획자 한지우의 경력과 작업물 한 장 요약.">
 
 <style>
+/* ███████████████  여기만 바꾸세요  ███████████████
+   아래 여덟 줄만 고치면 이력서 전체의 색·글꼴·모양이 같이 바뀝니다.
+   이 칸 밖의 CSS 는 손대지 않아도 됩니다.                        */
 :root{
-  --point:#FF6A13;        /* ← 이 색 하나만 바꾸면 분위기가 바뀝니다 */
-  --point-ink:#C14800;
-  --point-soft:#FFEEE2;
-  --ink:#1D1B19;
-  --ink-2:#64605C;
-  --ink-3:#97918B;
-  --line:#E6E1DC;
-  --bg:#FFFFFF;
-  --soft:#FBF7F3;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --point:   #FF6A13;   /* 포인트 색. 묶음 제목·단추에 쓰입니다 */
+  --ink:     #1D1B19;   /* 본문 글자 색 */
+  --ink-2:   #5E5A56;   /* 흐린 글자 색 (설명·불릿) */
+  --bg:      #FFFFFF;   /* 종이 색 */
+  --soft:    #FAF6F2;   /* 바탕 색 · 역량 칸 안쪽 */
+  --line:    #E6E1DC;   /* 선 색 */
+  --radius:  14px;      /* 모서리 둥글기. 0px 로 하면 각진 모양 */
+  --font:    -apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+                        /* 글꼴. 쓰고 싶은 글꼴 이름을 맨 앞에 "따옴표"로 넣으세요 */
 }
+/* ███████████  여기까지. 아래는 그대로 두세요  ███████████ */
+
+
+/* --point 하나에서 자동으로 만들어지는 색들.
+   글자로 쓰는 색은 어둡게 섞어 두었습니다 — 연한 색(노랑 등)을 골라도 글자가 읽힙니다. */
+:root{
+  --point-ink:    color-mix(in srgb, var(--point) 60%, var(--ink));
+  --point-strong: color-mix(in srgb, var(--point) 66%, var(--ink));
+  --point-soft:   color-mix(in srgb, var(--point) 12%, #FFFFFF);
+  --ink-3:        color-mix(in srgb, var(--ink)   66%, #FFFFFF);
+}
+@supports not (color:color-mix(in srgb,#000 50%,#fff)){
+  :root{ --point-ink:#A54A15; --point-strong:#B24F15; --point-soft:#FFEEE2; --ink-3:#6A6967 }
+}
+
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--soft);color:var(--ink);
-  font-family:var(--sans);font-size:16px;line-height:1.65;
+  font-family:var(--font);font-size:16px;line-height:1.65;
   -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
 }
 a{color:var(--point-ink)}
-:focus-visible{outline:3px solid var(--point);outline-offset:2px;border-radius:4px}
+:focus-visible{outline:3px solid var(--point-strong);outline-offset:2px;border-radius:4px}
 
-/* ---- 인쇄 단추 (인쇄본에는 안 나옵니다) ---- */
+.r-skip{
+  position:absolute;left:-9999px;top:0;z-index:20;
+  background:var(--point-strong);color:#fff;text-decoration:none;
+  padding:10px 16px;border-radius:0 0 10px 0;font-size:14px;font-weight:700}
+.r-skip:focus{left:0}
+
+/* ---- 위에 붙는 인쇄 줄 (인쇄본에는 안 나옵니다) ---- */
 .r-bar{
   position:sticky;top:0;z-index:5;
-  background:rgba(251,247,243,.92);backdrop-filter:blur(6px);
-  border-bottom:1px solid var(--line);
-  padding:10px 0}
+  background:var(--soft);border-bottom:1px solid var(--line);padding:9px 0}
 .r-bar .r-bar-in{
-  width:min(800px,100% - 28px);margin:0 auto;
-  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end}
-.r-bar p{margin:0;margin-right:auto;font-size:12.5px;color:var(--ink-2)}
+  width:min(800px,100% - 26px);margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:flex-end}
+.r-bar p{margin:0 auto 0 0;font-size:12.5px;color:var(--ink-2)}
 .r-print{
-  min-height:44px;display:inline-flex;align-items:center;gap:8px;
-  border:1px solid var(--point);background:var(--point);color:#fff;
-  border-radius:999px;padding:10px 18px;font-size:14.5px;font-weight:700;cursor:pointer}
+  min-height:44px;display:inline-flex;align-items:center;
+  border:1px solid var(--point-strong);background:var(--point-strong);color:#fff;
+  border-radius:999px;padding:10px 18px;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer}
 .r-print:hover{filter:brightness(.94)}
 
 /* ---- 종이 ---- */
 .r-sheet{
-  width:min(800px,100% - 28px);margin:22px auto 48px;padding:34px 32px 38px;
-  background:var(--bg);border:1px solid var(--line);border-radius:14px;
+  width:min(800px,100% - 26px);margin:20px auto 46px;padding:32px 30px 36px;
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);
   box-shadow:0 1px 2px rgba(26,26,26,.05),0 18px 40px -28px rgba(26,26,26,.3)}
-@media (max-width:480px){.r-sheet{padding:24px 18px 28px}}
+@media (max-width:480px){.r-sheet{padding:22px 16px 26px}}
 
 /* ---- 머리 ---- */
-.r-head{border-bottom:2px solid var(--ink);padding-bottom:18px}
-.r-head h1{margin:0;font-size:clamp(28px,7vw,38px);letter-spacing:-.03em;font-weight:800}
-.r-head .r-tag{margin:8px 0 0;font-size:16px;color:var(--point-ink);font-weight:600}
+.r-head{border-bottom:2px solid var(--ink);padding-bottom:17px}
+.r-head h1{margin:0;font-size:clamp(27px,7vw,37px);letter-spacing:-.03em;font-weight:800}
+.r-head .r-tag{margin:7px 0 0;font-size:15.5px;color:var(--point-ink);font-weight:600}
 .r-head ul{
-  margin:14px 0 0;padding:0;list-style:none;
-  display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2)}
-.r-head ul li{display:flex;gap:6px}
-.r-head ul b{font-weight:600;color:var(--ink-3)}
+  margin:13px 0 0;padding:0;list-style:none;
+  display:flex;flex-wrap:wrap;gap:5px 16px;font-size:13.5px;color:var(--ink-2)}
+.r-head ul li{display:flex;gap:6px;min-width:0}
+.r-head ul b{font-weight:600;color:var(--ink-3);flex:none}
 
 /* ---- 묶음 ---- */
-.r-sec{margin-top:28px;break-inside:avoid}
+.r-sec{margin-top:26px;break-inside:avoid}
 .r-sec > h2{
-  margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:.1em;
+  margin:0 0 13px;font-size:13px;font-weight:700;letter-spacing:.09em;
   color:var(--point-ink);display:flex;align-items:center;gap:10px}
 .r-sec > h2::after{content:"";flex:1;height:1px;background:var(--line)}
 
+/* ---- 한 단락 소개 ---- */
+.r-about{margin:0;font-size:15.5px;color:var(--ink-2)}
+
 /* ---- 핵심 역량 ---- */
-.r-skills{margin:0;padding:0;list-style:none;display:grid;gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.r-skills{margin:0;padding:0;list-style:none;display:grid;gap:11px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 .r-skills li{
-  padding:13px 15px;background:var(--soft);border:1px solid var(--line);border-radius:10px}
+  padding:12px 14px;background:var(--soft);border:1px solid var(--line);border-radius:10px}
 .r-skills b{display:block;font-size:14.5px;font-weight:700}
 .r-skills small{display:block;margin-top:3px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
 
 /* ---- 경력 ---- */
 .r-jobs{margin:0;padding:0;list-style:none}
-.r-jobs > li{padding:0 0 18px;break-inside:avoid}
+.r-jobs > li{padding:0 0 17px;break-inside:avoid}
 .r-jobs > li:last-child{padding-bottom:0}
-.r-job-top{display:flex;flex-wrap:wrap;gap:2px 12px;align-items:baseline}
+.r-job-top{display:flex;flex-wrap:wrap;gap:2px 11px;align-items:baseline}
 .r-job-top b{font-size:16px;font-weight:700}
 .r-job-top span{font-size:13.5px;color:var(--ink-2)}
 .r-job-top .r-when{margin-left:auto;font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
-@media (max-width:520px){.r-job-top .r-when{margin-left:0;width:100%}}
-.r-jobs ul{margin:8px 0 0;padding:0 0 0 1.1em;font-size:14.5px;color:var(--ink-2)}
+@media (max-width:540px){.r-job-top .r-when{margin-left:0;width:100%}}
+.r-jobs ul{margin:7px 0 0;padding:0 0 0 1.1em;font-size:14.5px;color:var(--ink-2)}
 .r-jobs ul li{margin:0 0 4px}
 
 /* ---- 작업물 카드 ---- */
-.r-works{margin:0;padding:0;list-style:none;display:grid;gap:14px;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.r-works{margin:0;padding:0;list-style:none;display:grid;gap:13px;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .r-works li{
-  padding:16px;border:1px solid var(--line);border-radius:10px;
-  display:flex;flex-direction:column;gap:7px;break-inside:avoid}
-.r-works .r-thumb{ /* 그림 대신 둔 도형 — 그림을 넣으려면 이 줄을 <img> 로 바꾸세요 */
-  height:64px;border-radius:7px;border:1px solid var(--line);
+  padding:15px;border:1px solid var(--line);border-radius:10px;
+  display:flex;flex-direction:column;gap:6px;break-inside:avoid}
+.r-works .r-thumb{
+  height:60px;border-radius:7px;border:1px solid var(--line);
   background:
-    radial-gradient(circle at 26% 70%, var(--point-soft) 0 30%, transparent 30.5%),
-    radial-gradient(circle at 78% 36%, var(--point-soft) 0 20%, transparent 20.5%),
+    linear-gradient(to top, var(--point-soft) 0 24%, transparent 24.5%),
+    radial-gradient(circle at 28% 68%, var(--point-soft) 0 26%, transparent 26.5%),
+    radial-gradient(circle at 76% 38%, var(--point-soft) 0 17%, transparent 17.5%),
     var(--soft)}
 .r-works b{font-size:15px;font-weight:700}
 .r-works p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.55;flex:1}
-.r-works a{font-size:13px;word-break:break-all}
+.r-works a{font-size:12.5px;word-break:break-all}
 
 /* ---- 학력·자격 ---- */
-.r-edu{margin:0;display:grid;grid-template-columns:7em 1fr;gap:8px 14px;font-size:14.5px}
+.r-edu{margin:0;display:grid;grid-template-columns:7em 1fr;gap:8px 13px;font-size:14.5px}
 .r-edu dt{color:var(--ink-3);font-size:13px;font-variant-numeric:tabular-nums}
 .r-edu dd{margin:0;color:var(--ink-2)}
 .r-edu dd b{color:var(--ink);font-weight:600}
-@media (max-width:420px){
+@media (max-width:430px){
   .r-edu{grid-template-columns:1fr;gap:1px 0}
   .r-edu dd{margin-bottom:10px}
 }
 
 /* ---- 맨 아래 연락 단추 ---- */
 .r-contact{
-  margin-top:30px;padding-top:22px;border-top:1px solid var(--line);
+  margin-top:28px;padding-top:21px;border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:10px}
 .r-contact a{
-  flex:1 1 170px;min-height:50px;
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  /* 215px 보다 좁아지면 두 단추가 위아래로 놓입니다 — 번호가 줄바꿈되지 않게 */
+  flex:1 1 215px;min-height:50px;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  white-space:nowrap;text-align:center;
   border-radius:999px;text-decoration:none;font-size:15.5px;font-weight:700;
-  border:1px solid var(--point);background:#fff;color:var(--point-ink);padding:12px 18px}
-.r-contact a.r-solid{background:var(--point);border-color:var(--point);color:#fff}
+  border:1px solid var(--point-strong);background:var(--bg);color:var(--point-ink);padding:12px 18px}
+.r-contact a.r-solid{background:var(--point-strong);border-color:var(--point-strong);color:#fff}
 .r-contact a:hover{filter:brightness(.96)}
 
-.r-foot{margin-top:18px;font-size:12px;color:var(--ink-3);text-align:center}
+.r-foot{margin-top:17px;font-size:12px;color:var(--ink-3);text-align:center}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 
 /* ===========================================================
-   인쇄 — A4 PDF 로 깔끔히
+   인쇄 — A4 PDF 로 깔끔히 (배경·단추 없이, 링크 주소는 글자로)
    =========================================================== */
 @media print{
   @page{size:A4 portrait;margin:14mm 15mm}
-  html,body{background:#fff}
-  body{font-size:10.5pt;line-height:1.42;color:#000}
-  .r-bar,.r-contact,.r-foot{display:none !important}   /* 머리글·단추 제거 */
+  html,body{background:#fff !important}
+  body{font-size:10.5pt;line-height:1.4;color:#000}
+  .r-skip,.r-bar,.r-contact,.r-foot{display:none !important}
   .r-sheet{
-    width:auto;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:#fff}
-  .r-head{padding-bottom:9pt;border-bottom:1.4pt solid #000}
-  .r-head h1{font-size:21pt}
-  .r-head .r-tag{font-size:11pt;color:#000;margin-top:4pt}
-  .r-head ul{margin-top:7pt;font-size:8.5pt;gap:3pt 12pt}
-  .r-sec{margin-top:13pt}
-  .r-sec > h2{font-size:9pt;color:#000;margin-bottom:7pt}
+    width:auto;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:#fff !important}
+  .r-head{padding-bottom:8pt;border-bottom:1.4pt solid #000}
+  .r-head h1{font-size:20pt}
+  .r-head .r-tag{font-size:10.5pt;color:#000;margin-top:3pt}
+  .r-head ul{margin-top:6pt;font-size:8.4pt;gap:2pt 11pt;color:#222}
+  .r-head ul b{color:#555}
+  .r-sec{margin-top:11pt}
+  .r-sec > h2{font-size:8.8pt;color:#000;margin-bottom:5pt}
   .r-sec > h2::after{background:#aaa}
-  .r-skills{gap:6pt;grid-template-columns:repeat(2,1fr)}
-  .r-skills li{padding:5pt 7pt;background:#fff;border:0.5pt solid #bbb}  /* 배경 제거 */
-  .r-skills b{font-size:9.5pt}
-  .r-skills small{font-size:8pt;line-height:1.3}
-  .r-jobs > li{padding-bottom:9pt}
-  .r-job-top b{font-size:11pt}
-  .r-job-top span,.r-job-top .r-when{font-size:8.5pt;color:#333}
-  .r-jobs ul{font-size:9pt;margin-top:3pt;color:#222}
-  .r-jobs ul li{margin-bottom:1.5pt}
-  .r-works{gap:7pt;grid-template-columns:repeat(3,1fr)}
-  .r-works li{padding:6pt;border:0.5pt solid #bbb;gap:3pt}
-  .r-works .r-thumb{display:none}                       /* 도형 배경 제거 */
-  .r-works b{font-size:9.5pt}
-  .r-works p{font-size:8pt;line-height:1.3;color:#222}
-  .r-edu{font-size:9pt;gap:3pt 10pt}
-  .r-edu dt{font-size:8.5pt;color:#555}
+  .r-about{font-size:9.2pt;color:#222}
+  .r-skills{gap:5pt;grid-template-columns:repeat(2,1fr)}
+  .r-skills li{padding:4.5pt 6pt;background:#fff !important;border:0.5pt solid #bbb;border-radius:0}
+  .r-skills b{font-size:9.2pt}
+  .r-skills small{font-size:7.8pt;line-height:1.28;color:#333}
+  .r-jobs > li{padding-bottom:8pt}
+  .r-job-top b{font-size:10.5pt}
+  .r-job-top span,.r-job-top .r-when{font-size:8.3pt;color:#333}
+  .r-jobs ul{font-size:8.8pt;margin-top:2.5pt;color:#222}
+  .r-jobs ul li{margin-bottom:1.2pt}
+  .r-works{gap:6pt;grid-template-columns:repeat(3,1fr)}
+  .r-works li{padding:5pt;border:0.5pt solid #bbb;border-radius:0;gap:2.5pt}
+  .r-works .r-thumb{display:none !important}
+  .r-works b{font-size:9.2pt}
+  .r-works p{font-size:7.8pt;line-height:1.28;color:#222}
+  .r-works a{font-size:7.4pt}
+  .r-edu{font-size:8.8pt;gap:2.5pt 9pt}
+  .r-edu dt{font-size:8.2pt;color:#555}
   .r-edu dd{color:#222}
-  /* 링크 주소를 글자로 같이 내보냅니다 */
-  .r-sheet a[href^="http"]::after,
-  .r-sheet a[href^="mailto"]::after{
-    content:" (" attr(href) ")";font-size:7.5pt;color:#555;word-break:break-all}
+  /* 종이에서는 링크를 누를 수 없으니, 주소를 글자로 같이 내보냅니다.
+     보이는 글자가 이미 주소인 링크에는 class="r-url" 을 붙여 두었습니다.
+     그 링크는 주소가 글자로 이미 적혀 있으니 괄호를 덧붙이지 않습니다.
+     ‘자세히 보기’ 처럼 글자가 주소가 아닌 링크를 넣으면, 인쇄본에
+     괄호 안에 주소가 자동으로 같이 찍힙니다. */
+  .r-sheet a[href^="http"]:not(.r-url)::after,
+  .r-sheet a[href^="mailto"]:not(.r-url)::after{
+    content:" (" attr(href) ")";font-size:7.2pt;color:#555;word-break:break-all}
+  .r-sheet a.r-url{color:#000;text-decoration:none}
 }
-
-@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://huhassi-web-production.up.railway.app/demos/resume-page/template.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/resume-page/template.html">
+<meta property="og:title" content="한지우 — 이력서 · 서비스 기획">
+<meta property="og:description" content="작은 가게용 주문 서비스를 기획해 온 서비스 기획자 한지우의 경력과 작업물 한 장 요약.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
-<!-- 인쇄 단추 — 인쇄본에는 나오지 않습니다 -->
+<a class="r-skip" href="#r-main">본문으로 건너뛰기</a>
+
+<!-- 인쇄 줄 — 인쇄본에는 나오지 않습니다. 필요 없으면 이 <div> 를 지우세요 -->
 <div class="r-bar">
   <div class="r-bar-in">
-    <p>인쇄 창에서 ‘A4 · 세로 · 머리글 끄기’ 로 하면 한 장에 떨어집니다.</p>
+    <p>인쇄 창에서 ‘A4 · 세로 · 머리글 끄기 · 배경 그래픽 끄기’ 로 하면 깔끔히 떨어집니다.</p>
     <button class="r-print" type="button" onclick="window.print()">인쇄 → PDF 로 저장</button>
   </div>
 </div>
 
-<main class="r-sheet">
+<main class="r-sheet" id="r-main">
 
-  <!-- 2) 이름 · 한 줄 소개 · 연락처 -->
+  <!-- 【2】 이름 · 한 줄 소개 · 연락처
+       메일 주소는 두 군데(mailto: 와 보이는 글자) 모두 바꿔야 합니다. -->
   <header class="r-head">
-    <h1>김민서</h1>
-    <p class="r-tag">작은 가게의 주문·재고를 정리해 주는 서비스 기획자</p>
+    <h1>한지우</h1>
+    <p class="r-tag">작은 가게의 주문과 재고를 정리해 주는 서비스 기획자 · 경력 8년</p>
     <ul>
-      <li><b>메일</b> <a href="mailto:minseo@example.com">minseo@example.com</a></li>
+      <li><b>메일</b> <a class="r-url" href="mailto:jiwoo@example.com">jiwoo@example.com</a></li>
       <li><b>전화</b> 000-0000-0000</li>
       <li><b>사는 곳</b> ○○시 ○○구</li>
-      <li><b>작업물</b> <a href="https://example.com/minseo" rel="noopener">example.com/minseo</a></li>
+      <li><b>작업물</b> <a class="r-url" href="https://example.com/jiwoo" rel="noopener">example.com/jiwoo</a></li>
     </ul>
   </header>
 
-  <!-- 3) 핵심 역량 -->
+  <!-- 【3】 한 단락 소개. 필요 없으면 이 <section> 을 지우세요 -->
+  <section class="r-sec">
+    <h2>소개</h2>
+    <p class="r-about">식당과 반찬가게 300곳이 쓰는 주문 관리 서비스를 5년간 기획했습니다. 사장님 자리에 직접 앉아 하루를 지켜본 뒤 화면을 그리는 쪽을 좋아하고, 기능을 더하기보다 지우는 쪽으로 결론을 내리는 편입니다. 개발 두 명·디자인 한 명 규모의 작은 팀에서 가장 편하게 일했습니다.</p>
+  </section>
+
+  <!-- 【4】 핵심 역량 — 칸 하나가 <li> 하나입니다. 세~네 개가 보기 좋습니다 -->
   <section class="r-sec">
     <h2>핵심 역량</h2>
     <ul class="r-skills">
-      <li><b>현장에서 요구사항 끌어내기</b><small>가게에 직접 앉아 하루를 지켜보고, 말로 설명되지 않는 일 순서를 그림으로 정리합니다.</small></li>
+      <li><b>현장에서 요구사항 끌어내기</b><small>가게에 앉아 하루를 지켜보고, 말로 설명되지 않는 일 순서를 그림 한 장으로 정리합니다.</small></li>
       <li><b>숫자로 결론 내리기</b><small>주문·이탈 기록을 직접 뽑아 보고, 고칠 곳을 셋 이내로 줄여 제안합니다.</small></li>
-      <li><b>화면 설계와 글</b><small>버튼에 들어갈 말까지 직접 씁니다. 짧게 쓰는 쪽을 좋아합니다.</small></li>
+      <li><b>화면 설계와 글</b><small>단추에 들어갈 말까지 직접 씁니다. 짧게 쓰는 쪽을 좋아합니다.</small></li>
       <li><b>작은 팀과 일 맞추기</b><small>개발 두 명·디자인 한 명 규모에서 우선순위를 매주 다시 세우는 방식으로 일했습니다.</small></li>
     </ul>
   </section>
 
-  <!-- 4) 경력 -->
+  <!-- 【5】 경력 — 회사 한 곳이 <li> 하나입니다. 최근 것을 맨 위에 둡니다.
+       회사 이름은 실제 이름으로 바꿔 주세요. 여기 적힌 ○○·△△ 는 지어낸 것입니다. -->
   <section class="r-sec">
     <h2>경력</h2>
     <ul class="r-jobs">
       <li>
-        <div class="r-job-top"><b>○○소프트</b><span>서비스 기획 · 과장</span><span class="r-when">2022.03 – 재직 중</span></div>
+        <div class="r-job-top"><b>○○소프트</b><span>서비스 기획 · 차장</span><span class="r-when">2022.03 – 재직 중</span></div>
         <ul>
-          <li>동네 가게용 주문 관리 화면을 처음부터 설계해, 전화 주문을 받아 적는 시간을 하루 40분쯤 줄였습니다.</li>
-          <li>가게 300곳의 주문 기록을 묶어 ‘잘 안 팔리는 메뉴’를 짚어 주는 월말 리포트를 기획했습니다.</li>
-          <li>신규 가게가 첫 주문을 받기까지 걸리는 날짜를 9일에서 3일로 줄이는 안내 흐름을 만들었습니다.</li>
+          <li>동네 가게용 주문 관리 화면을 처음부터 설계해, 전화 주문을 받아 적는 시간을 하루 40분 줄였습니다.</li>
+          <li>가게 300곳의 주문 기록을 묶어 ‘안 팔리는 메뉴’를 짚어 주는 월말 리포트를 기획하고, 첫 석 달에 180곳이 받아 보게 했습니다.</li>
+          <li>새 가게가 첫 주문을 받기까지 걸리는 날짜를 9일에서 3일로 줄이는 안내 흐름을 만들었습니다.</li>
         </ul>
       </li>
       <li>
-        <div class="r-job-top"><b>○○스튜디오</b><span>서비스 기획 · 대리</span><span class="r-when">2019.07 – 2022.02</span></div>
+        <div class="r-job-top"><b>△△스튜디오</b><span>서비스 기획 · 대리</span><span class="r-when">2019.07 – 2022.02</span></div>
         <ul>
           <li>예약 앱의 취소·환불 규칙을 다시 쓰고, 그 때문에 들어오던 문의를 절반 아래로 줄였습니다.</li>
           <li>사장님 50명을 직접 만나 들은 이야기를 묶어, 다음 해 기능 순서를 정하는 문서를 썼습니다.</li>
         </ul>
       </li>
       <li>
-        <div class="r-job-top"><b>○○마케팅</b><span>운영 · 사원</span><span class="r-when">2017.09 – 2019.06</span></div>
+        <div class="r-job-top"><b>□□커머스</b><span>운영 · 사원</span><span class="r-when">2017.09 – 2019.06</span></div>
         <ul>
           <li>소규모 브랜드 열두 곳의 온라인 주문을 매일 정리하고, 반복되는 일을 표로 만들어 넘겼습니다.</li>
         </ul>
@@ -254,49 +313,52 @@ a{color:var(--point-ink)}
     </ul>
   </section>
 
-  <!-- 5) 작업물 세 개 -->
+  <!-- 【6】 작업물 — 카드 하나가 <li> 하나입니다. 세 개가 보기 좋습니다.
+       그림을 넣으려면 <div class="r-thumb"> … </div> 를
+       <img src="그림.png" alt="무엇을 찍은 그림인지" class="r-thumb"> 로 바꾸세요. -->
   <section class="r-sec">
     <h2>작업물</h2>
     <ul class="r-works">
       <li>
         <div class="r-thumb" role="img" aria-label="작업물 그림이 들어갈 자리"></div>
         <b>가게 주문판</b>
-        <p>전화·메신저로 들어오는 주문을 한 화면에 모아 적는 도구. 설계와 글을 전부 맡았습니다.</p>
-        <a href="https://example.com/work-1" rel="noopener">example.com/work-1</a>
+        <p>전화·메신저로 들어오는 주문을 한 화면에 모아 적는 도구. 화면 설계와 안내 글을 전부 맡았습니다.</p>
+        <a class="r-url" href="https://example.com/jiwoo/order-board" rel="noopener">example.com/jiwoo/order-board</a>
       </li>
       <li>
         <div class="r-thumb" role="img" aria-label="작업물 그림이 들어갈 자리"></div>
         <b>월말 장사 리포트</b>
-        <p>한 달 주문을 읽어 다음 달에 뭘 줄일지 한 장으로 알려 주는 리포트. 기획과 문구 작업.</p>
-        <a href="https://example.com/work-2" rel="noopener">example.com/work-2</a>
+        <p>한 달 주문을 읽어 다음 달에 무엇을 줄일지 한 장으로 알려 주는 리포트. 기획과 문구 작업.</p>
+        <a class="r-url" href="https://example.com/jiwoo/report" rel="noopener">example.com/jiwoo/report</a>
       </li>
       <li>
         <div class="r-thumb" role="img" aria-label="작업물 그림이 들어갈 자리"></div>
         <b>처음 오신 사장님 안내</b>
         <p>가입부터 첫 주문까지 세 걸음으로 줄인 안내 흐름. 화면 설계와 안내 글 전부.</p>
-        <a href="https://example.com/work-3" rel="noopener">example.com/work-3</a>
+        <a class="r-url" href="https://example.com/jiwoo/onboarding" rel="noopener">example.com/jiwoo/onboarding</a>
       </li>
     </ul>
   </section>
 
-  <!-- 6) 학력 · 자격 -->
+  <!-- 【7】 학력과 자격 — 연도와 내용 한 쌍씩 -->
   <section class="r-sec">
     <h2>학력과 자격</h2>
     <dl class="r-edu">
       <dt>2013 – 2017</dt><dd><b>○○대학교</b> 경영학 학사</dd>
       <dt>2023</dt><dd><b>정보처리기사</b> 취득</dd>
       <dt>2021</dt><dd><b>SQL 개발자(SQLD)</b> 취득</dd>
-      <dt>2020</dt><dd><b>○○기관</b> 서비스 기획 과정 6개월 수료</dd>
+      <dt>2020</dt><dd><b>△△진흥원</b> 서비스 기획 과정 6개월 수료</dd>
     </dl>
   </section>
 
-  <!-- 맨 아래 연락 단추 -->
-  <nav class="r-contact">
-    <a class="r-solid" href="mailto:minseo@example.com">메일 보내기</a>
-    <a href="tel:000-0000-0000">전화 000-0000-0000</a>
+  <!-- 【8】 맨 아래 연락 단추. 인쇄본에는 나오지 않습니다 -->
+  <nav class="r-contact" aria-label="연락하기">
+    <a class="r-solid" href="mailto:jiwoo@example.com">메일 보내기</a>
+    <a href="tel:000-0000-0000"><span>전화</span><span>000-0000-0000</span></a>
   </nav>
 
-  <p class="r-foot">이 쪽에 적힌 이름·회사·연락처·링크는 모두 예시입니다.</p>
+  <!-- 쓰기 전에 아래 한 줄은 지우세요 -->
+  <p class="r-foot">이 이력서의 이름·회사·연락처·링크는 모두 지어낸 예시입니다.</p>
 
 </main>
 </body>

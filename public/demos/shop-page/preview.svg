@@ -1,44 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="가게 소개 한 장 틀 미리보기 — 가게 이름, 사진 자리, 영업시간 표, 찾아오는 길">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="가게 소개 한 장 틀 미리보기 — 가게 이름, 길잡이 단추, 사진 자리, 이번 주 반찬 목록, 영업시간">
   <rect width="640" height="360" fill="#FFF5EE"/>
-  <!-- 종이 -->
-  <rect x="152" y="26" width="336" height="308" rx="14" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
 
-  <!-- 머리: 작은 배지 + 가게 이름 -->
-  <rect x="283" y="48" width="74" height="16" rx="8" fill="#FFEBDD"/>
-  <rect x="294" y="54" width="52" height="4" rx="2" fill="#FF6A13" opacity="0.65"/>
-  <text x="320" y="92" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="#1A1A1A">○○상회</text>
-  <rect x="246" y="104" width="148" height="5" rx="2.5" fill="#E9E5E1"/>
-  <rect x="268" y="116" width="104" height="5" rx="2.5" fill="#E9E5E1"/>
+  <!-- 종이 -->
+  <rect x="146" y="22" width="348" height="316" rx="14" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+
+  <!-- 머리: 배지 + 가게 이름 + 한 줄 소개 -->
+  <rect x="281" y="42" width="78" height="15" rx="7.5" fill="#FFEBDD"/>
+  <rect x="291" y="47.5" width="58" height="4" rx="2" fill="#FF6A13" opacity="0.6"/>
+  <text x="320" y="84" text-anchor="middle" font-family="sans-serif" font-size="23" font-weight="700" fill="#1A1A1A">○○상회</text>
+  <rect x="244" y="94" width="152" height="5" rx="2.5" fill="#E9E5E1"/>
+  <rect x="268" y="105" width="104" height="5" rx="2.5" fill="#E9E5E1"/>
+
+  <!-- 길잡이 단추 네 개 -->
+  <g fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1.6">
+    <rect x="176" y="122" width="62" height="18" rx="9"/>
+    <rect x="244" y="122" width="68" height="18" rx="9"/>
+    <rect x="318" y="122" width="56" height="18" rx="9"/>
+    <rect x="380" y="122" width="56" height="18" rx="9"/>
+  </g>
+  <g fill="#6E6A66">
+    <rect x="186" y="129" width="42" height="4" rx="2"/>
+    <rect x="254" y="129" width="48" height="4" rx="2"/>
+    <rect x="328" y="129" width="36" height="4" rx="2"/>
+    <rect x="390" y="129" width="36" height="4" rx="2"/>
+  </g>
 
   <!-- 사진 자리 -->
-  <rect x="176" y="136" width="288" height="78" rx="10" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="2"/>
-  <circle cx="232" cy="194" r="26" fill="#FFEBDD"/>
-  <circle cx="398" cy="162" r="17" fill="#FFEBDD"/>
-  <rect x="268" y="169" width="104" height="7" rx="3.5" fill="#FFFFFF"/>
-  <rect x="284" y="183" width="72" height="7" rx="3.5" fill="#FFFFFF"/>
+  <rect x="170" y="150" width="300" height="64" rx="10" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="2"/>
+  <path d="M170 196 h300 v8 a10 10 0 0 1 -10 10 h-280 a10 10 0 0 1 -10 -10 z" fill="#FFEBDD"/>
+  <circle cx="222" cy="194" r="22" fill="#FFEBDD"/>
+  <circle cx="400" cy="172" r="14" fill="#FFEBDD"/>
+  <rect x="268" y="178" width="104" height="14" rx="7" fill="#FFFFFF"/>
+  <rect x="282" y="183" width="76" height="4" rx="2" fill="#6E6A66" opacity="0.5"/>
 
-  <!-- 영업시간 표 -->
-  <rect x="176" y="230" width="46" height="6" rx="3" fill="#FF6A13"/>
-  <g fill="#E9E5E1">
-    <rect x="176" y="246" width="48" height="5" rx="2.5"/>
-    <rect x="176" y="262" width="48" height="5" rx="2.5"/>
-    <rect x="176" y="278" width="48" height="5" rx="2.5"/>
-    <rect x="176" y="294" width="48" height="5" rx="2.5"/>
-  </g>
-  <g fill="#D8D2CC">
-    <rect x="236" y="246" width="60" height="5" rx="2.5"/>
-    <rect x="236" y="262" width="60" height="5" rx="2.5"/>
-    <rect x="236" y="278" width="60" height="5" rx="2.5"/>
-  </g>
-  <rect x="236" y="292" width="42" height="9" rx="4.5" fill="#FFEBDD"/>
-  <line x1="176" y1="255" x2="306" y2="255" stroke="#E9E5E1" stroke-width="1"/>
-  <line x1="176" y1="271" x2="306" y2="271" stroke="#E9E5E1" stroke-width="1"/>
-  <line x1="176" y1="287" x2="306" y2="287" stroke="#E9E5E1" stroke-width="1"/>
+  <!-- 이번 주 반찬: 제목줄 -->
+  <rect x="170" y="222" width="54" height="5" rx="2.5" fill="#D14E00"/>
+  <rect x="232" y="224" width="238" height="1.6" fill="#E9E5E1"/>
 
-  <!-- 지도 자리 + 전화 단추 -->
-  <rect x="326" y="230" width="138" height="52" rx="8" fill="#EFECE8" stroke="#D8D2CC" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <circle cx="389" cy="251" r="7" fill="#FF6A13" opacity="0.5"/>
-  <path d="M389 258 l-5 8 h10 z" fill="#FF6A13" opacity="0.5"/>
-  <rect x="326" y="290" width="138" height="26" rx="13" fill="#FF6A13"/>
-  <rect x="356" y="300" width="78" height="6" rx="3" fill="#FFFFFF" opacity="0.92"/>
+  <!-- 반찬 네 줄: 이름 + 가격 -->
+  <g>
+    <rect x="170" y="238" width="92" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="248" width="128" height="4" rx="2" fill="#E9E5E1"/>
+    <rect x="430" y="239" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="260" width="300" height="1" fill="#E9E5E1" opacity="0.9"/>
+  </g>
+  <g>
+    <rect x="170" y="266" width="104" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="276" width="112" height="4" rx="2" fill="#E9E5E1"/>
+    <rect x="430" y="267" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
+  </g>
+  <g>
+    <rect x="170" y="294" width="118" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="304" width="96" height="4" rx="2" fill="#E9E5E1"/>
+    <rect x="430" y="295" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
+  </g>
+
+  <!-- 휴무 꼬리표 -->
+  <rect x="170" y="316" width="44" height="14" rx="7" fill="#FFEBDD"/>
+  <rect x="179" y="321.5" width="26" height="4" rx="2" fill="#D14E00"/>
+  <rect x="222" y="321" width="96" height="4.5" rx="2.25" fill="#E9E5E1"/>
 </svg>

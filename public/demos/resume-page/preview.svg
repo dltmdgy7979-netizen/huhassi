@@ -1,72 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="이력서·포트폴리오 틀 미리보기 — 이름과 연락처, 핵심 역량 네 칸, 경력, 작업물 세 카드">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="이력서 틀 미리보기 — 인쇄 단추, 이름과 연락처, 핵심 역량 네 칸, 경력, 작업물 카드 세 개">
   <rect width="640" height="360" fill="#FFF5EE"/>
-  <!-- A4 종이 -->
-  <rect x="158" y="20" width="324" height="320" rx="8" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
 
-  <!-- 머리: 이름 + 연락처 -->
-  <text x="182" y="54" font-family="sans-serif" font-size="21" font-weight="800" fill="#1A1A1A">김민서</text>
-  <rect x="182" y="62" width="128" height="5" rx="2.5" fill="#FF6A13" opacity="0.65"/>
-  <g fill="#D8D2CC">
-    <rect x="182" y="76" width="62" height="4" rx="2"/>
-    <rect x="252" y="76" width="50" height="4" rx="2"/>
-    <rect x="310" y="76" width="42" height="4" rx="2"/>
+  <!-- 위에 붙은 인쇄 줄 -->
+  <rect x="0" y="0" width="640" height="34" fill="#FFF5EE"/>
+  <rect x="0" y="33" width="640" height="1.6" fill="#E9E5E1"/>
+  <rect x="150" y="15" width="180" height="4" rx="2" fill="#E9E5E1"/>
+  <rect x="384" y="8" width="106" height="20" rx="10" fill="#FF6A13"/>
+  <rect x="400" y="16" width="74" height="4" rx="2" fill="#FFFFFF" opacity="0.92"/>
+
+  <!-- 종이 -->
+  <rect x="146" y="48" width="348" height="296" rx="12" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+
+  <!-- 이름 + 한 줄 소개 + 굵은 밑줄 -->
+  <text x="168" y="86" font-family="sans-serif" font-size="22" font-weight="700" fill="#1A1A1A">한지우</text>
+  <rect x="168" y="94" width="150" height="5" rx="2.5" fill="#D14E00" opacity="0.85"/>
+  <g fill="#E9E5E1">
+    <rect x="168" y="108" width="68" height="4" rx="2"/>
+    <rect x="246" y="108" width="54" height="4" rx="2"/>
+    <rect x="310" y="108" width="48" height="4" rx="2"/>
+    <rect x="368" y="108" width="62" height="4" rx="2"/>
   </g>
-  <line x1="182" y1="88" x2="458" y2="88" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="168" y="120" width="304" height="2.2" fill="#1A1A1A"/>
 
-  <!-- 핵심 역량 네 칸 -->
-  <text x="182" y="106" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="1.4" fill="#D14E00">핵심 역량</text>
-  <line x1="228" y1="103" x2="458" y2="103" stroke="#E9E5E1" stroke-width="1"/>
+  <!-- 핵심 역량: 제목줄 + 네 칸 -->
+  <rect x="168" y="134" width="50" height="4.5" rx="2.25" fill="#D14E00"/>
+  <rect x="226" y="136" width="246" height="1.4" fill="#E9E5E1"/>
+  <g fill="#FFF5EE" stroke="#E9E5E1" stroke-width="1.4">
+    <rect x="168" y="148" width="146" height="34" rx="6"/>
+    <rect x="326" y="148" width="146" height="34" rx="6"/>
+    <rect x="168" y="188" width="146" height="34" rx="6"/>
+    <rect x="326" y="188" width="146" height="34" rx="6"/>
+  </g>
+  <g fill="#1A1A1A">
+    <rect x="178" y="157" width="80" height="4.5" rx="2.25"/>
+    <rect x="336" y="157" width="68" height="4.5" rx="2.25"/>
+    <rect x="178" y="197" width="72" height="4.5" rx="2.25"/>
+    <rect x="336" y="197" width="86" height="4.5" rx="2.25"/>
+  </g>
+  <g fill="#E9E5E1">
+    <rect x="178" y="167" width="124" height="3.4" rx="1.7"/>
+    <rect x="178" y="174" width="92" height="3.4" rx="1.7"/>
+    <rect x="336" y="167" width="118" height="3.4" rx="1.7"/>
+    <rect x="336" y="174" width="80" height="3.4" rx="1.7"/>
+    <rect x="178" y="207" width="112" height="3.4" rx="1.7"/>
+    <rect x="178" y="214" width="86" height="3.4" rx="1.7"/>
+    <rect x="336" y="207" width="124" height="3.4" rx="1.7"/>
+    <rect x="336" y="214" width="74" height="3.4" rx="1.7"/>
+  </g>
+
+  <!-- 경력: 제목줄 + 회사 한 줄 + 불릿 -->
+  <rect x="168" y="236" width="34" height="4.5" rx="2.25" fill="#D14E00"/>
+  <rect x="210" y="238" width="262" height="1.4" fill="#E9E5E1"/>
+  <rect x="168" y="250" width="62" height="5.5" rx="2.75" fill="#1A1A1A"/>
+  <rect x="238" y="251" width="72" height="4" rx="2" fill="#E9E5E1"/>
+  <rect x="402" y="251" width="70" height="4" rx="2" fill="#E9E5E1"/>
+  <g fill="#E9E5E1">
+    <circle cx="174" cy="264" r="2"/><rect x="182" y="262" width="252" height="3.6" rx="1.8"/>
+    <circle cx="174" cy="274" r="2"/><rect x="182" y="272" width="222" height="3.6" rx="1.8"/>
+  </g>
+
+  <!-- 작업물 카드 세 개 -->
+  <rect x="168" y="286" width="44" height="4.5" rx="2.25" fill="#D14E00"/>
+  <rect x="220" y="288" width="252" height="1.4" fill="#E9E5E1"/>
   <g>
-    <rect x="182" y="112" width="132" height="34" rx="6" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="1"/>
-    <rect x="190" y="120" width="68" height="5" rx="2.5" fill="#1A1A1A" opacity="0.75"/>
-    <rect x="190" y="130" width="112" height="3.5" rx="1.75" fill="#D8D2CC"/>
-    <rect x="190" y="137" width="86" height="3.5" rx="1.75" fill="#D8D2CC"/>
-
-    <rect x="326" y="112" width="132" height="34" rx="6" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="1"/>
-    <rect x="334" y="120" width="58" height="5" rx="2.5" fill="#1A1A1A" opacity="0.75"/>
-    <rect x="334" y="130" width="112" height="3.5" rx="1.75" fill="#D8D2CC"/>
-    <rect x="334" y="137" width="74" height="3.5" rx="1.75" fill="#D8D2CC"/>
+    <rect x="168" y="298" width="96" height="36" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1.4"/>
+    <rect x="175" y="304" width="82" height="14" rx="4" fill="#FFEBDD"/>
+    <rect x="175" y="323" width="58" height="4.5" rx="2.25" fill="#1A1A1A"/>
+    <rect x="272" y="298" width="96" height="36" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1.4"/>
+    <rect x="279" y="304" width="82" height="14" rx="4" fill="#FFEBDD"/>
+    <rect x="279" y="323" width="70" height="4.5" rx="2.25" fill="#1A1A1A"/>
+    <rect x="376" y="298" width="96" height="36" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1.4"/>
+    <rect x="383" y="304" width="82" height="14" rx="4" fill="#FFEBDD"/>
+    <rect x="383" y="323" width="64" height="4.5" rx="2.25" fill="#1A1A1A"/>
   </g>
-
-  <!-- 경력 -->
-  <text x="182" y="170" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="1.4" fill="#D14E00">경력</text>
-  <line x1="212" y1="167" x2="458" y2="167" stroke="#E9E5E1" stroke-width="1"/>
-  <g>
-    <rect x="182" y="177" width="64" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="414" y="178" width="44" height="4" rx="2" fill="#D8D2CC"/>
-    <circle cx="186" cy="192" r="2" fill="#FF6A13" opacity="0.6"/>
-    <rect x="193" y="190" width="200" height="4" rx="2" fill="#E9E5E1"/>
-    <circle cx="186" cy="202" r="2" fill="#FF6A13" opacity="0.6"/>
-    <rect x="193" y="200" width="168" height="4" rx="2" fill="#E9E5E1"/>
-  </g>
-  <g>
-    <rect x="182" y="216" width="56" height="6" rx="3" fill="#1A1A1A" opacity="0.8"/>
-    <rect x="414" y="217" width="44" height="4" rx="2" fill="#D8D2CC"/>
-    <circle cx="186" cy="231" r="2" fill="#FF6A13" opacity="0.6"/>
-    <rect x="193" y="229" width="186" height="4" rx="2" fill="#E9E5E1"/>
-  </g>
-
-  <!-- 작업물 세 카드 -->
-  <text x="182" y="256" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="1.4" fill="#D14E00">작업물</text>
-  <line x1="218" y1="253" x2="458" y2="253" stroke="#E9E5E1" stroke-width="1"/>
-  <g>
-    <rect x="182" y="262" width="86" height="58" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1"/>
-    <rect x="189" y="269" width="72" height="20" rx="4" fill="#FFEBDD"/>
-    <rect x="189" y="295" width="50" height="5" rx="2.5" fill="#1A1A1A" opacity="0.72"/>
-    <rect x="189" y="305" width="68" height="3.5" rx="1.75" fill="#D8D2CC"/>
-
-    <rect x="277" y="262" width="86" height="58" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1"/>
-    <rect x="284" y="269" width="72" height="20" rx="4" fill="#FFEBDD"/>
-    <rect x="284" y="295" width="58" height="5" rx="2.5" fill="#1A1A1A" opacity="0.72"/>
-    <rect x="284" y="305" width="62" height="3.5" rx="1.75" fill="#D8D2CC"/>
-
-    <rect x="372" y="262" width="86" height="58" rx="6" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1"/>
-    <rect x="379" y="269" width="72" height="20" rx="4" fill="#FFEBDD"/>
-    <rect x="379" y="295" width="44" height="5" rx="2.5" fill="#1A1A1A" opacity="0.72"/>
-    <rect x="379" y="305" width="66" height="3.5" rx="1.75" fill="#D8D2CC"/>
-  </g>
-
-  <!-- 인쇄 단추 (왼쪽 위에 떠 있는 모양) -->
-  <rect x="34" y="20" width="104" height="30" rx="15" fill="#FF6A13"/>
-  <text x="86" y="40" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">PDF 저장</text>
 </svg>

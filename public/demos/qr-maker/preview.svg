@@ -7,20 +7,22 @@
   <rect x="52" y="76" width="296" height="52" rx="10" fill="#FFFFFF" stroke="#D8D2CC"/>
   <text x="66" y="98" font-family="monospace" font-size="13" fill="#1A1A1A">https://huhassi.example</text>
   <text x="66" y="117" font-family="monospace" font-size="13" fill="#1A1A1A">/hello</text>
+  <text x="52" y="142" font-family="monospace" font-size="11" fill="#6E6A66">29자 ·</text>
+  <text x="96" y="142" font-family="monospace" font-size="11" font-weight="700" fill="#D14E00">29 / 2331 바이트</text>
 
   <!-- 크기 막대 -->
-  <text x="52" y="156" font-family="sans-serif" font-size="12" fill="#6E6A66">크기  ·  SIZE</text>
-  <text x="330" y="156" font-family="monospace" font-size="12" fill="#6E6A66" text-anchor="end">320px</text>
-  <rect x="52" y="166" width="296" height="6" rx="3" fill="#E9E5E1"/>
-  <rect x="52" y="166" width="124" height="6" rx="3" fill="#FF6A13"/>
-  <circle cx="176" cy="169" r="11" fill="#FF6A13"/>
-  <circle cx="176" cy="169" r="4" fill="#FFFFFF"/>
+  <text x="52" y="168" font-family="sans-serif" font-size="12" fill="#6E6A66">크기  ·  SIZE</text>
+  <text x="348" y="168" font-family="monospace" font-size="12" fill="#6E6A66" text-anchor="end">320px</text>
+  <rect x="52" y="178" width="296" height="6" rx="3" fill="#E9E5E1"/>
+  <rect x="52" y="178" width="124" height="6" rx="3" fill="#FF6A13"/>
+  <circle cx="176" cy="181" r="11" fill="#FF6A13"/>
+  <circle cx="176" cy="181" r="4" fill="#FFFFFF"/>
 
   <!-- 오류 고침 수준 -->
-  <text x="52" y="210" font-family="sans-serif" font-size="12" fill="#6E6A66">오류 고침  ·  LEVEL</text>
-  <rect x="52" y="220" width="296" height="34" rx="10" fill="#FFFFFF" stroke="#D8D2CC"/>
-  <text x="66" y="242" font-family="sans-serif" font-size="13" fill="#1A1A1A">M — 보통 / normal</text>
-  <path d="M328 234l6 7 6-7" stroke="#6E6A66" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <text x="52" y="216" font-family="sans-serif" font-size="12" fill="#6E6A66">오류 고침  ·  LEVEL</text>
+  <rect x="52" y="226" width="296" height="34" rx="10" fill="#FFFFFF" stroke="#D8D2CC"/>
+  <text x="66" y="248" font-family="sans-serif" font-size="13" fill="#1A1A1A">M — 보통 / normal</text>
+  <path d="M328 240l6 7 6-7" stroke="#6E6A66" stroke-width="2" fill="none" stroke-linecap="round"/>
 
   <!-- 색 고르기 -->
   <text x="52" y="288" font-family="sans-serif" font-size="12" fill="#6E6A66">색  ·  COLOURS</text>
@@ -36,6 +38,8 @@
   <g transform="translate(401.5,77.5) scale(6.36)" fill="#1A1A1A" shape-rendering="crispEdges" aria-hidden="true">
     <path d="M0 0h7v1h-7zM8 0h1v1h-1zM10 0h2v1h-2zM13 0h4v1h-4zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h4v1h-4zM13 1h2v1h-2zM16 1h1v1h-1zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM12 2h1v1h-1zM14 2h3v1h-3zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM12 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM14 4h3v1h-3zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM10 5h1v1h-1zM12 5h2v1h-2zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h7v1h-7zM9 7h3v1h-3zM13 7h2v1h-2zM16 7h1v1h-1zM2 8h1v1h-1zM4 8h6v1h-6zM11 8h2v1h-2zM14 8h1v1h-1zM17 8h1v1h-1zM21 8h2v1h-2zM0 9h1v1h-1zM5 9h1v1h-1zM9 9h1v1h-1zM12 9h1v1h-1zM15 9h2v1h-2zM23 9h1v1h-1zM1 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM13 10h2v1h-2zM18 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM0 11h6v1h-6zM11 11h1v1h-1zM13 11h2v1h-2zM17 11h2v1h-2zM0 12h1v1h-1zM6 12h1v1h-1zM8 12h2v1h-2zM11 12h3v1h-3zM16 12h3v1h-3zM24 12h1v1h-1zM0 13h2v1h-2zM5 13h1v1h-1zM7 13h1v1h-1zM9 13h2v1h-2zM12 13h1v1h-1zM15 13h3v1h-3zM21 13h2v1h-2zM24 13h1v1h-1zM2 14h2v1h-2zM6 14h3v1h-3zM11 14h2v1h-2zM14 14h2v1h-2zM17 14h1v1h-1zM23 14h2v1h-2zM0 15h1v1h-1zM4 15h2v1h-2zM9 15h1v1h-1zM11 15h2v1h-2zM15 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM21 15h2v1h-2zM24 15h1v1h-1zM1 16h1v1h-1zM3 16h4v1h-4zM10 16h1v1h-1zM12 16h2v1h-2zM15 16h8v1h-8zM24 16h1v1h-1zM8 17h1v1h-1zM10 17h2v1h-2zM14 17h3v1h-3zM20 17h1v1h-1zM23 17h1v1h-1zM0 18h7v1h-7zM11 18h2v1h-2zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM12 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM22 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM9 20h1v1h-1zM12 20h1v1h-1zM16 20h8v1h-8zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM10 21h1v1h-1zM16 21h2v1h-2zM22 21h1v1h-1zM24 21h1v1h-1zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM10 22h2v1h-2zM13 22h1v1h-1zM15 22h1v1h-1zM17 22h1v1h-1zM19 22h3v1h-3zM23 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM10 23h1v1h-1zM12 23h1v1h-1zM17 23h1v1h-1zM21 23h1v1h-1zM0 24h7v1h-7zM9 24h3v1h-3zM14 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM21 24h1v1h-1z"/>
   </g>
-  <rect x="408" y="260" width="144" height="32" rx="16" fill="#FF6A13"/>
-  <text x="480" y="281" font-family="sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">PNG ↓</text>
+  <rect x="384" y="258" width="98" height="32" rx="16" fill="#FF6A13"/>
+  <text x="433" y="279" font-family="sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">PNG ↓</text>
+  <rect x="490" y="258" width="88" height="32" rx="16" fill="#FFFFFF" stroke="#D8D2CC"/>
+  <text x="534" y="279" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#6E6A66" text-anchor="middle">복사 copy</text>
 </svg>

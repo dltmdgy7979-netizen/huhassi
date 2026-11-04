@@ -1,0 +1,7 @@
+# 후하씨 huhassi
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /request.html
+
+Sitemap: https://huhassi-web-production.up.railway.app/sitemap.xml
