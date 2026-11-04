@@ -188,7 +188,7 @@
 
       <p class="hint" data-ko="손가락으로는 통 위에서 좌우로 쓸어 옮기고, 톡 누르면 돌아가고, 아래로 길게 쓸면 쿵 떨어집니다. 통을 한 번 눌러 고르면 키보드로도 됩니다 — ← → 옮기기, ↑ 또는 X 돌리기, Z 반대로 돌리기, ↓ 빨리 내리기, 띄어쓰기 쿵, C 맡기기, P 멈춤." data-en="With a finger: swipe sideways over the well to move, tap to turn, swipe down to slam. Tap the well once to focus it and the keyboard works too — ← → to move, ↑ or X to turn, Z to turn back, ↓ to drop faster, space to slam, C to set aside, P to pause."></p>
 
-      <p class="d-rise" data-ko="어려워지는 방식: 지운 줄 8줄마다 단계가 하나 오릅니다. 블록이 한 칸 내려오는 시간이 1단계 850밀리초에서 단계마다 65밀리초씩 줄어, 9단계부터는 가장 빠른 95밀리초로 고정됩니다. 점수도 단계를 곱해서 줍니다." data-en="How it gets harder: every 8 cleared rows raises the level by one. The time a block takes to fall one square drops from 850 ms at level 1 by 65 ms per level, bottoming out at 95 ms from level 9 on. Your points are multiplied by the level, too."></p>
+      <p class="d-rise" data-ko="어려워지는 방식: 지운 줄 8줄마다 단계가 하나 오릅니다. 블록이 한 칸 내려오는 시간이 1단계 850밀리초에서 단계마다 65밀리초씩 줄어, 13단계부터는 가장 빠른 95밀리초로 고정됩니다. 점수도 단계를 곱해서 주니, 늦게 지운 한 줄이 더 값집니다." data-en="How it gets harder: every 8 cleared rows raises the level by one. The time a block takes to fall one square drops from 850 ms at level 1 by 65 ms per level, bottoming out at the fastest 95 ms from level 13 on. Points are multiplied by the level, so a row cleared late is worth more."></p>
 
       <ul class="d-shapes" id="shapes" aria-label="블록 여섯 모양" data-ko-aria="블록 여섯 모양" data-en-aria="The six block shapes"></ul>
       <p class="hint" data-ko="이 여섯 모양은 후하씨가 직접 만든 것입니다. 넷은 다섯 칸짜리라 흔한 블록 놀이에는 없는 모양입니다." data-en="These six shapes are huhassi's own. Four of them are five squares across, so they are shapes a common block game does not have."></p>
@@ -511,7 +511,6 @@
         say(t(name.ko + "! " + gone.length + "줄을 지웠습니다. 점수 " + score + "점.",
               name.en + "! " + gone.length + " row(s) cleared. Score " + score + "."));
       }
-      if (score > best) { best = score; saveBest(); }
       flashRows = gone;
       flashLeft = slow ? 0 : 150;
       removeRows(gone);
@@ -530,6 +529,7 @@
   function finish() {
     dead = true;
     piece = null;
+    if (score > best) { best = score; saveBest(); }
     var beat = (score > bestAtStart);
     overTitle.textContent = t("끝났습니다", "Game over");
     overText.textContent = t("블록이 천장까지 쌓였습니다.", "The blocks reached the ceiling.");
@@ -615,6 +615,7 @@
   }
 
   function syncNums() {
+    if (score > best) { best = score; saveBest(); }
     elScore.textContent = String(score);
     elBest.textContent = String(best);
     elSnips.textContent = String(snips);

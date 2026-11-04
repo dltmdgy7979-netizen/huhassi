@@ -164,11 +164,11 @@
       ],
       "ko": {
         "title": "이미지 압축",
-        "desc": "사진 크기와 용량을 줄여 내려받습니다. 사진은 서버로 가지 않고 브라우저 안에서만 처리됩니다."
+        "desc": "사진 크기와 용량을 줄여 내려받습니다. 끌어다 놓거나 붙여 넣으면 됩니다. 서버로 올라가지 않고 브라우저 안에서만 처리됩니다."
       },
       "en": {
         "title": "Image Compressor",
-        "desc": "Shrink a photo and download it. Nothing is uploaded — it all happens in your browser."
+        "desc": "Shrink a photo and download it — drop it in or paste it. Nothing is uploaded; it all happens in your browser."
       }
     },
     {
@@ -186,11 +186,11 @@
       ],
       "ko": {
         "title": "D-day 세기",
-        "desc": "중요한 날까지 며칠 남았는지 세어 줍니다. 여러 개를 한 번에 올려 두고 볼 수 있습니다."
+        "desc": "중요한 날까지 며칠 남았는지 세어 줍니다. 여러 개를 올려 두고 다가오는 것만 골라 볼 수 있습니다."
       },
       "en": {
         "title": "D-day Counter",
-        "desc": "Counts the days to the dates that matter. Keep several on screen at once."
+        "desc": "Counts the days to the dates that matter. Keep several and show just the ones still coming."
       }
     },
     {
@@ -208,11 +208,11 @@
       ],
       "ko": {
         "title": "마크다운 메모장",
-        "desc": "왼쪽에 쓰면 오른쪽에 꾸며져 보이는 메모장. 이 기기에만 저장되고 파일로 내려받을 수 있습니다."
+        "desc": "왼쪽에 쓰면 오른쪽에 꾸며져 보이는 메모장. 여러 개를 두고 .md 로 받아 갈 수 있습니다."
       },
       "en": {
         "title": "Markdown Notepad",
-        "desc": "Write on the left, see it formatted on the right. Saved on this device only, downloadable as a file."
+        "desc": "Write on the left, see it formatted on the right. Keep several notes and take them away as .md files."
       }
     },
     {

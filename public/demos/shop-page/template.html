@@ -166,7 +166,8 @@ a{color:var(--point-ink)}
 .s-call{display:flex;flex-wrap:wrap;gap:10px;margin:0}
 .s-call a{
   flex:1 1 150px;min-height:52px;
-  display:inline-flex;align-items:center;justify-content:center;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  flex-wrap:wrap;text-align:center;
   border-radius:999px;text-decoration:none;font-size:16px;font-weight:700;
   border:1px solid var(--point-strong);background:var(--bg);color:var(--point-ink);padding:12px 18px}
 .s-call a.s-solid{background:var(--point-strong);border-color:var(--point-strong);color:#fff}
@@ -317,7 +318,7 @@ a{color:var(--point-ink)}
   <section class="s-block">
     <h2>연락하기</h2>
     <div class="s-call">
-      <a class="s-solid" href="tel:000-0000-0000">전화 000-0000-0000</a>
+      <a class="s-solid" href="tel:000-0000-0000"><span>전화</span><span>000-0000-0000</span></a>
       <a href="sms:000-0000-0000">문자 보내기</a>
     </div>
   </section>

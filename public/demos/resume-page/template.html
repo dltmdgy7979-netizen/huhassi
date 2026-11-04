@@ -166,7 +166,8 @@ a{color:var(--point-ink)}
   display:flex;flex-wrap:wrap;gap:10px}
 .r-contact a{
   flex:1 1 170px;min-height:50px;
-  display:inline-flex;align-items:center;justify-content:center;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  flex-wrap:wrap;text-align:center;
   border-radius:999px;text-decoration:none;font-size:15.5px;font-weight:700;
   border:1px solid var(--point-strong);background:var(--bg);color:var(--point-ink);padding:12px 18px}
 .r-contact a.r-solid{background:var(--point-strong);border-color:var(--point-strong);color:#fff}
@@ -339,7 +340,7 @@ a{color:var(--point-ink)}
   <!-- 【8】 맨 아래 연락 단추. 인쇄본에는 나오지 않습니다 -->
   <nav class="r-contact" aria-label="연락하기">
     <a class="r-solid" href="mailto:jiwoo@example.com">메일 보내기</a>
-    <a href="tel:000-0000-0000">전화 000-0000-0000</a>
+    <a href="tel:000-0000-0000"><span>전화</span><span>000-0000-0000</span></a>
   </nav>
 
   <!-- 쓰기 전에 아래 한 줄은 지우세요 -->

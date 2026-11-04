@@ -346,7 +346,8 @@
       return;
     }
     var b = readBest()[size];
-    if (b && b.time) {
+    /* 0초도 적힌 기록이다 — 숫자인지로 가린다 (0 을 "없음"으로 보지 않게) */
+    if (b && typeof b.time === "number" && isFinite(b.time)) {
       span.textContent = t("가장 빠른 기록 (" + label + "): ", "Best time (" + label + "): ");
       var bb = document.createElement("b");
       bb.textContent = t(fmt(b.time) + " · " + b.moves + "번 뒤집음", fmt(b.time) + " · " + b.moves + " moves");
@@ -507,6 +508,8 @@
   /* ---- 멈춤: 시계를 세우고 판을 가린다 (멈춘 사이에 외우지 못하게) ---- */
   function pause() {
     if (paused || cleared) return;
+    /* 아직 한 장도 뒤집지 않았으면 멈출 것이 없다 (열자마자 덮이지 않게) */
+    if (moves === 0 && found === 0 && open.length === 0) return;
     paused = true;
     stopTick();
     /* 열려 있던 두 장은 멈추기 전에 덮어 둔다 */
@@ -541,7 +544,8 @@
 
     var best = readBest();
     var prev = best[size];
-    var record = !prev || !prev.time || elapsed < prev.time;
+    var hadPrev = prev && typeof prev.time === "number" && isFinite(prev.time);
+    var record = !hadPrev || elapsed < prev.time;
     if (record) { best[size] = { time: elapsed, moves: moves }; writeBest(best); }
     lastResult = { time: elapsed, moves: moves, record: record };
     showBest();
