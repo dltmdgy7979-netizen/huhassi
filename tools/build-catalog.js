@@ -14,7 +14,7 @@ const light = {
   version: src.version || 1,
   updated: src.updated,
   items: src.items.map((i) => ({
-    n: i.n, cat: i.cat, href: i.href, thumb: i.thumb || null,
+    n: i.n, slug: i.slug, cat: i.cat, href: i.href, thumb: i.thumb || null,
     license: i.license, price: i.price, currency: i.currency, payUrl: i.payUrl,
     group: i.group || null,
     ko: { title: i.ko.title, desc: i.ko.desc },
