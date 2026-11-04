@@ -17,8 +17,17 @@
 |---|---|---|
 | `SUPABASE_URL` | Supabase 프로젝트 주소 | 신청 폼이 "보내지 못했습니다"로 끝남 |
 | `SUPABASE_KEY` | Supabase publishable 키 | 위와 같음 |
+| `SUPABASE_SCHEMA` | 표가 들어 있는 스키마. 지금은 **`meme_api`** | 위와 같음 |
 
 (선택) `SUPABASE_TABLE` — 표 이름을 바꿨을 때만. 기본값 `huhassi_requests`.
+
+> **왜 `meme_api` 인가** — 이 Supabase 프로젝트는 REST API 에 `meme_api` 스키마만 열려 있습니다.
+> `public` 을 새로 열면 다른 사이트(여행 포털·밈 사이트)의 표까지 REST 로 노출되기 때문에,
+> 신청함 표만 이미 열려 있는 스키마에 두었습니다. 밈 사이트와는 아무 관계가 없습니다.
+>
+> 나중에 깔끔하게 하고 싶으면: Supabase → **Settings → API → Exposed schemas** 에 `public` 을 더하고,
+> 표를 `public` 으로 옮긴 뒤 Railway 의 `SUPABASE_SCHEMA` 를 `public` 으로 바꾸면 됩니다.
+> (코드는 고칠 것이 없습니다.)
 
 ---
 
@@ -99,13 +108,13 @@ git push -u origin main
 
 따로 관리자 화면을 만들지 않았습니다. (로그인 기능을 두지 않으려고 그렇게 했습니다)
 
-1. Supabase → **Table Editor** → `huhassi_requests`
+1. Supabase → **Table Editor** → 왼쪽 위 스키마를 **`meme_api`** 로 바꾸고 → `huhassi_requests`
 2. `created_at` 을 내림차순으로 두고 봅니다.
 3. 답장한 것은 `status` 칸을 `done` 으로, 안 할 것은 `no` 로 바꿔 두면 헷갈리지 않습니다.
 4. **보관 기간 정리** — 개인정보 안내에 "답장 후 6개월"이라고 적어 두었습니다.
    가끔(반년에 한 번쯤) Supabase → SQL Editor 에서 아래를 실행해 오래된 것을 지우세요.
    ```sql
-   delete from public.huhassi_requests
+   delete from meme_api.huhassi_requests
    where status in ('done','no') and created_at < now() - interval '6 months';
    ```
 
@@ -139,12 +148,19 @@ git push -u origin main
 ## 9. 고치고 다시 올리기
 
 ```bash
+npm run build
 git add .
 git commit -m "무엇을 고쳤는지"
 git push
 ```
 
-밀어 넣으면 Railway 가 알아서 다시 배포합니다. 따로 누를 것이 없습니다.
+> ⚠ **지금은 밀어 넣어도 자동으로 배포되지 않습니다.**
+> Railway 가 GitHub 푸시 신호를 받지 못하고 있습니다. 올린 뒤 **Railway 에서 한 번 눌러 주세요**:
+> Railway → `huhassi` → `huhassi-web` → **Deployments** → 오른쪽 위 **Deploy** (또는 서비스 화면의 **Redeploy**).
+>
+> 자동으로 되게 하려면: Railway → 서비스 → **Settings → Source** 에서 GitHub 저장소를
+> 한 번 끊었다가 다시 연결하면 보통 신호가 붙습니다. 안 되면 GitHub 저장소의
+> **Settings → Webhooks** 에 Railway 훅이 있는지 보세요.
 
 ## 10. (14번 데모를 직접 쓸 때만) 공휴일 API 키
 
@@ -167,5 +183,6 @@ git push
   빨간 줄 바로 위가 원인입니다.
 - **방금 올린 게 사이트를 망가뜨렸다** → Railway → Deployments 에서 잘 돌던 배포의
   점 세 개 → **Redeploy** 를 누르면 그 상태로 돌아갑니다.
-- **폼으로 장난 글이 쏟아진다** → Supabase 에서 `huhassi anon can insert` 정책을 끄면
-  바로 막힙니다. 사이트는 그대로 돌아가고 폼만 "보내지 못했습니다"가 됩니다.
+- **폼으로 장난 글이 쏟아진다** → Supabase 에서 `meme_api.huhassi_requests` 의
+  `huhassi anon can insert` 정책을 끄면 바로 막힙니다. 사이트는 그대로 돌아가고
+  폼만 "보내지 못했습니다"가 됩니다.
