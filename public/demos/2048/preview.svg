@@ -58,9 +58,9 @@
 
     <!-- 한 수 되돌리기 / 멈춤 단추 -->
     <rect x="368" y="282" width="112" height="44" rx="22" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
-    <path d="M400 296 a12 12 0 1 1 -3 16" fill="none" stroke="#FF6A13" stroke-width="3" stroke-linecap="round"/>
-    <path d="M400 289 v13 h-12 Z" fill="#FF6A13"/>
-    <text x="421" y="310" font-family="sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">UNDO</text>
+    <path d="M390 302 a9 9 0 1 1 1 9" fill="none" stroke="#FF6A13" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M390 295 v10 h-10 Z" fill="#FF6A13"/>
+    <text x="412" y="309" font-family="sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">되돌리기</text>
     <rect x="490" y="282" width="80" height="44" rx="22" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
     <rect x="508" y="296" width="5" height="16" rx="2" fill="#FF6A13"/>
     <rect x="517" y="296" width="5" height="16" rx="2" fill="#FF6A13"/>

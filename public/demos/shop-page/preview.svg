@@ -42,7 +42,7 @@
     <rect x="170" y="238" width="92" height="5.5" rx="2.75" fill="#1A1A1A"/>
     <rect x="170" y="248" width="128" height="4" rx="2" fill="#E9E5E1"/>
     <rect x="430" y="239" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
-    <rect x="170" y="260" width="332" height="1" fill="#E9E5E1" opacity="0.9"/>
+    <rect x="170" y="260" width="300" height="1" fill="#E9E5E1" opacity="0.9"/>
   </g>
   <g>
     <rect x="170" y="266" width="104" height="5.5" rx="2.75" fill="#1A1A1A"/>

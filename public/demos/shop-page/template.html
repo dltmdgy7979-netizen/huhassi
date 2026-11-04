@@ -61,7 +61,7 @@ body{
 }
 img{max-width:100%;height:auto;display:block}
 a{color:var(--point-ink)}
-:focus-visible{outline:3px solid var(--point);outline-offset:2px;border-radius:4px}
+:focus-visible{outline:3px solid var(--point-strong);outline-offset:2px;border-radius:4px}
 
 /* 건너뛰기 링크 — 키보드로 탭을 누르면 나타납니다 */
 .s-skip{
@@ -165,9 +165,10 @@ a{color:var(--point-ink)}
 /* ---- 전화 / 문자 단추 ---- */
 .s-call{display:flex;flex-wrap:wrap;gap:10px;margin:0}
 .s-call a{
-  flex:1 1 150px;min-height:52px;
+  /* 220px 보다 좁아지면 두 단추가 위아래로 놓입니다 — 번호가 줄바꿈되지 않게 */
+  flex:1 1 220px;min-height:52px;
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  flex-wrap:wrap;text-align:center;
+  white-space:nowrap;text-align:center;
   border-radius:999px;text-decoration:none;font-size:16px;font-weight:700;
   border:1px solid var(--point-strong);background:var(--bg);color:var(--point-ink);padding:12px 18px}
 .s-call a.s-solid{background:var(--point-strong);border-color:var(--point-strong);color:#fff}

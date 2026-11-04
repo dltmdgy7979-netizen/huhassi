@@ -252,11 +252,11 @@
       ],
       "ko": {
         "title": "카페 메뉴판",
-        "desc": "사진 없이 글자만으로 깔끔하게 보이는 카페 메뉴판. 인쇄해도 그대로 나옵니다."
+        "desc": "사진 없이 글자만으로 깔끔하게 보이는 카페 메뉴판. A4 한 장에 그대로 인쇄됩니다."
       },
       "en": {
         "title": "Cafe Menu",
-        "desc": "A text-only cafe menu that stays tidy on a phone and prints as it looks."
+        "desc": "A text-only cafe menu that stays tidy on a phone and prints onto a single A4 sheet."
       }
     },
     {
@@ -296,11 +296,11 @@
       ],
       "ko": {
         "title": "링크 프로필",
-        "desc": "SNS 프로필에 걸어 두는 링크 모음 페이지. 사진 한 장과 링크 몇 개면 끝입니다."
+        "desc": "SNS 프로필에 걸어 두는 링크 모음 페이지. 설정 한 덩어리만 고치면 되고, HTML 은 건드리지 않습니다."
       },
       "en": {
         "title": "Link Profile",
-        "desc": "The one link you put in a profile: a photo and a handful of links."
+        "desc": "The one link you put in a profile. Edit a single settings block — you never touch the HTML."
       }
     },
     {

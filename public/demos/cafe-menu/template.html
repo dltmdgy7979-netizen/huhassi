@@ -46,11 +46,12 @@
    글자로 쓰는 색은 어둡게 섞어 두었습니다 — 연한 색(노랑 등)을 골라도 글자가 읽힙니다. */
 :root{
   --point-ink:    color-mix(in srgb, var(--point) 60%, var(--ink));
+  --point-strong: color-mix(in srgb, var(--point) 66%, var(--ink));
   --point-soft:   color-mix(in srgb, var(--point) 12%, #FFFFFF);
   --ink-3:        color-mix(in srgb, var(--ink)   66%, #FFFFFF);
 }
 @supports not (color:color-mix(in srgb,#000 50%,#fff)){
-  :root{ --point-ink:#A54A15; --point-soft:#FFEEE2; --ink-3:#6A6967 }
+  :root{ --point-ink:#A54A15; --point-strong:#B24F15; --point-soft:#FFEEE2; --ink-3:#6A6967 }
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -61,11 +62,11 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow-wrap:break-word;
 }
-:focus-visible{outline:3px solid var(--point);outline-offset:2px;border-radius:4px}
+:focus-visible{outline:3px solid var(--point-strong);outline-offset:2px;border-radius:4px}
 
 .m-skip{
   position:absolute;left:-9999px;top:0;z-index:20;
-  background:var(--point-ink);color:#fff;text-decoration:none;
+  background:var(--point-strong);color:#fff;text-decoration:none;
   padding:10px 16px;border-radius:0 0 10px 0;font-size:14px;font-weight:700}
 .m-skip:focus{left:0}
 
@@ -78,9 +79,11 @@ body{
 
 /* ---- 값 칸 머리글 (HOT / ICE) ---- */
 .m-cols{
-  display:flex;justify-content:flex-end;
+  margin:0;display:flex;justify-content:flex-end;
   padding:10px 0 0;font-size:11px;letter-spacing:.14em;color:var(--ink-3)}
 .m-cols span{width:60px;text-align:right}
+/* 두 값 칸이 무슨 뜻인지 한 줄로 적어 둡니다 (색이나 자리만으로 뜻을 전하지 않기 위해) */
+.m-legend{margin:4px 0 0;text-align:right;font-size:11.5px;color:var(--ink-2)}
 
 /* ---- 묶음 ---- */
 .m-group{margin-top:24px;break-inside:avoid;page-break-inside:avoid}
@@ -115,6 +118,7 @@ body{
 /* 아주 좁은 화면 (320px 까지) */
 @media (max-width:370px){
   .m-cols span{width:50px}
+  .m-legend{font-size:11px;text-align:left}
   .m-price{width:50px;font-size:14px}
   .m-name b{font-size:14.5px}
   .m-name small{font-size:12px}
@@ -153,6 +157,7 @@ body{
   .m-head h1{font-size:21pt}
   .m-head p{font-size:8.5pt;margin-top:3pt;color:#333}
   .m-cols{padding-top:4.5pt;font-size:7pt;color:#555}
+  .m-legend{margin-top:2pt;font-size:6.8pt;color:#555}
   .m-cols span{width:16mm}
   .m-group{margin-top:7.5pt}
   .m-group > h2{font-size:9.5pt;margin-bottom:1.5pt;color:#000}
@@ -186,7 +191,9 @@ body{
     <p>그날 쓸 만큼만 아침에 볶습니다 · ○○시 ○○구 ○○로 00</p>
   </header>
 
-  <div class="m-cols" aria-hidden="true"><span>HOT</span><span>ICE</span></div>
+  <!-- 값 칸 머리글. 두 칸을 쓰지 않으려면 여기와 메뉴 줄의 둘째 값을 같이 지우세요 -->
+  <p class="m-cols"><span>HOT</span><span>ICE</span></p>
+  <p class="m-legend">왼쪽이 따뜻한 것, 오른쪽이 차가운 것 값입니다. 줄표(–)는 그 온도로는 팔지 않는다는 뜻입니다.</p>
 
   <!-- 【3】 메뉴 묶음.
        · <li> … </li> 한 덩어리가 메뉴 한 줄입니다. 복사하거나 지워 개수를 바꾸세요.
