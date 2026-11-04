@@ -38,12 +38,14 @@ for (const file of walk(ROOT)) {
   const url = BASE + "/" + r;
 
   // 이미 있는 것은 지우고 한 번에 다시 넣는다 (중복 방지)
+  // 아이콘 줄에는 data: URI 안에 '>' 가 들어 있을 수 있다.
+  // [^>]* 로 자르면 줄 가운데가 잘려 쓰레기가 남으므로, 줄 단위로 통째로 지운다.
   html = html
-    .replace(/[ \t]*<link rel="canonical"[^>]*>\n?/gi, "")
-    .replace(/[ \t]*<meta property="og:[^"]*"[^>]*>\n?/gi, "")
-    .replace(/[ \t]*<meta name="twitter:[^"]*"[^>]*>\n?/gi, "")
-    .replace(/[ \t]*<link rel="icon"[^>]*>\n?/gi, "")
-    .replace(/[ \t]*<link rel="apple-touch-icon"[^>]*>\n?/gi, "");
+    .replace(/[ \t]*<link rel="canonical"[^\n]*\n?/gi, "")
+    .replace(/[ \t]*<meta property="og:[^\n]*\n?/gi, "")
+    .replace(/[ \t]*<meta name="twitter:[^\n]*\n?/gi, "")
+    .replace(/[ \t]*<link rel="icon"[^\n]*\n?/gi, "")
+    .replace(/[ \t]*<link rel="apple-touch-icon"[^\n]*\n?/gi, "");
 
   const depth = r.split("/").length - 1;
   const up = depth ? "../".repeat(depth) : "";
