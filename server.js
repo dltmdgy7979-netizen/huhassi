@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 3000;
 const SUPABASE_URL = (process.env.SUPABASE_URL || "").replace(/\/+$/, "");
 const SUPABASE_KEY = process.env.SUPABASE_KEY || "";
 const TABLE = process.env.SUPABASE_TABLE || "huhassi_requests";
+// 이 프로젝트는 REST 기본 스키마가 public 이 아니므로 스키마를 명시해야 합니다.
+const SCHEMA = process.env.SUPABASE_SCHEMA || "public";
 
 const TYPES = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
@@ -98,6 +100,8 @@ async function handleRequestForm(req, res) {
         "apikey": SUPABASE_KEY,
         "Authorization": `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json",
+        "Content-Profile": SCHEMA,
+        "Accept-Profile": SCHEMA,
         "Prefer": "return=minimal"
       },
       body: JSON.stringify(row)
