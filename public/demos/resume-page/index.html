@@ -17,6 +17,11 @@
     background:#fff;box-shadow:var(--shadow);overflow:hidden}
   .d-frame iframe{display:block;width:100%;height:100%;border:0;background:#fff}
   .d-open{display:block;text-align:center;margin-top:12px;font-size:14px}
+  .d-readme{
+    margin:14px 0 0;padding:11px 14px;background:var(--soft);
+    border:1px solid var(--line);border-radius:var(--radius-s);
+    font-size:13.5px;color:var(--ink-2)}
+  .d-readme a{font-weight:700}
   .d-note{font-size:13.5px;color:var(--ink-2);margin:0 0 14px}
 </style>
 </head>
@@ -54,17 +59,19 @@
       <iframe src="template.html" title="이력서·포트폴리오 틀 미리보기" data-ko-title="이력서·포트폴리오 틀 미리보기" data-en-title="Resume and portfolio template preview" loading="lazy"></iframe>
     </div>
     <a class="d-open" href="template.html" target="_blank" rel="noopener" data-ko="새 창에서 크게 보기 ↗" data-en="Open it full size in a new tab ↗">새 창에서 크게 보기 ↗</a>
+    <p class="d-readme" data-lang-ko>이 틀을 처음 고쳐 보신다면 폴더 안의 README.md 를 먼저 보세요. 색 바꾸기·내용 채우기·PDF 저장까지 번호대로 적어 두었습니다 — <a href="https://github.com/dltmdgy7979-netizen/huhassi/blob/main/public/demos/resume-page/README.md" rel="noopener">README.md 보기 ↗</a></p>
+    <p class="d-readme" data-lang-en>If this is your first time editing the template, read the README.md in the folder first: colours, the contents and saving to PDF, step by numbered step — <a href="https://github.com/dltmdgy7979-netizen/huhassi/blob/main/public/demos/resume-page/README.md" rel="noopener">read README.md ↗</a></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 하나만 꺼냅니다." data-en="Download the ZIP below and pull out the single file template.html."></li>
-      <li data-ko="글 편집기로 열어, 맨 위 주석에 적힌 여섯 군데를 차례로 찾습니다." data-en="Open it in a text editor and find the six spots listed in the comment at the top."></li>
-      <li data-ko="이름·한 줄 소개·연락처를 내 것으로 바꾸고, 핵심 역량 칸을 세~네 개로 고칩니다." data-en="Replace the name, one-line intro and contact details with yours, and rewrite the three or four strength boxes."></li>
-      <li data-ko="경력은 회사·기간·한 일 불릿으로, 작업물은 제목·설명·링크 세 카드로 채웁니다." data-en="Fill the jobs in as company, dates and bullets of what you did, and the samples as three cards with a title, a note and a link."></li>
-      <li data-ko="새 창에서 열어 ‘인쇄 → PDF 로 저장’ 을 누르고, A4·세로·머리글 끄기로 저장하면 그대로 이력서 PDF 가 됩니다." data-en="Open it in a new tab, press the save-as-PDF button, choose A4, portrait and headers off, and you have your resume PDF."></li>
+      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 과 README.md 를 꺼냅니다." data-en="Download the ZIP below and pull out template.html and README.md."></li>
+      <li data-ko="template.html 을 글 편집기로 열고, 맨 위 ‘여기만 바꾸세요’ 칸에서 --point 색·--radius 둥글기·--font 글꼴을 고칩니다. 이력서는 차분한 색이 무난합니다." data-en="Open template.html in a text editor and set --point, --radius and --font in the ‘change only this’ block at the top; a quiet colour suits a resume."></li>
+      <li data-ko="글은 본문의 【1】부터 【8】까지 번호 붙은 주석을 차례로 찾아 바꿉니다. 이름·연락처 → 소개 → 핵심 역량 → 경력 → 작업물 → 학력 순서입니다." data-en="For the words, work through the numbered 【1】–【8】 comments: name and contacts, intro, strengths, jobs, samples, education."></li>
+      <li data-ko="메일과 전화번호는 두 군데씩 바꿔야 합니다. mailto: 와 tel: 뒤의 주소, 그리고 화면에 보이는 글자 둘 다입니다." data-en="Change your email and phone in two places each: after mailto: and tel:, and the visible text as well."></li>
+      <li data-ko="새 창에서 열어 ‘인쇄 → PDF 로 저장’ 을 누르고, A4·세로·머리글 끄기·배경 그래픽 끄기로 저장하면 링크 주소까지 글자로 찍힌 이력서 PDF 가 됩니다." data-en="Open it in a new tab, press the save-as-PDF button and choose A4, portrait, headers off and background graphics off — the PDF prints the link addresses as text."></li>
     </ol>
   </section>
 
@@ -94,7 +101,13 @@
           <td data-ko="가능" data-en="Allowed">가능</td>
         </tr>
         <tr>
-          <td data-ko="틀 안의 예시 글과 도형 (이름·경력·작업물 등)" data-en="The placeholder text and shapes inside the template (name, jobs, samples)">틀 안의 예시 글과 도형 (이름·경력·작업물 등)</td>
+          <td data-ko="안내 문서 README.md" data-en="The guide README.md">안내 문서 README.md</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 안의 예시 글과 도형 (이름·경력·회사·작업물 등)" data-en="The sample text and shapes inside the template (name, career, companies, samples)">틀 안의 예시 글과 도형 (이름·경력·회사·작업물 등)</td>
           <td data-ko="후하씨가 직접 만듦 · 실제 사람이나 회사가 아닌 지어낸 예시" data-en="Made by huhassi · invented, not a real person or company">후하씨가 직접 만듦 · 실제 사람이나 회사가 아닌 지어낸 예시</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>

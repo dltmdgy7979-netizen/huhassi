@@ -65,6 +65,15 @@
     .d-drop{transition:none}
     .d-msg .d-spin{animation:none}
   }
+
+  /* 출처·라이선스 표는 공통 CSS 에서 칸 제목에 nowrap 이 걸려 있어
+     좁은 휴대폰에서 네 칸이 화면 밖으로 밀려납니다. 이 쪽에서만
+     줄바꿈을 허락해 360px 에서도 가로 스크롤이 생기지 않게 합니다. */
+  @media (max-width:620px){
+    .lic-table{table-layout:fixed;font-size:13px}
+    .lic-table th,.lic-table td{white-space:normal;overflow-wrap:anywhere;padding:8px 6px}
+    .lic-table th{font-size:11.5px}
+  }
 </style>
 </head>
 <body>

@@ -57,75 +57,111 @@
     <h2 id="h-demo" class="panel-title" data-ko="이렇게 쓰입니다" data-en="What it looks like">이렇게 쓰입니다</h2>
     <p class="d-note" data-ko="⚠ 아래는 실제로 돌아가는 서버가 아니라 미리 적어 둔 예시입니다. MCP 서버는 내 컴퓨터에서 도는 프로그램이라 웹페이지 안에서는 실행되지 않습니다. 질문을 눌러 보세요." data-en="⚠ This is a recorded example, not a live server. An MCP server runs on your own computer, so it cannot run inside a web page. Tap a question."></p>
     <div class="d-qs" role="group" data-ko-aria="예시 질문" data-en-aria="Example questions">
-        <button type="button" class="d-q" data-i="0" data-ko="메모에서 '예산' 들어간 거 찾아 줘" data-en="Find my notes that mention "budget""></button>
+        <button type="button" class="d-q" data-i="0" data-ko="메모에서 '예산' 들어간 거 찾아 줘" data-en="Find my notes that mention &quot;예산&quot; (budget)"></button>
         <button type="button" class="d-q" data-i="1" data-ko="요즘 고친 메모 뭐 있어?" data-en="Which notes did I touch recently?"></button>
-        <button type="button" class="d-q" data-i="2" data-ko="2026-03-02-회의.md 읽어 줘" data-en="Read 2026-03-02-meeting.md"></button>
-        <button type="button" class="d-q" data-i="3" data-ko="메모가 바깥으로 나가?" data-en="Does anything leave my computer?"></button>
+        <button type="button" class="d-q" data-i="2" data-ko="2026-03-02-회의.md 읽어 줘" data-en="Read 2026-03-02-회의.md"></button>
+        <button type="button" class="d-q" data-i="3" data-ko="메모 폴더 밖의 파일도 읽을 수 있어?" data-en="Can it read files outside the notes folder?"></button>
     </div>
     <div class="d-thread" id="thread" aria-live="polite">
       <p class="d-empty" data-ko="위에서 질문을 하나 눌러 보세요." data-en="Tap one of the questions above."></p>
     </div>
     
-      <template id="a0-ko">세 군데에서 찾았습니다.
+      <template id="a0-ko">search_notes 가 이렇게 돌려줍니다.
 
-· 2026-03-02-회의.md (12번째 줄)
-  "…다음 분기 예산은 이번 주까지 정리하기로…"
+'예산' 검색 결과 3건 (살펴본 파일 4개)
+- 2026-03-02-회의.md:7
+  - 다음 분기 예산은 이번 주까지 정리하기로
+- 일기/2026-02-28.txt:4
+  저녁에 예산 얘기하다 결국 못 정하고 끝남.
+- 아이디어/가게.md:4
+  - 초기 예산 안에서 할 수 있는 것부터</template>
+      <template id="a0-en">This is what search_notes hands back.
 
-· 아이디어/가게.md (4번째 줄)
-  "초기 예산 안에서 할 수 있는 것부터…"
+'예산' 검색 결과 3건 (살펴본 파일 4개)
+- 2026-03-02-회의.md:7
+  - 다음 분기 예산은 이번 주까지 정리하기로
+- 일기/2026-02-28.txt:4
+  저녁에 예산 얘기하다 결국 못 정하고 끝남.
+- 아이디어/가게.md:4
+  - 초기 예산 안에서 할 수 있는 것부터
 
-· 일기/2026-02-28.txt (7번째 줄)
-  "예산 얘기하다 결국 못 정하고 끝남"</template>
-      <template id="a0-en">Three matches.
+(File, line number, and the matching line. Claude then answers from it.)</template>
+      <template id="a1-ko">list_notes 가 이렇게 돌려줍니다.
 
-· 2026-03-02-meeting.md (line 12)
-  "…agreed to settle next quarter's budget by Friday…"
+메모 4개 중 최근 4개
+- 2026-03-02-회의.md · 2026-03-02 14:10 · 306바이트
+- 일기/2026-02-28.txt · 2026-02-28 22:40 · 89바이트
+- 아이디어/가게.md · 2026-02-27 09:05 · 142바이트
+- 읽은책/노인과바다.md · 2026-02-21 21:15 · 69바이트</template>
+      <template id="a1-en">This is what list_notes hands back.
 
-· ideas/shop.md (line 4)
-  "start with what fits the initial budget…"
+메모 4개 중 최근 4개
+- 2026-03-02-회의.md · 2026-03-02 14:10 · 306바이트
+- 일기/2026-02-28.txt · 2026-02-28 22:40 · 89바이트
+- 아이디어/가게.md · 2026-02-27 09:05 · 142바이트
+- 읽은책/노인과바다.md · 2026-02-21 21:15 · 69바이트
 
-· diary/2026-02-28.txt (line 7)
-  "talked budget, decided nothing"</template>
-      <template id="a1-ko">최근에 바뀐 메모입니다.
+(Most recently modified first, with the date and size.)</template>
+      <template id="a2-ko">read_note 가 이렇게 돌려줍니다.
 
-· 2026-03-02-회의.md — 3월 2일
-· 아이디어/가게.md — 2월 27일
-· 읽은책/노인과바다.md — 2월 21일
-· 일기/2026-02-28.txt — 2월 28일</template>
-      <template id="a1-en">Most recently modified.
-
-· 2026-03-02-meeting.md — 2 Mar
-· ideas/shop.md — 27 Feb
-· reading/old-man-and-the-sea.md — 21 Feb
-· diary/2026-02-28.txt — 28 Feb</template>
-      <template id="a2-ko"># 3월 2일 회의
+파일: 2026-03-02-회의.md
+크기: 306바이트 · 고친 때: 2026-03-02 14:10
+────────────────────────────
+# 3월 2일 회의
 
 - 참석: 나, 김, 박
-- 다음 분기 예산은 이번 주까지 정리하기로
 - 메뉴판 다시 만드는 건 보류
+- 간판 조명 교체 견적 받아 두기
+- 재료값 올라서 단가 다시 계산해야 함
+- 다음 분기 예산은 이번 주까지 정리하기로
+- 배달앱 수수료 비교해 보기
+- 다음 회의: 3월 9일</template>
+      <template id="a2-en">This is what read_note hands back.
+
+파일: 2026-03-02-회의.md
+크기: 306바이트 · 고친 때: 2026-03-02 14:10
+────────────────────────────
+# 3월 2일 회의
+
+- 참석: 나, 김, 박
+- 메뉴판 다시 만드는 건 보류
+- 간판 조명 교체 견적 받아 두기
+- 재료값 올라서 단가 다시 계산해야 함
+- 다음 분기 예산은 이번 주까지 정리하기로
+- 배달앱 수수료 비교해 보기
 - 다음 회의: 3월 9일
 
-(파일 전체를 그대로 돌려드립니다. 요약이 필요하면 따로 말씀하시면 됩니다.)</template>
-      <template id="a2-en"># Meeting, 2 March
-
-- Present: me, Kim, Park
-- Settle next quarter's budget by Friday
-- Redoing the menu: on hold
-- Next meeting: 9 March
-
 (The file comes back as it is. Ask separately if you want it summarised.)</template>
-      <template id="a3-ko">아니요. 이 서버는 정해 둔 폴더 안에서 읽기만 합니다.
+      <template id="a3-ko">못 읽습니다. 실제로 넣어 보면 이렇게 거절합니다.
 
-· 쓰거나 지우는 기능이 없습니다
-· 정해 둔 폴더 밖의 경로는 거절합니다 (.. 로 빠져나가기, 바로가기 모두 막음)
-· .md 와 .txt 만 열고, 너무 큰 파일은 잘라서 돌려줍니다
-· 인터넷으로 아무것도 보내지 않습니다</template>
-      <template id="a3-en">No. It only reads, inside the folder you point it at.
+· ../../etc/passwd
+  → 메모 폴더 밖은 읽을 수 없습니다.
 
-· There is no write or delete tool
-· Paths outside that folder are refused (no .., no symlink escapes)
-· Only .md and .txt, and oversized files are truncated
-· Nothing is sent over the network</template>
+· /etc/passwd
+  → 메모 폴더 기준의 상대 경로로 적어 주세요.
+
+· 폴더 밖을 가리키는 바로가기
+  → 바로가기가 메모 폴더 밖을 가리킵니다. 읽지 않았습니다.
+
+· 메모.json (다른 확장자)
+  → .md 와 .txt 파일만 읽습니다.
+
+쓰거나 지우는 기능은 아예 없고, 인터넷으로도 아무것도 보내지 않습니다.</template>
+      <template id="a3-en">No. Here is what it actually answers.
+
+· ../../etc/passwd
+  → 메모 폴더 밖은 읽을 수 없습니다. (outside the notes folder)
+
+· /etc/passwd
+  → 메모 폴더 기준의 상대 경로로 적어 주세요. (relative paths only)
+
+· a symlink pointing outside the folder
+  → 바로가기가 메모 폴더 밖을 가리킵니다. 읽지 않았습니다. (refused)
+
+· notes.json (any other extension)
+  → .md 와 .txt 파일만 읽습니다. (.md and .txt only)
+
+There is no write or delete tool, and nothing is sent over the network.</template>
   </section>
 
   <section class="panel soft" aria-labelledby="h-how">
@@ -135,7 +171,7 @@
       <li data-ko="이 폴더를 내려받아 컴퓨터 아무 곳에 풀어 둡니다." data-en="Download this folder and unzip it anywhere."></li>
       <li data-ko="그 폴더에서 터미널을 열고 npm install 을 한 번 실행합니다." data-en="Open a terminal there and run npm install once."></li>
       <li data-ko="아래 설정을 claude_desktop_config.json 에 넣고, 경로와 메모 폴더를 내 것으로 바꿉니다." data-en="Paste the config below into claude_desktop_config.json with your own paths."></li>
-      <li data-ko="클로드를 껐다 다시 켠 뒤 "메모에서 ○○ 찾아 줘" 라고 물어봅니다." data-en="Restart Claude and ask it to find something in your notes."></li>
+      <li data-ko="클로드를 완전히 종료하고 다시 켠 뒤, 도구 세 개가 보이면 메모에서 찾아 달라고 물어봅니다." data-en="Quit Claude completely, reopen it, check the three tools appear, then ask it to search your notes."></li>
     </ol>
     <p class="hint" data-ko="한 단계씩 끝내고 다음으로 넘어가세요. 자세한 화면 설명은 아래 README 와 같은 내용입니다." data-en="Finish one step before the next. The README in the folder says the same thing in more detail."></p>
   </section>
@@ -158,6 +194,12 @@
   }
 }</pre>
     <p class="hint" data-ko="NOTES_DIR 에 적은 폴더 바깥은 서버가 아예 열지 않습니다. 메모 폴더만 정확히 적어 주세요." data-en="The server refuses to open anything outside NOTES_DIR. Point it at your notes folder and nothing wider."></p>
+    <div data-lang-ko>
+      <p class="hint">설정 파일이 있는 곳 — 맥은 <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>, 윈도는 <code>%APPDATA%\Claude\claude_desktop_config.json</code> 입니다. 클로드 데스크톱의 <b>설정 → 개발자 → 설정 편집</b> 을 누르면 그 파일이 열립니다. <b>파일이 아직 없어도 괜찮습니다</b> — 그 자리에 새로 만들면 됩니다. 윈도에서는 경로의 역슬래시를 두 개씩(<code>\\</code>) 넣으세요.</p>
+    </div>
+    <div data-lang-en>
+      <p class="hint">Where the config file lives — macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>, Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>. In Claude Desktop, <b>Settings → Developer → Edit Config</b> opens it. <b>It may not exist yet</b>, which is fine — create it there. On Windows, double every backslash in a path (<code>\\</code>).</p>
+    </div>
   </section>
 
   <section class="panel" aria-labelledby="h-code">
@@ -204,7 +246,7 @@ const RAW_DIR = process.env.NOTES_DIR || "";
 
 const 허용확장자 = new Set([".md", ".txt"]);
 
-const MAX_FILE_BYTES = 512 * 1024;   // 파일 하나 최대 512KB
+const MAX_FILE_BYTES = 512 * 1024;   // 파일 하나에서 읽어 들이는 최대 512KB
 const MAX_READ_CHARS = 60000;        // read_note 가 돌려줄 최대 글자수
 const MAX_WALK_FILES = 4000;         // 폴더를 훑을 때 최대 파일 수
 const MAX_WALK_DEPTH = 8;            // 폴더 깊이 상한
@@ -292,14 +334,40 @@ async function 안전한경로(상대) {
 
   const st = await fs.stat(진짜);
   if (!st.isFile()) throw new 사용자오류("파일이 아닙니다.");
-  if (st.size &gt; MAX_FILE_BYTES) {
-    throw new 사용자오류(
-      `파일이 너무 큽니다 (${Math.round(st.size / 1024)}KB). ` +
-        `${Math.round(MAX_FILE_BYTES / 1024)}KB 까지만 읽습니다.`
-    );
-  }
 
   return { 진짜, 상대경로: path.relative(root, 진짜), 크기: st.size, 고친때: st.mtime };
+}
+
+/**
+ * 파일의 앞부분만 읽습니다. 아무리 큰 파일이어도 메모리를 넘치게 하지 않습니다.
+ * 잘린 자리에서 한글이 반 토막 나는 것도 정리합니다.
+ */
+async function 앞부분읽기(경로, 최대바이트 = MAX_FILE_BYTES) {
+  let 손잡이;
+  try {
+    손잡이 = await fs.open(경로, "r");
+  } catch {
+    throw new 사용자오류("파일을 열지 못했습니다. 읽을 권한이 있는지 확인해 주세요.");
+  }
+  try {
+    const 통 = Buffer.alloc(최대바이트);
+    const { bytesRead } = await 손잡이.read(통, 0, 최대바이트, 0);
+    const 읽은바이트 = bytesRead;
+    // fatal:false → 잘린 글자는 U+FFFD 로 바뀝니다. 끝에 붙은 것만 떼어 냅니다.
+    let 글 = new TextDecoder("utf-8", { fatal: false }).decode(통.subarray(0, 읽은바이트));
+    글 = 글.replace(/�+$/, "");
+    return { 글, 읽은바이트 };
+  } finally {
+    await 손잡이.close().catch(() =&gt; {});
+  }
+}
+
+/** 0바이트 / 1KB 미만도 솔직하게 적습니다. */
+function 크기글자(바이트) {
+  const n = Number(바이트) || 0;
+  if (n === 0) return "0바이트";
+  if (n &lt; 1024) return `${n}바이트`;
+  return `${Math.round(n / 1024)}KB`;
 }
 
 /** 어떤 경로가 뿌리 폴더 안에 있나? (뿌리 자신도 안으로 봅니다) */
@@ -353,13 +421,13 @@ async function 파일모으기() {
       } catch {
         continue;
       }
-      if (st.size &gt; MAX_FILE_BYTES) continue;
-
+      // 큰 파일도 목록에서 빼지 않습니다. 읽을 때 앞부분만 읽습니다.
       모음.push({
         상대경로: path.relative(root, 전체),
         전체경로: 전체,
         크기: st.size,
         고친때: st.mtime,
+        큰파일: st.size &gt; MAX_FILE_BYTES,
       });
     }
   }
@@ -460,7 +528,8 @@ async function 도구실행(name, args = {}) {
 
       let 글;
       try {
-        글 = await fs.readFile(f.전체경로, "utf8");
+        // 큰 파일도 건너뛰지 않고, 앞 512KB 안에서 찾습니다.
+        글 = (await 앞부분읽기(f.전체경로)).글;
       } catch {
         continue;
       }
@@ -496,19 +565,33 @@ async function 도구실행(name, args = {}) {
   if (name === "read_note") {
     const { 진짜, 상대경로, 크기, 고친때 } = await 안전한경로(args.path);
 
-    let 글 = await fs.readFile(진짜, "utf8");
-    let 잘림 = "";
+    const 머리 =
+      `파일: ${상대경로}\n` +
+      `크기: ${크기글자(크기)} · 고친 때: ${때글자(고친때)}\n` +
+      `${"─".repeat(28)}\n`;
+
+    // 빈 파일은 빈 화면 대신 빈 파일이라고 말해 줍니다.
+    if (크기 === 0) return 머리 + "(내용이 없는 빈 파일입니다.)";
+
+    const { 글: 원글, 읽은바이트 } = await 앞부분읽기(진짜);
+    let 글 = 원글;
+    const 잘림사유 = [];
+
+    if (읽은바이트 &lt; 크기) {
+      잘림사유.push(`파일이 커서 앞 ${크기글자(읽은바이트)}만 읽었습니다`);
+    }
     if (글.length &gt; MAX_READ_CHARS) {
       글 = 글.slice(0, MAX_READ_CHARS);
-      잘림 = `\n\n…(길어서 앞 ${MAX_READ_CHARS}글자만 보여 드립니다)`;
+      잘림사유.push(`앞 ${MAX_READ_CHARS}글자만 보여 드립니다`);
     }
 
+    // 공백만 들어 있는 파일도 빈 화면처럼 보이지 않게 합니다.
+    if (글.trim() === "") return 머리 + "(빈 줄과 공백만 들어 있습니다.)";
+
     return (
-      `파일: ${상대경로}\n` +
-      `크기: ${Math.max(1, Math.round(크기 / 1024))}KB · 고친 때: ${때글자(고친때)}\n` +
-      `${"─".repeat(28)}\n` +
+      머리 +
       글 +
-      잘림
+      (잘림사유.length ? `\n\n…(${잘림사유.join(" · ")})` : "")
     );
   }
 
@@ -529,8 +612,8 @@ async function 도구실행(name, args = {}) {
       보여줄것
         .map(
           (f) =&gt;
-            `- ${f.상대경로} · ${때글자(f.고친때)} · ` +
-            `${Math.max(1, Math.round(f.크기 / 1024))}KB`
+            `- ${f.상대경로} · ${때글자(f.고친때)} · ${크기글자(f.크기)}` +
+            (f.큰파일 ? " (커서 앞부분만 읽습니다)" : "")
         )
         .join("\n")
     );

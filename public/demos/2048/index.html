@@ -28,12 +28,13 @@
   .d-board:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
   .d-slots{position:absolute;inset:2.4%;display:grid;
     grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)}
-  .d-slot{margin:3%;background:#fff;border:1px solid var(--line);border-radius:10px}
+  /* 바탕 칸과 숫자 칸의 틈을 같은 6% 로 맞춰 자리가 어긋나지 않게 합니다 */
+  .d-slot{margin:6%;background:#fff;border:1px solid var(--line);border-radius:10px}
   .d-tiles{position:absolute;inset:2.4%}
   .d-tile{position:absolute;left:0;top:0;width:25%;height:25%;
     transform:translate(0,0);transition:transform .1s ease-out}
   .d-tile b{
-    position:absolute;inset:12%;border-radius:10px;display:grid;place-items:center;
+    position:absolute;inset:6%;border-radius:10px;display:grid;place-items:center;
     font-variation-settings:"wght" 820;font-variant-numeric:tabular-nums;
     letter-spacing:-.04em;line-height:1;font-size:clamp(16px,9cqw,34px);overflow:hidden;
   }
@@ -295,6 +296,7 @@
   var seq = 0;                    /* 타일에 붙이는 번호 */
   var pending = [];               /* 합쳐져 사라질 차례인 타일들 */
   var score = 0, best = 0, won = false, dead = false, paused = false;
+  var bestAtStart = 0;            /* 이번 판을 시작할 때의 최고 점수 — 깼는지 가리는 기준 */
   var history = null;             /* 바로 앞 한 수만 기억합니다 */
 
   function t(ko, en) {
@@ -556,7 +558,7 @@
   function showEnd(title, text, keep) {
     overTitle.textContent = title;
     overText.textContent = text;
-    var beat = (score >= best && score > 0);
+    var beat = (score > bestAtStart);
     if (keep) {
       overFinal.textContent = t("지금 점수 " + score + "점 · 최고 점수 " + best + "점",
                                 "Score " + score + " · best " + best);
@@ -577,6 +579,7 @@
   function reset() {
     clearBoard();
     score = 0; won = false; dead = false; history = null;
+    bestAtStart = best;
     setPaused(false, true);
     over.hidden = true;
     spawn(); spawn();
@@ -633,20 +636,22 @@
     }
   } catch (e) {}
 
-  var KEYS = {
-    ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right",
-    w: "up", a: "left", s: "down", d: "right"
-  };
+  var ARROWS = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
+  var LETTERS = { w: "up", a: "left", s: "down", d: "right" };
   document.addEventListener("keydown", function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     var inside = wrap.contains(e.target);
-    var loose = (!e.target || e.target === document.body) && onScreen;
+    /* 아무것도 고르지 않았고 말판이 화면에 보일 때는 글자 키만 받습니다.
+       방향키는 쪽 넘기기에 쓰이니, 말판을 한 번 눌러 고른 뒤에만 받습니다. */
+    var loose = !inside && (!e.target || e.target === document.body) && onScreen;
     if (!inside && !loose) return;
     var key = e.key || "";
     var low = key.toLowerCase();
     if (low === "p") { e.preventDefault(); togglePause(); return; }
     if (low === "z") { e.preventDefault(); undo(); return; }
-    var dir = KEYS[key] || KEYS[low];
+    if (LETTERS[low]) { e.preventDefault(); move(LETTERS[low]); return; }
+    if (!inside) return;
+    var dir = ARROWS[key];
     if (!dir) return;
     e.preventDefault();
     move(dir);

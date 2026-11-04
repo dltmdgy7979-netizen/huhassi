@@ -211,11 +211,15 @@ a{color:var(--point-ink)}
   .r-edu{font-size:8.8pt;gap:2.5pt 9pt}
   .r-edu dt{font-size:8.2pt;color:#555}
   .r-edu dd{color:#222}
-  /* 종이에는 링크를 누를 수 없으니, 주소를 글자로 같이 내보냅니다 */
-  .r-sheet a[href^="http"]::after,
-  .r-sheet a[href^="mailto"]::after{
+  /* 종이에서는 링크를 누를 수 없으니, 주소를 글자로 같이 내보냅니다.
+     보이는 글자가 이미 주소인 링크에는 class="r-url" 을 붙여 두었습니다.
+     그 링크는 주소가 글자로 이미 적혀 있으니 괄호를 덧붙이지 않습니다.
+     ‘자세히 보기’ 처럼 글자가 주소가 아닌 링크를 넣으면, 인쇄본에
+     괄호 안에 주소가 자동으로 같이 찍힙니다. */
+  .r-sheet a[href^="http"]:not(.r-url)::after,
+  .r-sheet a[href^="mailto"]:not(.r-url)::after{
     content:" (" attr(href) ")";font-size:7.2pt;color:#555;word-break:break-all}
-  .r-works a[href^="http"]::after{content:""}  /* 카드 링크는 글자가 곧 주소라 겹쳐 적지 않음 */
+  .r-sheet a.r-url{color:#000;text-decoration:none}
 }
 </style>
 </head>
@@ -239,10 +243,10 @@ a{color:var(--point-ink)}
     <h1>한지우</h1>
     <p class="r-tag">작은 가게의 주문과 재고를 정리해 주는 서비스 기획자 · 경력 8년</p>
     <ul>
-      <li><b>메일</b> <a href="mailto:jiwoo@example.com">jiwoo@example.com</a></li>
+      <li><b>메일</b> <a class="r-url" href="mailto:jiwoo@example.com">jiwoo@example.com</a></li>
       <li><b>전화</b> 000-0000-0000</li>
       <li><b>사는 곳</b> ○○시 ○○구</li>
-      <li><b>작업물</b> <a href="https://example.com/jiwoo" rel="noopener">example.com/jiwoo</a></li>
+      <li><b>작업물</b> <a class="r-url" href="https://example.com/jiwoo" rel="noopener">example.com/jiwoo</a></li>
     </ul>
   </header>
 
@@ -302,19 +306,19 @@ a{color:var(--point-ink)}
         <div class="r-thumb" role="img" aria-label="작업물 그림이 들어갈 자리"></div>
         <b>가게 주문판</b>
         <p>전화·메신저로 들어오는 주문을 한 화면에 모아 적는 도구. 화면 설계와 안내 글을 전부 맡았습니다.</p>
-        <a href="https://example.com/jiwoo/order-board" rel="noopener">example.com/jiwoo/order-board</a>
+        <a class="r-url" href="https://example.com/jiwoo/order-board" rel="noopener">example.com/jiwoo/order-board</a>
       </li>
       <li>
         <div class="r-thumb" role="img" aria-label="작업물 그림이 들어갈 자리"></div>
         <b>월말 장사 리포트</b>
         <p>한 달 주문을 읽어 다음 달에 무엇을 줄일지 한 장으로 알려 주는 리포트. 기획과 문구 작업.</p>
-        <a href="https://example.com/jiwoo/report" rel="noopener">example.com/jiwoo/report</a>
+        <a class="r-url" href="https://example.com/jiwoo/report" rel="noopener">example.com/jiwoo/report</a>
       </li>
       <li>
         <div class="r-thumb" role="img" aria-label="작업물 그림이 들어갈 자리"></div>
         <b>처음 오신 사장님 안내</b>
         <p>가입부터 첫 주문까지 세 걸음으로 줄인 안내 흐름. 화면 설계와 안내 글 전부.</p>
-        <a href="https://example.com/jiwoo/onboarding" rel="noopener">example.com/jiwoo/onboarding</a>
+        <a class="r-url" href="https://example.com/jiwoo/onboarding" rel="noopener">example.com/jiwoo/onboarding</a>
       </li>
     </ul>
   </section>

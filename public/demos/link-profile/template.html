@@ -19,9 +19,10 @@
      ▶ 적혀 있는 이름·링크·메일 주소는 모두 지어낸 예시입니다.
      =========================================================== -->
 
-<!-- 【탭 제목】 여기도 이름으로 바꿔 주세요 -->
-<title>서윤재 — 링크 모음</title>
-<meta name="description" content="동네 가게 이야기를 주마다 한 통씩 적어 보내는 서윤재의 링크 모음.">
+<!-- 탭 제목은 아래 PROFILE 의 name 으로 자동으로 바뀝니다.
+     검색 설명(description)만 직접 바꿔 주세요. -->
+<title>링크 모음</title>
+<meta name="description" content="동네 가게 이야기를 주마다 한 통씩 적어 보내는 사람의 링크 모음.">
 
 <style>
 /* ███████████████  여기만 바꾸세요 ① 색과 모양  ███████████████
@@ -165,13 +166,14 @@ var PROFILE = {
   footer: "눌러도 아무 기록을 남기지 않습니다.\n이 쪽의 이름·링크·메일 주소는 모두 지어낸 예시입니다."
 
 };
+/* ███████████  여기까지. 아래 코드는 그대로 두세요  ███████████ */
 </script>
 </head>
 <body>
 
 <main class="p-wrap">
 
-  <!-- 글자는 아래 <script> 안에서 채워집니다. 이 자리의 HTML 은 손대지 않아도 됩니다 -->
+  <!-- 글자는 위 <head> 의 PROFILE 에서 채워집니다. 이 자리의 HTML 은 손대지 않아도 됩니다 -->
   <div class="p-avatar" id="p-avatar" aria-hidden="true"><b></b></div>
   <h1 id="p-name"></h1>
   <p class="p-bio" id="p-bio"></p>
@@ -184,8 +186,7 @@ var PROFILE = {
 </main>
 
 <script>
-/* ███████████  여기까지. 아래 코드는 그대로 두세요  ███████████ */
-
+/* 아래 코드는 PROFILE 의 글자를 화면에 옮기는 일만 합니다. 그대로 두세요. */
 (function (p) {
   function put(id, text) {
     var el = document.getElementById(id);

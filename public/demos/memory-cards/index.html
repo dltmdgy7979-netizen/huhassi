@@ -4,17 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>카드 짝 맞추기 Match the Pairs — 후하씨 huhassi</title>
-<meta name="description" content="뒤집힌 카드에서 같은 그림 두 장을 찾는 놀이. 판 크기를 세 가지로 고를 수 있습니다.">
+<meta name="description" content="덮인 카드에서 같은 도형 두 장을 찾는 놀이. 판 크기를 세 가지로 고르고, 가장 빠른 기록은 이 기기에만 남습니다.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/demo.css">
 <script src="../../assets/i18n.js" defer></script>
 <style>
   /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
-  .d-sizes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-  .d-sizes .btn[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+  .d-intro{margin:0 0 14px;font-size:14.5px;line-height:1.65}
+  .d-intro b{font-variation-settings:"wght" 700}
 
-  .d-board{display:grid;gap:8px;margin-top:14px;max-width:100%}
+  .d-sizes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  /* 고른 크기는 색만으로 알리지 않는다 — 글자 앞에 표시를 붙인다 */
+  .d-sizes .btn{min-height:44px}
+  .d-sizes .btn[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+  .d-sizes .btn[aria-pressed="true"]::before{content:"✓ ";font-family:var(--mono)}
+
+  .d-wrap{position:relative;margin-top:14px}
+
+  .d-board{display:grid;gap:8px;max-width:100%}
   .d-board[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
   .d-board[data-cols="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
   /* 넓은 화면에서는 가로로 더 눕혀 세로로 길어지지 않게 */
@@ -24,14 +32,13 @@
     .d-board[data-cols="4"][data-pairs="12"]{grid-template-columns:repeat(6,minmax(0,1fr))}
   }
 
-  .d-card{position:relative;width:100%;aspect-ratio:3/4;padding:0;border:0;background:none;
-    border-radius:var(--radius-s);cursor:pointer;-webkit-tap-highlight-color:transparent;
-    perspective:700px;min-width:0}
+  .d-card{position:relative;width:100%;aspect-ratio:3/4;min-height:62px;padding:0;border:0;
+    background:none;border-radius:var(--radius-s);cursor:pointer;min-width:0;
+    -webkit-tap-highlight-color:transparent;perspective:700px;touch-action:manipulation}
   .d-card:disabled{cursor:default}
   .d-inner{position:absolute;inset:0;transform-style:preserve-3d;
     transition:transform .34s cubic-bezier(.3,.7,.3,1)}
-  .d-card[aria-pressed="true"] .d-inner,
-  .d-card[data-done="1"] .d-inner{transform:rotateY(180deg)}
+  .d-card[data-up="1"] .d-inner{transform:rotateY(180deg)}
 
   .d-face{position:absolute;inset:0;display:grid;place-items:center;
     border-radius:var(--radius-s);backface-visibility:hidden;-webkit-backface-visibility:hidden;
@@ -42,19 +49,33 @@
   .d-card:hover .d-back{border-color:var(--orange)}
   .d-face svg{width:72%;height:72%;display:block}
   .d-back svg{width:48%;height:48%;opacity:.75}
+  /* 맞춘 카드는 글꼴 표시로도 알린다 (색만으로 전하지 않기) */
   .d-card[data-done="1"] .d-front::after{content:"✓";position:absolute;right:5px;bottom:2px;
     font-size:12px;color:var(--ok);line-height:1}
+
+  /* 멈췄을 때 판을 덮는다 — 멈춘 사이에 외우지 못하게 */
+  .d-veil{position:absolute;inset:-6px;display:grid;place-items:center;padding:16px;
+    background:rgba(255,255,255,.94);border-radius:var(--radius-s);text-align:center}
+  .d-veil[hidden]{display:none}
+  .d-veil p{margin:0 0 5px;font-size:16px;font-variation-settings:"wght" 760;max-width:30ch}
+  .d-veil small{display:block;color:var(--ink-2);font-size:13px;max-width:34ch;margin-inline:auto}
+  .d-veil .btn{margin-top:12px}
 
   .d-done{margin-top:14px;padding:16px;border:1px solid var(--orange);border-radius:var(--radius-s);
     background:var(--soft);text-align:center}
   .d-done[hidden]{display:none}
   .d-done h3{margin:0 0 6px}
   .d-done p{margin:0 0 12px;font-size:14.5px;color:var(--ink-2)}
-  .d-best{font-size:13.5px;color:var(--ink-2);margin-top:10px}
+
+  .d-best{font-size:13.5px;color:var(--ink-2);margin:0}
   .d-best b{color:var(--orange-ink);font-variant-numeric:tabular-nums}
+
+  .d-rule{margin-top:12px;font-size:13.5px;color:var(--ink-2);background:var(--soft);
+    border:1px solid var(--line);border-radius:var(--radius-s);padding:10px 12px;line-height:1.6}
 
   @media (prefers-reduced-motion:reduce){
     .d-inner{transition:none}
+    .d-card{perspective:none}
   }
 </style>
 </head>
@@ -74,7 +95,7 @@
   <div class="demo-head">
     <span class="num">05</span>
     <h1 data-ko="카드 짝 맞추기" data-en="Match the Pairs">카드 짝 맞추기</h1>
-    <p class="lede" data-ko="뒤집힌 카드에서 같은 그림 두 장을 찾습니다. 판 크기를 세 가지로 고를 수 있고, 가장 빠른 기록은 이 기기에만 남습니다." data-en="Flip the cards and find each pair. Three board sizes, and your best time stays on this device only."></p>
+    <p class="lede" data-ko="덮인 카드에서 같은 도형 두 장을 찾습니다. 판 크기를 세 가지로 고를 수 있고, 가장 빠른 기록은 판 크기별로 이 기기에만 남습니다." data-en="Flip the cards and find each pair. Three board sizes, with a best time kept per size on this device only."></p>
     <div class="demo-meta">
       <span class="tag free" data-ko="무료" data-en="Free">무료</span>
       <span class="tag">MIT</span>
@@ -87,6 +108,12 @@
   <section class="panel" aria-labelledby="h-demo">
     <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
 
+    <!-- 놀기 전에 먼저 읽는 한 줄 -->
+    <p class="d-intro">
+      <span data-lang-ko>카드가 모두 <b>뒤집혀</b> 놓여 있습니다. 두 장을 열어 <b>도형이 같으면 그대로 남고</b>, 다르면 다시 덮입니다. 적게 뒤집고 빨리 다 찾는 게 목표입니다.</span>
+      <span data-lang-en>Every card starts <b>face down</b>. Turn two over: <b>a matching pair stays open</b>, a mismatch goes back. The aim is to clear the board quickly, with as few flips as you can.</span>
+    </p>
+
     <div class="d-sizes" role="group" data-ko-aria="판 크기 고르기" data-en-aria="Choose a board size">
       <button class="btn btn-sm" type="button" data-size="easy"   aria-pressed="true"  data-ko="쉬움 4×3" data-en="Easy 4×3">쉬움 4×3</button>
       <button class="btn btn-sm" type="button" data-size="normal" aria-pressed="false" data-ko="보통 4×4" data-en="Normal 4×4">보통 4×4</button>
@@ -97,24 +124,47 @@
       <li><span class="k" data-ko="뒤집은 횟수" data-en="Moves">뒤집은 횟수</span><span class="v" id="mc-moves">0</span></li>
       <li><span class="k" data-ko="걸린 시간" data-en="Time">걸린 시간</span><span class="v" id="mc-time">0:00</span></li>
       <li><span class="k" data-ko="맞춘 짝" data-en="Pairs found">맞춘 짝</span><span class="v" id="mc-pairs">0 / 6</span></li>
+      <li><span class="k" data-ko="연달아 깬 판" data-en="Rounds in a row">연달아 깬 판</span><span class="v" id="mc-streak">0</span></li>
     </ul>
 
-    <div class="d-board" id="mc-board" data-cols="3"></div>
+    <div class="d-wrap">
+      <div class="d-board" id="mc-board" data-cols="3"></div>
+      <!-- 멈춤 / 끝 겹친 판 -->
+      <div class="d-veil" id="mc-veil" hidden>
+        <div>
+          <p id="mc-veil-t"></p>
+          <small id="mc-veil-s"></small>
+          <button class="btn btn-solid" type="button" id="mc-veil-btn"></button>
+        </div>
+      </div>
+    </div>
 
+    <!-- 끝난 판의 결과를 판 아래에도 글로 남긴다 (겹친 판을 지나쳐도 보이게) -->
     <div class="d-done" id="mc-done" hidden>
-      <h3 data-ko="다 맞췄어요" data-en="All matched">다 맞췄어요</h3>
+      <h3 data-ko="이번 판 결과" data-en="This round">이번 판 결과</h3>
       <p id="mc-done-line"></p>
       <button class="btn btn-solid" type="button" id="mc-again" data-ko="한 판 더" data-en="Play again">한 판 더</button>
     </div>
 
+    <!-- 상태가 바뀔 때마다 여기에 적는다 (화면 낭독기용) -->
     <p class="sr" id="mc-live" role="status" aria-live="polite"></p>
 
     <div class="controls" style="margin-top:14px">
-      <button class="btn" type="button" id="mc-reset" data-ko="섞어서 다시" data-en="Shuffle and restart">섞어서 다시</button>
-      <span class="d-best" id="mc-best" style="margin:0"></span>
+      <button class="btn" type="button" id="mc-pause" style="min-height:44px"
+        data-ko="잠시 멈춤" data-en="Pause">잠시 멈춤</button>
+      <button class="btn" type="button" id="mc-reset" style="min-height:44px"
+        data-ko="섞어서 처음부터" data-en="Shuffle and restart">섞어서 처음부터</button>
     </div>
 
-    <p class="hint" data-ko="카드는 탭 키로 옮겨 다닐 수 있고, 엔터나 빈칸 키로 뒤집힙니다. 그림은 모두 직접 그린 도형이라 그림 파일을 하나도 불러오지 않습니다." data-en="Move between cards with the Tab key and flip with Enter or Space. Every face is a shape drawn in code — no image files are loaded."></p>
+    <p class="d-best" id="mc-best" style="margin-top:12px"></p>
+
+    <!-- 어려워지는 방식을 글로 적어 둔다 -->
+    <p class="d-rule">
+      <span data-lang-ko>어려워지는 방식: 판 크기를 직접 고르는 것 말고도, <b>한 판을 깰 때마다 다른 두 장이 다시 덮이는 시간이 0.1초씩 짧아집니다</b> (처음 1.2초 → 가장 짧게 0.5초). 외울 틈이 조금씩 줄어드는 셈입니다. 판 크기를 바꾸거나 ‘섞어서 처음부터’를 누르면 1.2초로 돌아갑니다.</span>
+      <span data-lang-en>How it gets harder: besides picking a bigger board, <b>every board you clear shortens the look-at-it time by 0.1s</b> before a mismatched pair turns back (1.2s at first, down to 0.5s). You get a little less time to memorise each round. Changing the board size or pressing shuffle and restart puts it back to 1.2s.</span>
+    </p>
+
+    <p class="hint" data-ko="카드는 탭 키로 옮겨 다닐 수 있고, 엔터나 빈칸 키로 뒤집힙니다. 화살표 키로도 옆 카드로 갑니다. 도형은 모두 코드로 그린 것이라 그림 파일을 하나도 불러오지 않고, 기록도 이 기기에만 남습니다." data-en="Move between cards with Tab, or the arrow keys, and flip with Enter or Space. Every face is a shape drawn in code — no image files are loaded, and your times stay on this device."></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
@@ -122,10 +172,10 @@
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
       <li data-ko="먼저 쉬움·보통·어려움 가운데 판 크기를 고릅니다." data-en="Pick a board size: easy, normal or hard."></li>
-      <li data-ko="카드 한 장을 눌러 뒤집습니다." data-en="Tap one card to turn it over."></li>
-      <li data-ko="두 번째 카드를 눌러 그림이 같은지 봅니다." data-en="Tap a second card and see whether the shapes match."></li>
-      <li data-ko="같으면 그대로 남고, 다르면 잠시 뒤 다시 덮입니다." data-en="A pair stays open; a mismatch flips back after a moment."></li>
-      <li data-ko="모든 짝을 찾으면 걸린 시간이 나오고, ‘한 판 더’로 다시 합니다." data-en="Find every pair to see your time, then press play again."></li>
+      <li data-ko="카드를 탭하거나, 탭·화살표 키로 옮겨 가 엔터로 뒤집습니다." data-en="Tap a card, or move to it with Tab or the arrow keys and press Enter."></li>
+      <li data-ko="두 번째 카드를 열어 도형이 같은지 봅니다. 같으면 남고 다르면 다시 덮입니다." data-en="Open a second card: a matching pair stays open, a mismatch flips back."></li>
+      <li data-ko="‘잠시 멈춤’을 누르면 시계가 서고 판이 가려지며, 다시 누르면 이어서 합니다." data-en="Press Pause to stop the clock and hide the board; press again to carry on."></li>
+      <li data-ko="모든 짝을 찾으면 걸린 시간이 나오고, ‘한 판 더’로 새 판을 받습니다." data-en="Find every pair to see your time, then press play again for a fresh board."></li>
     </ol>
   </section>
 
@@ -149,10 +199,16 @@
           <td data-ko="가능" data-en="Allowed">가능</td>
         </tr>
         <tr>
-          <td data-ko="카드 그림 열두 가지 (도형 SVG)" data-en="The twelve card faces (shape SVGs)">카드 그림 열두 가지 (도형 SVG)</td>
-          <td data-ko="후하씨가 직접 만듦 — 그림 파일 없음" data-en="Made by huhassi — no image files">후하씨가 직접 만듦 — 그림 파일 없음</td>
+          <td data-ko="카드 도형 열두 가지 (인라인 SVG)" data-en="The twelve card faces (inline SVG)">카드 도형 열두 가지 (인라인 SVG)</td>
+          <td data-ko="후하씨가 직접 만듦 — 그림 파일·이모지 없음" data-en="Made by huhassi — no image files, no emoji">후하씨가 직접 만듦 — 그림 파일·이모지 없음</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="바깥에서 들여온 꾸러미" data-en="Outside libraries">바깥에서 들여온 꾸러미</td>
+          <td data-ko="없음 — 순수 HTML·CSS·JS" data-en="None — plain HTML, CSS and JS">없음 — 순수 HTML·CSS·JS</td>
+          <td>—</td>
+          <td data-ko="해당 없음" data-en="Not applicable">해당 없음</td>
         </tr>
         <tr>
           <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
@@ -199,7 +255,7 @@
     return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
   };
 
-  /* ---- 카드 그림 열두 가지: 전부 직접 그린 도형 ---- */
+  /* ---- 카드 도형 열두 가지: 전부 직접 그린 인라인 SVG. 이모지·그림 파일 없음 ---- */
   var O = "#FF6A13", D = "#D14E00", S = "#FFC29A";
   var SHAPES = [
     { id: "circle",   ko: "동그라미", en: "Circle",
@@ -232,35 +288,46 @@
   ];
 
   var SIZES = {
-    easy:   { cols: 3, rows: 4, pairs: 6,  ko: "쉬움 4×3",   en: "Easy 4×3" },
-    normal: { cols: 4, rows: 4, pairs: 8,  ko: "보통 4×4",   en: "Normal 4×4" },
-    hard:   { cols: 4, rows: 6, pairs: 12, ko: "어려움 6×4", en: "Hard 6×4" }
+    easy:   { cols: 3, pairs: 6,  ko: "쉬움 4×3",   en: "Easy 4×3" },
+    normal: { cols: 4, pairs: 8,  ko: "보통 4×4",   en: "Normal 4×4" },
+    hard:   { cols: 4, pairs: 12, ko: "어려움 6×4", en: "Hard 6×4" }
   };
   var KEY = "huhassi-memory-best";
+
+  /* 어려워지는 값: 다른 두 장이 다시 덮이기까지의 시간 */
+  var PEEK_START = 1200, PEEK_MIN = 500, PEEK_DROP = 100;
 
   var board   = document.getElementById("mc-board");
   var elMoves = document.getElementById("mc-moves");
   var elTime  = document.getElementById("mc-time");
   var elPairs = document.getElementById("mc-pairs");
+  var elStreak= document.getElementById("mc-streak");
   var elLive  = document.getElementById("mc-live");
   var elDone  = document.getElementById("mc-done");
   var elDoneL = document.getElementById("mc-done-line");
   var elBest  = document.getElementById("mc-best");
+  var elVeil  = document.getElementById("mc-veil");
+  var elVeilT = document.getElementById("mc-veil-t");
+  var elVeilS = document.getElementById("mc-veil-s");
+  var elVeilB = document.getElementById("mc-veil-btn");
+  var btnPause= document.getElementById("mc-pause");
 
   var size = "easy";
-  var cards = [], open = [], moves = 0, found = 0;
+  var cards = [], open = [], moves = 0, found = 0, streak = 0;
   var startT = 0, tick = 0, elapsed = 0, locked = false, lastResult = null;
+  var paused = false, cleared = false, storeOk = true;
+  var peek = PEEK_START, hideTimer = 0;
 
-  /* ---- 기록 저장 (localStorage, 안 될 수도 있으니 감싼다) ---- */
+  /* ---- 기록 저장 (localStorage 가 막혀 있을 수도 있으니 꼭 감싼다) ---- */
   function readBest() {
     try {
       var raw = localStorage.getItem(KEY);
       return raw ? (JSON.parse(raw) || {}) : {};
-    } catch (e) { return {}; }
+    } catch (e) { storeOk = false; return {}; }
   }
   function writeBest(obj) {
     try { localStorage.setItem(KEY, JSON.stringify(obj)); return true; }
-    catch (e) { return false; }
+    catch (e) { storeOk = false; return false; }
   }
 
   function fmt(sec) {
@@ -269,17 +336,24 @@
   }
 
   function showBest() {
-    var b = readBest()[size];
     var label = t(SIZES[size].ko, SIZES[size].en);
-    elBest.innerHTML = "";
+    elBest.textContent = "";
     var span = document.createElement("span");
+    if (!storeOk) {
+      span.textContent = t("이 브라우저에서는 기록을 저장할 수 없습니다 (저장이 막혀 있습니다).",
+                           "This browser will not let times be saved (storage is blocked).");
+      elBest.appendChild(span);
+      return;
+    }
+    var b = readBest()[size];
     if (b && b.time) {
       span.textContent = t("가장 빠른 기록 (" + label + "): ", "Best time (" + label + "): ");
       var bb = document.createElement("b");
-      bb.textContent = fmt(b.time) + t(" · " + b.moves + "번", " · " + b.moves + " moves");
+      bb.textContent = t(fmt(b.time) + " · " + b.moves + "번 뒤집음", fmt(b.time) + " · " + b.moves + " moves");
       elBest.appendChild(span); elBest.appendChild(bb);
     } else {
-      span.textContent = t("아직 기록이 없습니다 (" + label + ").", "No best time yet (" + label + ").");
+      span.textContent = t("아직 " + label + " 기록이 없습니다. 이번 판이 곧 기록이 됩니다.",
+                           "No best time for " + label + " yet — this round will set it.");
       elBest.appendChild(span);
     }
   }
@@ -293,35 +367,36 @@
     return a;
   }
 
-  function faceSvg(sh, small) {
-    return '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">' + sh.svg + '</svg>';
-  }
   var BACK_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
     '<circle cx="24" cy="24" r="9" fill="none" stroke="#D14E00" stroke-width="3"/>' +
     '<circle cx="24" cy="24" r="2.6" fill="#D14E00"/></svg>';
 
-  function build() {
+  /* 새 판. hard=true 면 연달아 깬 판 수와 외울 시간도 처음으로 돌린다 */
+  function build(fresh) {
     var cfg = SIZES[size];
     var pick = SHAPES.slice(0, cfg.pairs);
-    var deck = shuffle(pick.concat(pick).map(function (sh, i) {
-      return { sh: sh, key: sh.id, i: i };
-    }));
+    var deck = shuffle(pick.concat(pick).map(function (sh) { return { sh: sh, key: sh.id }; }));
+
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = 0; }
+    stopTick();
+    if (fresh) { streak = 0; peek = PEEK_START; }
 
     board.textContent = "";
     board.setAttribute("data-cols", String(cfg.cols));
     board.setAttribute("data-pairs", String(cfg.pairs));
     cards = [];
-    open = []; moves = 0; found = 0; elapsed = 0; locked = false; lastResult = null;
-    stopTick(); startT = 0;
+    open = []; moves = 0; found = 0; elapsed = 0; startT = 0;
+    locked = false; lastResult = null; paused = false; cleared = false;
     elDone.hidden = true;
+    elVeil.hidden = true;
 
     deck.forEach(function (c, idx) {
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "d-card";
-      btn.setAttribute("aria-pressed", "false");
       btn.dataset.key = c.key;
       btn.dataset.idx = String(idx);
+      btn.dataset.up = "0";
 
       var inner = document.createElement("span");
       inner.className = "d-inner";
@@ -330,43 +405,42 @@
       back.innerHTML = BACK_SVG;
       var front = document.createElement("span");
       front.className = "d-face d-front";
-      front.innerHTML = faceSvg(c.sh);
+      front.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">' + c.sh.svg + '</svg>';
       inner.appendChild(back); inner.appendChild(front);
       btn.appendChild(inner);
 
-      var label = document.createElement("span");
-      label.className = "sr";
-      btn.appendChild(label);
-      btn._label = label;
       btn._shape = c.sh;
       labelCard(btn);
 
       btn.addEventListener("click", function () { flip(btn); });
+      btn.addEventListener("keydown", arrowMove);
       board.appendChild(btn);
       cards.push(btn);
     });
 
     sync(); showBest();
-    say(t(cfg.pairs + "쌍, 카드 " + (cfg.pairs * 2) + "장을 새로 섞었습니다.",
-          cfg.pairs + " pairs, " + (cfg.pairs * 2) + " cards freshly shuffled."));
+    say(t(cfg.pairs + "쌍, 카드 " + (cfg.pairs * 2) + "장을 새로 섞어 모두 덮었습니다. 아무 카드나 뒤집어 시작하세요.",
+          cfg.pairs + " pairs, " + (cfg.pairs * 2) + " cards freshly shuffled and face down. Flip any card to begin."));
   }
 
+  /* 덮인 카드의 이름은 도형을 절대 알려 주지 않는다 */
   function labelCard(btn) {
     var n = Number(btn.dataset.idx) + 1;
     var done = btn.dataset.done === "1";
-    var up = btn.getAttribute("aria-pressed") === "true" || done;
+    var up = btn.dataset.up === "1";
     var sh = btn._shape;
     var name = t(sh.ko, sh.en);
-    btn._label.textContent = up
-      ? (done ? t(n + "번 카드, " + name + ", 짝 맞춤", "Card " + n + ", " + name + ", matched")
-              : t(n + "번 카드, " + name, "Card " + n + ", " + name))
-      : t(n + "번 카드, 덮인 카드", "Card " + n + ", face down");
+    var label;
+    if (done)      label = t("카드 " + n + ", " + name + ", 짝 맞춤", "Card " + n + ", " + name + ", matched");
+    else if (up)   label = t("카드 " + n + ", " + name, "Card " + n + ", " + name);
+    else           label = t("카드 " + n + ", 뒤집힘", "Card " + n + ", face down");
+    btn.setAttribute("aria-label", label);
   }
 
   function say(msg) { elLive.textContent = msg; }
 
   function startTick() {
-    if (tick) return;
+    if (tick || paused || cleared) return;
     startT = Date.now() - elapsed * 1000;
     tick = setInterval(function () {
       elapsed = Math.floor((Date.now() - startT) / 1000);
@@ -380,31 +454,33 @@
     elMoves.textContent = moves;
     elTime.textContent = fmt(elapsed);
     elPairs.textContent = found + " / " + cfg.pairs;
+    elStreak.textContent = streak;
+    btnPause.textContent = paused ? t("이어서 하기", "Resume") : t("잠시 멈춤", "Pause");
+    btnPause.disabled = cleared;
   }
 
   function flip(btn) {
-    if (locked) return;
+    if (paused || cleared || locked) return;
     if (btn.dataset.done === "1") return;
-    if (btn.getAttribute("aria-pressed") === "true") return;
+    if (btn.dataset.up === "1") return;
     if (open.length >= 2) return;
 
     startTick();
-    btn.setAttribute("aria-pressed", "true");
+    btn.dataset.up = "1";
     labelCard(btn);
     open.push(btn);
 
     if (open.length < 2) {
-      say(t(t(btn._shape.ko, btn._shape.en) + " 가 나왔습니다.",
-            t(btn._shape.ko, btn._shape.en) + " turned up."));
+      say(t(t(btn._shape.ko, btn._shape.en) + "가 나왔습니다. 한 장 더 뒤집으세요.",
+            t(btn._shape.ko, btn._shape.en) + " turned up. Flip one more."));
       return;
     }
 
-    moves += 1; sync();
+    moves += 1;
     var a = open[0], b = open[1];
 
     if (a.dataset.key === b.dataset.key) {
       a.dataset.done = "1"; b.dataset.done = "1";
-      a.setAttribute("aria-pressed", "false"); b.setAttribute("aria-pressed", "false");
       a.disabled = true; b.disabled = true;
       labelCard(a); labelCard(b);
       open = [];
@@ -415,34 +491,78 @@
       return;
     }
 
+    sync();
     locked = true;
-    say(t("두 장이 다릅니다. 다시 덮습니다.", "Those two differ. Turning them back."));
-    setTimeout(function () {
-      a.setAttribute("aria-pressed", "false");
-      b.setAttribute("aria-pressed", "false");
-      labelCard(a); labelCard(b);
-      open = []; locked = false;
-    }, 820);
+    say(t("두 장이 다릅니다. " + (peek / 1000).toFixed(1) + "초 뒤 다시 덮습니다.",
+          "Those two differ — turning back in " + (peek / 1000).toFixed(1) + "s."));
+    hideTimer = setTimeout(hideOpen, peek);
+  }
+
+  function hideOpen() {
+    hideTimer = 0;
+    open.forEach(function (c) { c.dataset.up = "0"; labelCard(c); });
+    open = []; locked = false;
+  }
+
+  /* ---- 멈춤: 시계를 세우고 판을 가린다 (멈춘 사이에 외우지 못하게) ---- */
+  function pause() {
+    if (paused || cleared) return;
+    paused = true;
+    stopTick();
+    /* 열려 있던 두 장은 멈추기 전에 덮어 둔다 */
+    if (hideTimer) { clearTimeout(hideTimer); hideOpen(); }
+    cards.forEach(function (c) { if (c.dataset.done !== "1") c.disabled = true; });
+    elVeilT.textContent = t("잠시 멈춤", "Paused");
+    elVeilS.textContent = t("시계가 멈췄고 판을 가렸습니다. ‘이어서 하기’를 누르면 그대로 계속합니다.",
+                            "The clock has stopped and the board is hidden. Resume carries on exactly where you were.");
+    elVeilB.textContent = t("이어서 하기", "Resume");
+    elVeil.hidden = false;
+    sync();
+    say(t("잠시 멈췄습니다. 시계가 서고 판이 가려졌습니다.", "Paused. The clock has stopped and the board is hidden."));
+    elVeilB.focus();
+  }
+  function resume() {
+    if (!paused || cleared) return;
+    paused = false;
+    elVeil.hidden = true;
+    cards.forEach(function (c) { if (c.dataset.done !== "1") c.disabled = false; });
+    if (moves > 0 || found > 0) startTick();
+    sync();
+    say(t("이어서 합니다.", "Carrying on."));
+    var next = cards.filter(function (c) { return c.dataset.done !== "1"; })[0];
+    if (next) next.focus();
   }
 
   function finish() {
     stopTick();
-    var cfg = SIZES[size];
+    cleared = true;
+    streak += 1;
+    peek = Math.max(PEEK_MIN, PEEK_START - streak * PEEK_DROP);
+
     var best = readBest();
     var prev = best[size];
     var record = !prev || !prev.time || elapsed < prev.time;
-    if (record) {
-      best[size] = { time: elapsed, moves: moves };
-      writeBest(best);
-    }
+    if (record) { best[size] = { time: elapsed, moves: moves }; writeBest(best); }
     lastResult = { time: elapsed, moves: moves, record: record };
     showBest();
 
+    /* 판 위에도, 판 아래에도 결과를 보여 준다 */
+    elVeilT.textContent = t("다 맞췄어요", "All matched");
+    elVeilS.textContent = t(fmt(elapsed) + " 만에 " + moves + "번 뒤집었습니다." + (record ? " 가장 빠른 기록입니다." : ""),
+                            "Finished in " + fmt(elapsed) + " with " + moves + " moves." + (record ? " A new best." : ""));
+    elVeilB.textContent = t("한 판 더", "Play again");
+    elVeil.hidden = false;
+
     elDone.hidden = false;
     paintDone();
-    say(t("다 맞췄어요. " + fmt(elapsed) + ", " + moves + "번 뒤집었습니다." + (record ? " 가장 빠른 기록입니다." : ""),
-          "All matched in " + fmt(elapsed) + " with " + moves + " moves." + (record ? " That is a new best." : "")));
-    document.getElementById("mc-again").focus();
+    sync();
+    say(t("다 맞췄어요. " + fmt(elapsed) + ", " + moves + "번 뒤집었습니다." +
+            (record ? " 가장 빠른 기록입니다." : "") +
+            " 다음 판은 다른 두 장이 " + (Math.max(PEEK_MIN, PEEK_START - streak * PEEK_DROP) / 1000).toFixed(1) + "초만 보입니다.",
+          "All matched in " + fmt(elapsed) + " with " + moves + " moves." +
+            (record ? " That is a new best." : "") +
+            " Next round shows a mismatch for only " + (Math.max(PEEK_MIN, PEEK_START - streak * PEEK_DROP) / 1000).toFixed(1) + "s."));
+    elVeilB.focus();
   }
 
   function paintDone() {
@@ -450,10 +570,37 @@
     var label = t(SIZES[size].ko, SIZES[size].en);
     elDoneL.textContent = t(
       label + " · " + fmt(lastResult.time) + " 만에 " + lastResult.moves + "번 뒤집어 끝냈습니다." +
-        (lastResult.record ? " 가장 빠른 기록이에요." : ""),
+        (lastResult.record ? " 가장 빠른 기록이에요." : "") +
+        " 다음 판은 외울 시간이 " + (peek / 1000).toFixed(1) + "초로 줄어듭니다.",
       label + " · finished in " + fmt(lastResult.time) + " with " + lastResult.moves + " moves." +
-        (lastResult.record ? " A new best time." : "")
+        (lastResult.record ? " A new best time." : "") +
+        " Next round gives you " + (peek / 1000).toFixed(1) + "s to memorise."
     );
+  }
+
+  /* ---- 화살표 키로 옆 카드로 가기 ---- */
+  function arrowMove(e) {
+    var keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"];
+    if (keys.indexOf(e.key) < 0) return;
+    var cols = Number(board.getAttribute("data-cols")) || 4;
+    /* 넓은 화면에서는 실제로 그려진 칸 수를 재어 쓴다 */
+    if (cards.length > 1) {
+      var y0 = cards[0].getBoundingClientRect().top, c = 0;
+      for (var i = 0; i < cards.length; i++) {
+        if (Math.abs(cards[i].getBoundingClientRect().top - y0) < 2) c++; else break;
+      }
+      if (c > 0) cols = c;
+    }
+    var i = cards.indexOf(e.currentTarget);
+    if (i < 0) return;
+    var n = cards.length, j = i;
+    if (e.key === "ArrowLeft")  j = (i - 1 + n) % n;
+    if (e.key === "ArrowRight") j = (i + 1) % n;
+    if (e.key === "ArrowUp")    j = (i - cols + n) % n;
+    if (e.key === "ArrowDown")  j = (i + cols) % n;
+    if (e.key === "Home")       j = 0;
+    if (e.key === "End")        j = n - 1;
+    if (cards[j]) { cards[j].focus(); e.preventDefault(); }
   }
 
   /* ---- 단추 ---- */
@@ -463,21 +610,49 @@
         o.setAttribute("aria-pressed", o === b ? "true" : "false");
       });
       size = b.dataset.size;
-      build();
+      build(true);
     });
   });
-  document.getElementById("mc-reset").addEventListener("click", build);
-  document.getElementById("mc-again").addEventListener("click", function () {
-    build();
+  document.getElementById("mc-reset").addEventListener("click", function () {
+    build(true);
     if (cards[0]) cards[0].focus();
+  });
+  document.getElementById("mc-again").addEventListener("click", function () {
+    build(false);
+    if (cards[0]) cards[0].focus();
+  });
+  btnPause.addEventListener("click", function () { if (paused) resume(); else pause(); });
+  elVeilB.addEventListener("click", function () {
+    if (cleared) { build(false); if (cards[0]) cards[0].focus(); }
+    else resume();
+  });
+
+  /* 다른 쪽을 보거나 창을 떠나면 저절로 멈춘다 */
+  document.addEventListener("visibilitychange", function () { if (document.hidden) pause(); });
+  window.addEventListener("blur", function () { pause(); });
+
+  /* 빈칸 키·ESC 로도 멈출 수 있게 (카드에 초점이 있을 땐 카드 몫) */
+  window.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape" && e.key !== "p" && e.key !== "P") return;
+    if (paused) resume(); else pause();
   });
 
   document.addEventListener("huhassi:lang", function () {
     cards.forEach(labelCard);
     sync(); showBest(); paintDone();
+    if (!elVeil.hidden) {
+      if (cleared) {
+        elVeilT.textContent = t("다 맞췄어요", "All matched");
+        elVeilB.textContent = t("한 판 더", "Play again");
+      } else {
+        elVeilT.textContent = t("잠시 멈춤", "Paused");
+        elVeilB.textContent = t("이어서 하기", "Resume");
+      }
+    }
   });
 
-  build();
+  readBest();
+  build(true);
 })();
 </script>
 </body>

@@ -275,6 +275,7 @@
     } catch (e) { storeOk = false; high = 0; highLevel = 0; }
   }
   function writeHigh() {
+    if (high <= 0) return;   /* 0점을 적어 두지는 않는다 */
     try { localStorage.setItem(KEY, JSON.stringify({ score: high, level: highLevel })); }
     catch (e) { storeOk = false; }
   }
@@ -304,6 +305,7 @@
     stopLoop();
     keyLeft = keyRight = false;
     clearHeld();
+    if (s) saveIfBest();     /* 하던 판의 점수를 잃지 않게 먼저 저장한다 */
     s = { score: 0, lives: 3, level: 1, padW: 80, padX: W / 2, bricks: makeBricks(1),
           ball: null, stuck: true };
     resetBall();
@@ -344,9 +346,17 @@
     return n;
   }
 
-  function saveIfBest() {
-    if (s.score > high) { high = s.score; highLevel = s.level; writeHigh(); return true; }
+  /* 점수가 최고를 넘으면 곧바로 머릿속 기록을 올린다 (화면과 어긋나지 않게).
+     저장은 자주 하지 않고 멈출 때·끝날 때·판을 깼을 때만 한다. */
+  function bumpHigh() {
+    if (!s) return false;
+    if (s.score > high) { high = s.score; highLevel = s.level; return true; }
     return false;
+  }
+  function saveIfBest() {
+    var rec = bumpHigh();
+    writeHigh();
+    return rec;
   }
 
   /* ---- 화면 크기 맞추기 (devicePixelRatio 를 반영해 흐리지 않게) ---- */
@@ -589,6 +599,7 @@
     if (mode !== "playing") return;
     mode = "paused"; stopLoop();
     keyLeft = keyRight = false; clearHeld();
+    saveIfBest();            /* 멈출 때 기록을 적어 둔다 (창을 닫아도 남게) */
     sync(); paint();
     say(t("잠시 멈췄습니다. 판을 탭하거나 빈칸 키를 누르면 그 자리에서 이어서 합니다.",
           "Paused. Tap the board or press space to carry on from exactly here."));
@@ -611,8 +622,9 @@
   /* ---- 화면 글자 맞추기 ---- */
   function sync() {
     if (!s) return;
+    bumpHigh();
     elScore.textContent = s.score;
-    elHigh.textContent = Math.max(high, s.score);
+    elHigh.textContent = high;
     elLives.textContent = s.lives;
     elLevel.textContent = s.level;
     elLeft.textContent = aliveCount();

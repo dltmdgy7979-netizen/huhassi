@@ -6,11 +6,13 @@
   <rect x="540" y="18" width="76" height="18" rx="9" fill="#FFEBDD"/>
   <text x="578" y="31" font-family="sans-serif" font-size="10" font-weight="700" fill="#D14E00" text-anchor="middle">07</text>
 
-  <!-- 점선 놓는 칸 -->
+  <!-- 점선 놓는 칸: 끌어다 놓기 · 붙여 넣기 · 고르기 -->
   <rect x="24" y="72" width="592" height="46" rx="12" fill="#FFF5EE" stroke="#D8D2CC" stroke-width="2" stroke-dasharray="7 6"/>
-  <path d="M110 103 v-20 M101 91 l9-9 9 9" stroke="#FF6A13" stroke-width="3" stroke-linecap="round" fill="none"/>
-  <rect x="132" y="88" width="150" height="9" rx="4.5" fill="#D8D2CC"/>
-  <rect x="132" y="101" width="96" height="7" rx="3.5" fill="#E9E5E1"/>
+  <path d="M52 103 v-20 M43 91 l9-9 9 9" stroke="#FF6A13" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <text x="74" y="89" font-family="sans-serif" font-size="11" fill="#6E6A66">끌어다 놓기 · 붙여 넣기 (Ctrl+V)</text>
+  <text x="74" y="106" font-family="sans-serif" font-size="11" fill="#6E6A66">Drag · paste · or choose</text>
+  <rect x="488" y="82" width="112" height="26" rx="13" fill="#FF6A13"/>
+  <text x="544" y="99" font-family="sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">사진 고르기</text>
 
   <!-- 조절 막대 -->
   <rect x="24" y="132" width="180" height="5" rx="2.5" fill="#E9E5E1"/>
