@@ -22,6 +22,8 @@ import {
   CallToolRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
+import { pathToFileURL } from "node:url";
+
 /* ───────────────────────── 설정값 ───────────────────────── */
 
 const API_BASE =
@@ -36,6 +38,9 @@ const YEAR_MAX = 2050;
 
 // 바깥에 한 번 물어보고 기다리는 최대 시간 (밀리초)
 const TIMEOUT_MS = 8000;
+
+// 한 해가 비어 와서 달별로 열두 번 물어볼 때, 전체로 기다리는 최대 시간
+const ALL_MONTH_BUDGET_MS = 30000;
 
 /* ───────────────────── 연도별 기억(캐시) ─────────────────────
    같은 연도를 두 번 묻더라도 바깥에는 한 번만 물어봅니다.
@@ -148,22 +153,75 @@ async function 한번물어보기(params) {
   try {
     res = await fetch(url, { signal: 멈추개, headers: { Accept: "application/json" } });
   } catch (e) {
+    // 시간 초과와 연결 실패는 해야 할 일이 다르므로 따로 말해 줍니다.
+    const 이름 = e?.name || "";
+    if (이름 === "TimeoutError" || 이름 === "AbortError") {
+      throw new 사용자오류(
+        `공공데이터포털이 ${Math.round(TIMEOUT_MS / 1000)}초 안에 답하지 않았습니다.\n` +
+          "포털이 느린 때가 있습니다. 잠시 뒤 다시 물어봐 주세요."
+      );
+    }
     throw new 사용자오류(
-      "공공데이터포털에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.\n" +
+      "공공데이터포털에 연결하지 못했습니다.\n" +
+        "인터넷 연결, 또는 회사·학교 방화벽에 막혀 있는지 확인해 주세요.\n" +
         `(자세한 내용: ${e?.message || e})`
     );
   }
 
-  const 본문 = await res.text();
+  let 본문 = "";
+  try {
+    본문 = await res.text();
+  } catch {
+    본문 = "";
+  }
 
   if (!res.ok) {
-    throw new 사용자오류(
-      `공공데이터포털이 오류로 답했습니다 (HTTP ${res.status}).\n` +
-        "인증키가 맞는지, 활용 신청이 승인되었는지 확인해 주세요."
-    );
+    // 포털은 오류일 때도 본문에 까닭(resultCode)을 적어 보내는 때가 있습니다.
+    // 그 까닭이 있으면 HTTP 번호보다 그쪽이 훨씬 쓸모 있으니 먼저 읽어 봅니다.
+    try {
+      항목뽑기(본문);
+    } catch (e) {
+      if (e instanceof 사용자오류) throw e;
+    }
+    throw new 사용자오류(HTTP오류말(res.status));
   }
 
   return 항목뽑기(본문);
+}
+
+/** HTTP 번호마다 해야 할 일이 다르니 다르게 말해 줍니다. */
+function HTTP오류말(상태) {
+  const 번호 = Number(상태);
+  if (번호 === 401 || 번호 === 403) {
+    return (
+      `공공데이터포털이 인증을 거절했습니다 (HTTP ${번호}).\n` +
+      "1. '일반 인증키(Decoding)' 를 넣었는지 확인해 주세요. Encoding 쪽이면 작동하지 않습니다.\n" +
+      "2. 키 앞뒤에 빈칸이나 줄바꿈이 끼어 있지 않은지 확인해 주세요.\n" +
+      "3. 마이페이지에서 '특일 정보' 활용신청이 승인(개발계정)되었는지 확인해 주세요."
+    );
+  }
+  if (번호 === 404) {
+    return (
+      `요청한 주소를 포털에서 찾지 못했습니다 (HTTP 404).\n` +
+      "포털이 서비스 주소를 바꾼 때입니다. 이 프로그램의 새 판이 필요할 수 있습니다."
+    );
+  }
+  if (번호 === 429) {
+    return (
+      "오늘 또는 지금 쓸 수 있는 횟수를 넘겼습니다 (HTTP 429).\n" +
+      "잠시 뒤, 또는 내일 다시 물어봐 주세요."
+    );
+  }
+  if (번호 >= 500) {
+    return (
+      `공공데이터포털 쪽에서 문제가 났습니다 (HTTP ${번호}).\n` +
+      "내 설정 문제가 아닙니다. 잠시 뒤 다시 물어봐 주세요."
+    );
+  }
+  return (
+    `공공데이터포털이 오류로 답했습니다 (HTTP ${번호}).\n` +
+    "인증키가 맞는지, 활용 신청이 승인되었는지 확인해 주세요."
+  );
 }
 
 /**
@@ -264,7 +322,11 @@ async function 연도공휴일(year) {
   let 목록 = await 한번물어보기({ solYear: year });
 
   if (목록.length === 0) {
+    // 달별로 다시 물어봅니다. 다만 열두 번을 끝없이 기다리지 않도록
+    // 전체 시간에 상한을 둡니다 (느린 날 대화창이 멈춘 듯 보이는 것을 막습니다).
+    const 끝낼때 = Date.now() + ALL_MONTH_BUDGET_MS;
     for (let m = 1; m <= 12; m++) {
+      if (Date.now() > 끝낼때) break;
       const 한달 = await 한번물어보기({
         solYear: year,
         solMonth: String(m).padStart(2, "0"),
@@ -280,7 +342,9 @@ async function 연도공휴일(year) {
   }
   const 정렬 = [...묶음.values()].sort((a, b) => a.date.localeCompare(b.date));
 
-  cache.set(키, 정렬);
+  // 비어 있는 답은 기억하지 않습니다. 한 번 비어 왔다고
+  // 프로그램이 켜져 있는 동안 계속 "없다"고 하면 안 되니까요.
+  if (정렬.length > 0) cache.set(키, 정렬);
   return 정렬;
 }
 
@@ -347,19 +411,36 @@ const TOOLS = [
 async function 도구실행(name, args = {}) {
   if (name === "list_holidays") {
     const year = 연도확인(args.year);
-    const 전체 = await 연도공휴일(year);
 
-    let 목록 = 전체;
-    let 머리말 = `${year}년 공휴일 ${전체.length}일`;
-
+    // 넣은 값은 바깥에 물어보기 **전에** 모두 확인합니다.
+    // (틀린 값으로 포털에 묻고 나서 거절하면 횟수만 버리게 됩니다.)
+    let 달 = null;
     if (args.month != null && args.month !== "") {
       const m = Number(args.month);
       if (!Number.isInteger(m) || m < 1 || m > 12) {
         throw new 사용자오류("달은 1부터 12까지의 숫자로 적어 주세요.");
       }
-      const 앞 = `${year}-${String(m).padStart(2, "0")}`;
+      달 = m;
+    }
+
+    const 전체 = await 연도공휴일(year);
+
+    // 한 해가 통째로 비어 오는 것은 '쉬는 날이 없다'가 아니라 '자료를 못 받았다' 쪽입니다.
+    if (전체.length === 0) {
+      return (
+        `${year}년 공휴일 자료를 한 건도 받지 못했습니다.\n` +
+        "포털이 그 해 자료를 아직 올리지 않았거나, 답이 비어 온 경우입니다.\n" +
+        "가까운 연도(예: 올해)로 한 번 물어봐 확인해 주세요."
+      );
+    }
+
+    let 목록 = 전체;
+    let 머리말 = `${year}년 공휴일 ${전체.length}일`;
+
+    if (달 != null) {
+      const 앞 = `${year}-${String(달).padStart(2, "0")}`;
       목록 = 전체.filter((h) => h.date.startsWith(앞));
-      머리말 = `${year}년 ${m}월 공휴일 ${목록.length}일`;
+      머리말 = `${year}년 ${달}월 공휴일 ${목록.length}일`;
     }
 
     if (목록.length === 0) return `${머리말} — 쉬는 날이 없습니다.`;
@@ -375,9 +456,17 @@ async function 도구실행(name, args = {}) {
     const date = 날짜읽기(args.date, "날짜");
     const year = 연도확인(date.slice(0, 4));
     const 전체 = await 연도공휴일(year);
-    const 찾음 = 전체.find((h) => h.date === date);
     const 요일말 = `${date} (${요일(date)})`;
 
+    // 자료가 아예 비어 왔는데 "공휴일 아닙니다" 라고 답하면 거짓말이 됩니다.
+    if (전체.length === 0) {
+      return (
+        `${year}년 공휴일 자료를 받지 못해, ${요일말}이 공휴일인지 확인하지 못했습니다.\n` +
+        "잠시 뒤 다시 물어봐 주세요."
+      );
+    }
+
+    const 찾음 = 전체.find((h) => h.date === date);
     if (찾음) return `네, ${요일말}은 공휴일입니다. 이름은 '${찾음.name}' 입니다.`;
 
     const 주말 = ["토", "일"].includes(요일(date));
@@ -408,6 +497,11 @@ async function 도구실행(name, args = {}) {
   throw new 사용자오류(`모르는 도구입니다: ${name}`);
 }
 
+/* ───────────── 안을 들여다볼 수 있게 내보내기 ─────────────
+   답을 풀어내는 부분만 따로 시험해 볼 수 있도록 내보냅니다.
+   (MCP 손님 프로그램은 이걸 쓰지 않습니다. 시험용입니다.) */
+export const 내부 = { 항목뽑기, 포털오류말, HTTP오류말, 날짜읽기, 요일, 날수차이 };
+
 /* ─────────────────────── MCP 서버 켜기 ─────────────────────── */
 
 const server = new Server(
@@ -434,7 +528,14 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   }
 });
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
-// stdout 은 MCP 가 쓰는 길이라 아무것도 적지 않습니다. 알림은 stderr 로.
-process.stderr.write("공휴일 조회 MCP 가 준비되었습니다.\n");
+// 이 파일을 직접 실행했을 때만 서버를 켭니다.
+// (시험 코드가 import 로 불러올 때는 켜지 않습니다.)
+const 직접실행 =
+  process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (직접실행) {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  // stdout 은 MCP 가 쓰는 길이라 아무것도 적지 않습니다. 알림은 stderr 로.
+  process.stderr.write("공휴일 조회 MCP 가 준비되었습니다.\n");
+}

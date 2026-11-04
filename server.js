@@ -30,6 +30,8 @@ function send(res, code, body, type, extra) {
     "Content-Type": type || "text/plain; charset=utf-8",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "no-referrer",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
     "Cache-Control": code === 200 ? "public, max-age=300" : "no-store"
   }, extra || {});
   res.writeHead(code, headers);
@@ -71,6 +73,7 @@ async function handleRequestForm(req, res) {
   catch { return json(res, 400, { error: "bad_json" }); }
 
   if (data.website) return json(res, 200, { ok: true });           // 로봇용 미끼 칸
+  if (data.consent !== true) return json(res, 400, { error: "no_consent" });
   const trim = (v, max) => String(v == null ? "" : v).trim().slice(0, max);
   const row = {
     name: trim(data.name, 100),
@@ -79,7 +82,8 @@ async function handleRequestForm(req, res) {
     body: trim(data.body, 4000),
     lang: data.lang === "en" ? "en" : "ko",
     source: "huhassi-site",
-    status: "new"
+    status: "new",
+    consent_at: new Date().toISOString()
   };
   if (row.contact.length < 3 || row.body.length < 5) return json(res, 400, { error: "too_short" });
 

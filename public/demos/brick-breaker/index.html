@@ -4,34 +4,52 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>블록 깨기 Brick Breaker — 후하씨 huhassi</title>
-<meta name="description" content="공을 튕겨 위쪽 블록을 모두 없애는 캔버스 게임. 막대는 손가락으로 끌어 움직입니다.">
+<meta name="description" content="공을 튕겨 위쪽 블록을 모두 없애는 캔버스 놀이. 막대는 손가락으로 끌고, 탭이나 빈칸 키로 공을 쏩니다.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/demo.css">
 <script src="../../assets/i18n.js" defer></script>
 <style>
   /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
+  .d-intro{margin:0 0 14px;font-size:14.5px;line-height:1.65}
+  .d-intro b{font-variation-settings:"wght" 700}
+
   .d-wrap{position:relative;width:100%;max-width:100%;margin-top:14px}
   .d-canvas{display:block;width:100%;max-width:100%;height:auto;background:var(--soft);
     border:1px solid var(--line);border-radius:var(--radius-s);touch-action:none;cursor:pointer}
+
   .d-over{position:absolute;inset:0;display:grid;place-items:center;padding:16px;
-    background:rgba(255,255,255,.86);border-radius:var(--radius-s);text-align:center;
+    background:rgba(255,255,255,.88);border-radius:var(--radius-s);text-align:center;
     pointer-events:none}
   .d-over[hidden]{display:none}
-  .d-over p{margin:0 0 4px;font-size:16px;font-variation-settings:"wght" 760;max-width:30ch}
+  .d-over p{margin:0 0 5px;font-size:16px;font-variation-settings:"wght" 760;max-width:30ch}
   .d-over small{display:block;color:var(--ink-2);font-size:13px;max-width:34ch;margin-inline:auto}
+  /* 겹친 판 위의 단추만 손가락을 받는다 */
+  .d-over .btn{pointer-events:auto;margin-top:12px}
+
   .d-stats{margin-bottom:4px}
   .d-ctl{margin-top:14px}
+
   .d-pad{display:flex;gap:10px;margin-top:10px}
-  .d-pad button{flex:1 1 0;min-width:0;padding:14px 8px;font-size:20px;line-height:1;
-    border:1px solid var(--line-2);background:#fff;border-radius:var(--radius-s);cursor:pointer}
+  .d-pad button{flex:1 1 0;min-width:0;min-height:52px;padding:12px 8px;font-size:22px;
+    line-height:1;border:1px solid var(--line-2);background:#fff;color:var(--ink);
+    border-radius:var(--radius-s);cursor:pointer;-webkit-tap-highlight-color:transparent;
+    touch-action:manipulation}
   .d-pad button:hover{border-color:var(--orange);color:var(--orange-ink)}
+  .d-pad button[data-held="1"]{background:var(--orange-soft);border-color:var(--orange);
+    color:var(--orange-ink)}
   @media (min-width:620px){.d-pad{display:none}}
+
+  .d-best{font-size:13.5px;color:var(--ink-2);margin:0}
+  .d-best b{color:var(--orange-ink);font-variant-numeric:tabular-nums}
+
+  .d-rule{margin-top:12px;font-size:13.5px;color:var(--ink-2);background:var(--soft);
+    border:1px solid var(--line);border-radius:var(--radius-s);padding:10px 12px;line-height:1.6}
+
   .d-blink{animation:d-blink 1.6s ease-in-out infinite}
-  @keyframes d-blink{0%,100%{opacity:1}50%{opacity:.45}}
+  @keyframes d-blink{0%,100%{opacity:1}50%{opacity:.5}}
   @media (prefers-reduced-motion:reduce){
     .d-blink{animation:none}
-    .d-canvas{scroll-behavior:auto}
   }
 </style>
 </head>
@@ -64,8 +82,15 @@
   <section class="panel" aria-labelledby="h-demo">
     <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
 
+    <!-- 놀기 전에 먼저 읽는 한 줄 -->
+    <p class="d-intro">
+      <span data-lang-ko><b>아래쪽 막대로 공을 받아 올려</b> 위쪽 블록을 모두 없애는 놀이입니다. 공을 놓치면 목숨이 하나 줄고, 세 개를 다 쓰면 끝납니다.</span>
+      <span data-lang-en><b>Catch the ball with the paddle</b> and knock out every brick above. Miss the ball and you lose a life; the game ends when all three are gone.</span>
+    </p>
+
     <ul class="statline d-stats">
       <li><span class="k" data-ko="점수" data-en="Score">점수</span><span class="v" id="bb-score">0</span></li>
+      <li><span class="k" data-ko="최고 점수" data-en="Best score">최고 점수</span><span class="v" id="bb-high">0</span></li>
       <li><span class="k" data-ko="목숨" data-en="Lives">목숨</span><span class="v" id="bb-lives">3</span></li>
       <li><span class="k" data-ko="단계" data-en="Level">단계</span><span class="v" id="bb-level">1</span></li>
       <li><span class="k" data-ko="남은 블록" data-en="Bricks left">남은 블록</span><span class="v" id="bb-left">32</span></li>
@@ -79,15 +104,22 @@
         <div>
           <p id="bb-over-t"></p>
           <small id="bb-over-s"></small>
+          <button class="btn btn-solid" type="button" id="bb-over-btn" hidden></button>
         </div>
       </div>
     </div>
 
+    <!-- 상태가 바뀔 때마다 여기에 적는다 (화면 낭독기용) -->
     <p class="sr" id="bb-live" role="status" aria-live="polite"></p>
 
-    <div class="d-pad" aria-hidden="true">
-      <button type="button" id="bb-left-btn" tabindex="-1">◀</button>
-      <button type="button" id="bb-right-btn" tabindex="-1">▶</button>
+    <!-- 작은 화면용 좌우 단추. 한 칸이 52px 이라 손가락으로 눌린다 -->
+    <div class="d-pad">
+      <button type="button" id="bb-left-btn"
+        data-ko-aria="막대를 왼쪽으로" data-en-aria="Move the paddle left">◀</button>
+      <button type="button" id="bb-launch-btn"
+        data-ko-aria="공 쏘기 또는 잠시 멈춤" data-en-aria="Launch the ball, or pause">●</button>
+      <button type="button" id="bb-right-btn"
+        data-ko-aria="막대를 오른쪽으로" data-en-aria="Move the paddle right">▶</button>
     </div>
 
     <div class="controls d-ctl">
@@ -96,18 +128,26 @@
       <span class="hint" style="margin:0" id="bb-state"></span>
     </div>
 
-    <p class="hint" data-ko="판을 손가락으로 끌면 막대가 따라옵니다. 컴퓨터에서는 판을 한 번 누른 뒤 ← → 키를 쓰세요. 점수는 아무 곳에도 보내지 않고 화면에만 남습니다." data-en="Drag across the board and the paddle follows your finger. On a computer, click the board once, then use the arrow keys. Nothing is sent anywhere — the score only lives on this screen."></p>
+    <p class="d-best" id="bb-bestline" style="margin-top:12px"></p>
+
+    <!-- 어려워지는 방식을 글로 적어 둔다 -->
+    <p class="d-rule">
+      <span data-lang-ko>어려워지는 방식: 한 판을 다 깨면 블록이 <b>한 줄 늘고</b>(4줄 → 최대 7줄), 공이 <b>조금 빨라지고</b>(단계마다 약 7%, 최대까지), 막대가 <b>4px 짧아집니다</b>(최소 56px). 목숨은 늘지 않습니다.</span>
+      <span data-lang-en>How it gets harder: each cleared board adds <b>one more row</b> (4 up to 7), makes the ball <b>a little faster</b> (about 7% a level, up to a cap), and shortens the paddle by <b>4px</b> (down to 56px). You never gain a life.</span>
+    </p>
+
+    <p class="hint" data-ko="판을 손가락으로 끌면 막대가 따라옵니다. 컴퓨터에서는 판을 한 번 누른 뒤 ← → 키를 쓰세요. 점수는 아무 곳에도 보내지 않고 이 기기에만 남습니다." data-en="Drag across the board and the paddle follows your finger. On a computer, click the board once, then use the arrow keys. Nothing is sent anywhere — your score stays on this device."></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="‘시작’ 단추를 누르거나 판을 한 번 누릅니다." data-en="Press Start, or tap the board once."></li>
-      <li data-ko="손가락으로 판을 끌어 막대를 공 아래로 옮깁니다." data-en="Drag across the board to slide the paddle under the ball."></li>
-      <li data-ko="컴퓨터에서는 판을 누른 뒤 ← → 키로 막대를 움직입니다." data-en="On a computer, click the board and move the paddle with the arrow keys."></li>
-      <li data-ko="위쪽 블록을 모두 없애면 다음 단계로 넘어갑니다." data-en="Clear every brick at the top and the next level begins."></li>
-      <li data-ko="공을 세 번 놓치면 끝이고, ‘처음부터’로 다시 시작합니다." data-en="Miss the ball three times and it ends — press Restart to play again."></li>
+      <li data-ko="‘시작’을 누르면 공이 막대에 얹힙니다." data-en="Press Start and the ball sits on the paddle."></li>
+      <li data-ko="판을 한 번 탭하거나 빈칸 키를 눌러 공을 쏩니다." data-en="Tap the board once, or press space, to launch the ball."></li>
+      <li data-ko="손가락으로 판을 끌거나 ← → 키로 막대를 옮겨 공을 받습니다." data-en="Drag across the board, or use the arrow keys, to slide the paddle under the ball."></li>
+      <li data-ko="놀다가 빈칸 키나 ‘잠시 멈춤’을 누르면 멈추고, 다시 누르면 이어서 합니다." data-en="Press space or Pause to stop; press again to carry on where you left off."></li>
+      <li data-ko="공을 세 번 놓치면 끝이고, 겹쳐 뜨는 ‘다시 하기’로 처음부터 합니다." data-en="Miss the ball three times and it ends — the overlay's Play again button starts a fresh game."></li>
     </ol>
   </section>
 
@@ -135,6 +175,12 @@
           <td data-ko="후하씨가 직접 만듦 — 캔버스로 그림" data-en="Made by huhassi — drawn on canvas">후하씨가 직접 만듦 — 캔버스로 그림</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="바깥에서 들여온 꾸러미" data-en="Outside libraries">바깥에서 들여온 꾸러미</td>
+          <td data-ko="없음 — 순수 HTML·CSS·JS" data-en="None — plain HTML, CSS and JS">없음 — 순수 HTML·CSS·JS</td>
+          <td>—</td>
+          <td data-ko="해당 없음" data-en="Not applicable">해당 없음</td>
         </tr>
         <tr>
           <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
@@ -181,13 +227,14 @@
     return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
   };
 
-  /* 놀이판은 480x340 "속 단위"로 생각하고, 화면 크기에 맞춰 늘려 그린다.
+  /* 놀이판은 480x340 "속 단위"로 셈하고, 화면 크기에 맞춰 늘려 그린다.
      그래서 창 크기가 바뀌어도 놀이 상태는 그대로다. */
   var W = 480, H = 340;
 
   var cv = document.getElementById("bb-canvas");
   var ctx = cv.getContext("2d");
   var elScore = document.getElementById("bb-score");
+  var elHigh  = document.getElementById("bb-high");
   var elLives = document.getElementById("bb-lives");
   var elLevel = document.getElementById("bb-level");
   var elLeft  = document.getElementById("bb-left");
@@ -195,7 +242,9 @@
   var elOver  = document.getElementById("bb-over");
   var elOverT = document.getElementById("bb-over-t");
   var elOverS = document.getElementById("bb-over-s");
+  var elOverB = document.getElementById("bb-over-btn");
   var elState = document.getElementById("bb-state");
+  var elBestL = document.getElementById("bb-bestline");
   var btnPlay = document.getElementById("bb-play");
   var btnRe   = document.getElementById("bb-restart");
 
@@ -203,14 +252,35 @@
   var BRICK_TOP = 36, BRICK_H = 16, BRICK_GAP = 5, SIDE = 14, COLS = 8;
   var ROW_COLOURS = ["#D14E00", "#FF6A13", "#FF8B45", "#FFA86F", "#FFC29A", "#FFD7BC", "#FFEBDD"];
 
+  /* 한 번 움직일 때 이만큼보다 더 가지 않는다. 더 가야 하면 여러 번 쪼개서 간다.
+     이게 "빠른 공이 블록을 뚫고 지나가는" 고전 버그를 막는 핵심이다. */
+  var MAX_SUBSTEP = 2.4;
+
   var s = null;          /* 놀이 상태 */
-  var mode = "ready";    /* ready | playing | paused | over | cleared */
+  var mode = "ready";    /* ready | playing | paused | over */
   var keyLeft = false, keyRight = false;
   var raf = 0, lastT = 0, acc = 0;
   var STEP = 1000 / 60;
+  var KEY = "huhassi-brick-best";
+  var high = 0, highLevel = 0, storeOk = true;
+
+  /* ---- 최고 점수 저장 (localStorage 가 막혀 있을 수도 있으니 꼭 감싼다) ---- */
+  function readHigh() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var o = JSON.parse(raw) || {};
+      high = Number(o.score) || 0;
+      highLevel = Number(o.level) || 0;
+    } catch (e) { storeOk = false; high = 0; highLevel = 0; }
+  }
+  function writeHigh() {
+    try { localStorage.setItem(KEY, JSON.stringify({ score: high, level: highLevel })); }
+    catch (e) { storeOk = false; }
+  }
 
   function rows(level) { return Math.min(4 + (level - 1), 7); }
-  function speed(level) { return Math.min(3.0 + (level - 1) * 0.22, 4.8); }
+  function speed(level) { return Math.min(2.9 * Math.pow(1.07, level - 1), 5.4); }
 
   function makeBricks(level) {
     var r = rows(level), list = [];
@@ -229,19 +299,28 @@
     return list;
   }
 
+  /* 처음부터 — 모든 값을 새로 만든다 (남는 상태가 없게) */
   function newGame() {
+    stopLoop();
+    keyLeft = keyRight = false;
+    clearHeld();
     s = { score: 0, lives: 3, level: 1, padW: 80, padX: W / 2, bricks: makeBricks(1),
           ball: null, stuck: true };
     resetBall();
     mode = "ready";
-    paint(); sync();
-    say(t("준비됐습니다. 시작을 누르세요.", "Ready. Press start."));
+    fit(); sync();
+    say(t("새 놀이를 준비했습니다. ‘시작’을 누르고, 판을 탭하거나 빈칸 키로 공을 쏘세요.",
+          "A fresh game is ready. Press Start, then tap the board or press space to launch."));
   }
 
   function resetBall() {
     s.stuck = true;
     var v = speed(s.level);
-    s.ball = { x: s.padX, y: PAD_Y - BALL_R - 1, vx: v * 0.55, vy: -v * 0.84 };
+    /* 쏠 때 방향을 살짝 바꿔 늘 같은 자리로만 가지 않게 한다 */
+    var ang = (Math.random() * 0.5 - 0.25) + (Math.random() < 0.5 ? -0.42 : 0.42);
+    s.ball = { x: s.padX, y: PAD_Y - BALL_R - 1,
+               vx: Math.sin(ang) * v, vy: -Math.abs(Math.cos(ang)) * v };
+    nudge(s.ball);
   }
 
   function nextLevel() {
@@ -250,10 +329,11 @@
     s.padW = Math.max(56, s.padW - 4);
     s.bricks = makeBricks(s.level);
     resetBall();
-    mode = "cleared";
+    mode = "ready";
+    saveIfBest();
     paint(); sync();
-    say(t("한 판을 다 깼습니다. 점수 " + s.score + "점. " + s.level + "단계로 넘어갑니다.",
-          "Board cleared. Score " + s.score + ". Moving on to level " + s.level + "."));
+    say(t("한 판을 다 깼습니다. 점수 " + s.score + "점. " + s.level + "단계는 블록이 " + rows(s.level) + "줄이고 공이 조금 더 빠릅니다. 판을 탭해 공을 쏘세요.",
+          "Board cleared. Score " + s.score + ". Level " + s.level + " has " + rows(s.level) + " rows and a slightly faster ball. Tap the board to launch."));
   }
 
   function say(msg) { elLive.textContent = msg; }
@@ -264,13 +344,18 @@
     return n;
   }
 
+  function saveIfBest() {
+    if (s.score > high) { high = s.score; highLevel = s.level; writeHigh(); return true; }
+    return false;
+  }
+
   /* ---- 화면 크기 맞추기 (devicePixelRatio 를 반영해 흐리지 않게) ---- */
   function fit() {
-    var cssW = cv.clientWidth || cv.parentNode.clientWidth || 320;
-    var cssH = cssW * (H / W);
+    var cssW = cv.clientWidth || (cv.parentNode && cv.parentNode.clientWidth) || 320;
+    var cssH = Math.round(cssW * (H / W));
     cv.style.height = cssH + "px";
     var dpr = Math.min(window.devicePixelRatio || 1, 3);
-    var bw = Math.round(cssW * dpr), bh = Math.round(cssH * dpr);
+    var bw = Math.max(1, Math.round(cssW * dpr)), bh = Math.max(1, Math.round(cssH * dpr));
     if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
     ctx.setTransform(bw / W, 0, 0, bh / H, 0, 0);
     paint();
@@ -308,7 +393,7 @@
       ctx.fillStyle = b.c;
       roundRect(b.x, b.y, b.w, b.h, 4);
       ctx.fill();
-      /* 색만으로 뜻을 전하지 않도록 밝은 줄에도 윗선을 하나 둔다 */
+      /* 색만으로 뜻을 전하지 않도록 밝은 줄에도 테두리를 하나 둔다 */
       ctx.strokeStyle = "rgba(209,78,0,.35)";
       ctx.lineWidth = 1;
       roundRect(b.x + .5, b.y + .5, b.w - 1, b.h - 1, 4);
@@ -333,7 +418,18 @@
     ctx.arc(s.ball.x - 2, s.ball.y - 2.2, 1.9, 0, Math.PI * 2);
     ctx.fill();
 
-    /* 목숨을 작은 동그라미로 */
+    /* 아직 안 쏜 공이면 어디로 갈지 짧은 금으로 알려 준다 */
+    if (s.stuck) {
+      var m = Math.sqrt(s.ball.vx * s.ball.vx + s.ball.vy * s.ball.vy) || 1;
+      ctx.strokeStyle = "rgba(209,78,0,.5)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(s.ball.x, s.ball.y - BALL_R);
+      ctx.lineTo(s.ball.x + s.ball.vx / m * 22, s.ball.y - BALL_R + s.ball.vy / m * 22);
+      ctx.stroke();
+    }
+
+    /* 목숨을 작은 동그라미로 (글자로도 위에 적혀 있다) */
     for (var k = 0; k < s.lives; k++) {
       ctx.fillStyle = "#FF6A13";
       ctx.beginPath();
@@ -342,37 +438,64 @@
     }
   }
 
-  /* ---- 한 걸음 ---- */
-  function step() {
+  /* ---- 버그 고침 ①: 너무 납작하거나 너무 곧은 길로 굳지 않게 각을 살짝 민다 ----
+     가로로만 왕복하면 공이 영원히 안 내려오고, 세로로만 왕복하면 같은 자리만 때린다. */
+  function nudge(b) {
+    var sp = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+    if (!(sp > 0)) { sp = speed(s.level); b.vx = sp * 0.5; b.vy = -sp * 0.86; }
+    var MIN_Y = 0.30;   /* 세로 속도는 적어도 전체 빠르기의 30% */
+    var MIN_X = 0.16;   /* 가로 속도는 적어도 16% */
+    if (Math.abs(b.vy) < sp * MIN_Y) b.vy = (b.vy < 0 ? -1 : 1) * sp * MIN_Y;
+    if (Math.abs(b.vx) < sp * MIN_X) b.vx = (b.vx < 0 ? -1 : 1) * sp * MIN_X;
+    /* 민 만큼 빨라지지 않게 원래 빠르기로 되돌린다 */
+    var m = Math.sqrt(b.vx * b.vx + b.vy * b.vy) || 1;
+    b.vx = b.vx / m * sp;
+    b.vy = b.vy / m * sp;
+  }
+
+  /* ---- 버그 고침 ②: 한 걸음을 여러 조각으로 쪼개서 블록을 뚫고 지나가지 못하게 ---- */
+  function move() {
     var b = s.ball;
-
-    /* 키로 막대 움직이기 */
-    if (keyLeft)  s.padX -= 7;
-    if (keyRight) s.padX += 7;
-    s.padX = Math.max(s.padW / 2, Math.min(W - s.padW / 2, s.padX));
-
-    if (s.stuck) { b.x = s.padX; b.y = PAD_Y - BALL_R - 1; return; }
-
-    b.x += b.vx; b.y += b.vy;
-
-    if (b.x - BALL_R < 0) { b.x = BALL_R; b.vx = Math.abs(b.vx); }
-    if (b.x + BALL_R > W) { b.x = W - BALL_R; b.vx = -Math.abs(b.vx); }
-    if (b.y - BALL_R < 0) { b.y = BALL_R; b.vy = Math.abs(b.vy); }
-
-    /* 막대에 맞으면 맞은 자리에 따라 튕기는 방향이 바뀐다 */
-    if (b.vy > 0 && b.y + BALL_R >= PAD_Y && b.y - BALL_R <= PAD_Y + PAD_H) {
-      if (b.x >= s.padX - s.padW / 2 - BALL_R && b.x <= s.padX + s.padW / 2 + BALL_R) {
-        var off = (b.x - s.padX) / (s.padW / 2);
-        off = Math.max(-1, Math.min(1, off));
-        var sp = Math.max(speed(s.level), Math.sqrt(b.vx * b.vx + b.vy * b.vy));
-        var ang = off * 1.05;                       /* 최대 60도쯤 */
-        b.vx = Math.sin(ang) * sp;
-        b.vy = -Math.max(0.42, Math.cos(ang)) * sp;
-        b.y = PAD_Y - BALL_R - 0.5;
+    var dist = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+    var n = Math.max(1, Math.ceil(dist / MAX_SUBSTEP));
+    for (var i = 0; i < n; i++) {
+      b.x += b.vx / n;
+      b.y += b.vy / n;
+      if (bounceWalls(b)) { /* 벽에 맞으면 방향이 바뀌었으니 남은 조각은 새 방향으로 간다 */ }
+      bouncePaddle(b);
+      if (bounceBrick(b)) {
+        if (aliveCount() === 0) return "cleared";
       }
+      if (b.y - BALL_R > H) return "lost";
     }
+    return "";
+  }
 
-    /* 블록과 부딪히기 */
+  function bounceWalls(b) {
+    var hit = false;
+    if (b.x - BALL_R < 0)  { b.x = BALL_R;     b.vx = Math.abs(b.vx);  hit = true; }
+    if (b.x + BALL_R > W)  { b.x = W - BALL_R; b.vx = -Math.abs(b.vx); hit = true; }
+    if (b.y - BALL_R < 0)  { b.y = BALL_R;     b.vy = Math.abs(b.vy);  hit = true; }
+    if (hit) nudge(b);
+    return hit;
+  }
+
+  function bouncePaddle(b) {
+    if (b.vy <= 0) return false;
+    if (b.y + BALL_R < PAD_Y || b.y - BALL_R > PAD_Y + PAD_H) return false;
+    if (b.x < s.padX - s.padW / 2 - BALL_R || b.x > s.padX + s.padW / 2 + BALL_R) return false;
+    var off = (b.x - s.padX) / (s.padW / 2);
+    off = Math.max(-1, Math.min(1, off));
+    var sp = Math.max(speed(s.level), Math.sqrt(b.vx * b.vx + b.vy * b.vy));
+    var ang = off * 1.02;                        /* 맞은 자리에 따라 최대 58도쯤 */
+    b.vx = Math.sin(ang) * sp;
+    b.vy = -Math.max(0.46, Math.cos(ang)) * sp;  /* 위로 가는 힘을 반드시 남긴다 */
+    b.y = PAD_Y - BALL_R - 0.5;
+    nudge(b);
+    return true;
+  }
+
+  function bounceBrick(b) {
     for (var i = 0; i < s.bricks.length; i++) {
       var k = s.bricks[i];
       if (!k.alive) continue;
@@ -380,34 +503,57 @@
           b.y + BALL_R < k.y || b.y - BALL_R > k.y + k.h) continue;
       k.alive = false;
       s.score += 10;
-      /* 어느 쪽에서 들어왔는지 겹친 정도로 가린다 */
+      /* 어느 쪽에서 들어왔는지 겹친 깊이로 가린다 */
       var ox = Math.min(b.x + BALL_R - k.x, k.x + k.w - (b.x - BALL_R));
       var oy = Math.min(b.y + BALL_R - k.y, k.y + k.h - (b.y - BALL_R));
-      if (ox < oy) b.vx = -b.vx; else b.vy = -b.vy;
-      break;
+      if (ox < oy) {
+        b.vx = -b.vx;
+        b.x += (b.vx > 0 ? ox : -ox);   /* 블록 밖으로 밀어내 두 번 맞지 않게 */
+      } else {
+        b.vy = -b.vy;
+        b.y += (b.vy > 0 ? oy : -oy);
+      }
+      nudge(b);
+      return true;
     }
+    return false;
+  }
 
-    /* 바닥으로 빠지면 */
-    if (b.y - BALL_R > H) {
+  /* ---- 한 걸음 ---- */
+  function step() {
+    var b = s.ball;
+
+    /* 키·단추로 막대 움직이기 */
+    if (keyLeft)  s.padX -= 7;
+    if (keyRight) s.padX += 7;
+    s.padX = Math.max(s.padW / 2, Math.min(W - s.padW / 2, s.padX));
+
+    /* 아직 안 쏜 공은 막대를 따라다닌다 */
+    if (s.stuck) { b.x = s.padX; b.y = PAD_Y - BALL_R - 1; return; }
+
+    var r = move();
+
+    if (r === "lost") {
       s.lives -= 1;
       if (s.lives <= 0) {
         mode = "over";
         stopLoop();
+        var rec = saveIfBest();
         sync(); paint();
-        say(t("끝났습니다. 최종 점수 " + s.score + "점, " + s.level + "단계.",
-              "Game over. Final score " + s.score + ", level " + s.level + "."));
+        say(t("끝났습니다. 최종 점수 " + s.score + "점, " + s.level + "단계." + (rec ? " 최고 점수를 새로 세웠습니다." : " 최고 점수는 " + high + "점입니다."),
+              "Game over. Final score " + s.score + ", level " + s.level + "." + (rec ? " That is a new best." : " Your best is " + high + ".")));
         return;
       }
       resetBall();
       mode = "ready";
       stopLoop();
       sync(); paint();
-      say(t("공을 놓쳤습니다. 목숨 " + s.lives + "개 남았습니다.",
-            "You missed. " + s.lives + " lives left."));
+      say(t("공을 놓쳤습니다. 목숨 " + s.lives + "개 남았습니다. 판을 탭해 다시 쏘세요.",
+            "You missed. " + s.lives + " lives left. Tap the board to launch again."));
       return;
     }
 
-    if (aliveCount() === 0) { stopLoop(); nextLevel(); }
+    if (r === "cleared") { stopLoop(); nextLevel(); }
   }
 
   /* ---- 돌리기 ---- */
@@ -428,58 +574,109 @@
   }
   function stopLoop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
 
-  function play() {
-    if (mode === "over") { newGame(); }
-    if (mode === "ready" || mode === "cleared") s.stuck = false;
+  /* 공을 쏜다 (처음 시작도, 목숨을 잃은 뒤에도 여기로 온다) */
+  function launch() {
+    if (!s) return;
+    if (mode === "over") { newGame(); return; }
+    s.stuck = false;
     mode = "playing";
     startLoop(); sync();
+    say(t("공을 쏘았습니다.", "Ball launched."));
   }
+
+  /* 멈춤은 진짜 멈춤 — 돌리기를 끊고, 겹친 판에서 이어 할 수 있다 */
   function pause() {
     if (mode !== "playing") return;
-    mode = "paused"; stopLoop(); sync();
-    say(t("잠시 멈췄습니다.", "Paused."));
+    mode = "paused"; stopLoop();
+    keyLeft = keyRight = false; clearHeld();
+    sync(); paint();
+    say(t("잠시 멈췄습니다. 판을 탭하거나 빈칸 키를 누르면 그 자리에서 이어서 합니다.",
+          "Paused. Tap the board or press space to carry on from exactly here."));
   }
-  function toggle() { if (mode === "playing") pause(); else play(); }
+  function resume() {
+    if (mode !== "paused") return;
+    mode = "playing"; startLoop(); sync();
+    say(t("이어서 합니다.", "Carrying on."));
+  }
+
+  /* 빈칸 키·가운데 단추 하나로 다 되게: 안 쏜 공이면 쏘고, 놀고 있으면 멈추고, 멈췄으면 잇는다 */
+  function primary() {
+    if (!s) return;
+    if (mode === "over") { newGame(); return; }
+    if (mode === "paused") { resume(); return; }
+    if (mode === "ready" || s.stuck) { launch(); return; }
+    pause();
+  }
 
   /* ---- 화면 글자 맞추기 ---- */
   function sync() {
     if (!s) return;
     elScore.textContent = s.score;
+    elHigh.textContent = Math.max(high, s.score);
     elLives.textContent = s.lives;
     elLevel.textContent = s.level;
     elLeft.textContent = aliveCount();
 
-    btnPlay.textContent = (mode === "playing")
+    btnPlay.textContent = (mode === "playing" && !s.stuck)
       ? t("잠시 멈춤", "Pause")
-      : (mode === "over" ? t("다시 하기", "Play again") : t("시작", "Start"));
+      : (mode === "over" ? t("다시 하기", "Play again")
+      : (mode === "paused" ? t("이어서 하기", "Resume") : t("시작", "Start")));
+
+    var mid = document.getElementById("bb-launch-btn");
+    mid.textContent = (mode === "playing" && !s.stuck) ? "❙❙" : "●";
 
     var show = (mode !== "playing");
     elOver.hidden = !show;
     elOver.classList.remove("d-blink");
+    elOverB.hidden = true;
+
     if (show) {
       if (mode === "over") {
         elOverT.textContent = t("끝났습니다", "Game over");
-        elOverS.textContent = t("점수 " + s.score + "점 · " + s.level + "단계 · ‘다시 하기’를 누르세요",
-                                "Score " + s.score + " · level " + s.level + " · press play again");
+        elOverS.textContent = t("점수 " + s.score + "점 · " + s.level + "단계 · 최고 " + high + "점",
+                                "Score " + s.score + " · level " + s.level + " · best " + high);
+        elOverB.hidden = false;
+        elOverB.textContent = t("처음부터 다시", "Start a fresh game");
       } else if (mode === "paused") {
         elOverT.textContent = t("잠시 멈춤", "Paused");
-        elOverS.textContent = t("판을 누르거나 빈칸 키를 누르면 이어서 합니다", "Tap the board or press space to carry on");
-      } else if (mode === "cleared") {
-        elOverT.textContent = t(s.level + "단계", "Level " + s.level);
-        elOverS.textContent = t("한 줄이 늘고 공이 조금 빨라집니다. 판을 누르면 시작합니다.",
-                                "One more row and a slightly faster ball. Tap the board to begin.");
-        elOver.classList.add("d-blink");
+        elOverS.textContent = t("판을 탭하거나 빈칸 키를 누르면 이어서 합니다", "Tap the board or press space to carry on");
+        elOverB.hidden = false;
+        elOverB.textContent = t("이어서 하기", "Resume");
       } else {
-        elOverT.textContent = t("판을 눌러 공을 쏘세요", "Tap the board to launch");
-        elOverS.textContent = t("손가락으로 끌면 막대가 따라옵니다", "Drag and the paddle follows");
+        elOverT.textContent = t("판을 탭해 공을 쏘세요", "Tap the board to launch");
+        elOverS.textContent = t("빈칸 키로도 쏠 수 있습니다. 손가락으로 끌면 막대가 따라옵니다.",
+                                "Space launches it too. Drag and the paddle follows your finger.");
         elOver.classList.add("d-blink");
       }
     }
 
     elState.textContent = (mode === "playing")
-      ? t("놀고 있습니다", "In play")
+      ? (s.stuck ? t("쏠 준비", "Ready to launch") : t("놀고 있습니다", "In play"))
       : (mode === "over" ? t("끝", "Over")
       : (mode === "paused" ? t("멈춤", "Paused") : t("대기", "Ready")));
+
+    bestLine();
+  }
+
+  function bestLine() {
+    elBestL.textContent = "";
+    var a = document.createElement("span");
+    if (!storeOk) {
+      a.textContent = t("이 브라우저에서는 최고 점수를 저장할 수 없습니다 (저장이 막혀 있습니다).",
+                        "This browser will not let the best score be saved (storage is blocked).");
+      elBestL.appendChild(a);
+      return;
+    }
+    if (high > 0) {
+      a.textContent = t("이 기기의 최고 점수: ", "Best score on this device: ");
+      var b = document.createElement("b");
+      b.textContent = t(high + "점 · " + highLevel + "단계", high + " · level " + highLevel);
+      elBestL.appendChild(a); elBestL.appendChild(b);
+    } else {
+      a.textContent = t("아직 최고 점수가 없습니다. 첫 판이 곧 기록이 됩니다.",
+                        "No best score yet — your first game will set it.");
+      elBestL.appendChild(a);
+    }
   }
 
   /* ---- 손가락·마우스 ---- */
@@ -491,6 +688,7 @@
   function movePaddle(clientX) {
     if (!s) return;
     s.padX = Math.max(s.padW / 2, Math.min(W - s.padW / 2, toLogical(clientX)));
+    if (s.stuck) { s.ball.x = s.padX; s.ball.y = PAD_Y - BALL_R - 1; }
     if (mode !== "playing") paint();
   }
   cv.addEventListener("pointerdown", function (e) {
@@ -498,7 +696,9 @@
     dragging = true;
     if (cv.setPointerCapture) { try { cv.setPointerCapture(e.pointerId); } catch (x) {} }
     movePaddle(e.clientX);
-    if (mode !== "playing") play();   /* 놀고 있을 때 누르는 건 끌기이므로 멈추지 않는다 */
+    /* 끝난 판은 겹친 단추로만 다시 시작한다 (실수로 다시 시작되지 않게) */
+    if (mode === "paused") resume();
+    else if (mode === "ready" || (mode === "playing" && s.stuck)) launch();
     e.preventDefault();
   });
   cv.addEventListener("pointermove", function (e) {
@@ -511,41 +711,62 @@
   cv.addEventListener("pointercancel", endDrag);
   cv.addEventListener("contextmenu", function (e) { e.preventDefault(); });
 
-  /* 작은 화면용 좌우 단추 (길게 눌러도 계속 움직이게) */
+  elOverB.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (mode === "over") { newGame(); cv.focus(); }
+    else if (mode === "paused") { resume(); cv.focus(); }
+  });
+
+  /* ---- 작은 화면용 단추 (길게 눌러도 계속 움직이게) ---- */
+  var held = [];
+  function clearHeld() { held.forEach(function (el) { el.removeAttribute("data-held"); }); }
   function holdBtn(el, set) {
-    el.addEventListener("pointerdown", function (e) { set(true); e.preventDefault(); });
+    held.push(el);
+    el.addEventListener("pointerdown", function (e) {
+      set(true); el.setAttribute("data-held", "1");
+      if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (x) {} }
+      e.preventDefault();
+    });
     ["pointerup", "pointerleave", "pointercancel"].forEach(function (n) {
-      el.addEventListener(n, function () { set(false); });
+      el.addEventListener(n, function () { set(false); el.removeAttribute("data-held"); });
+    });
+    /* 키보드로도 눌릴 수 있게 */
+    el.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") { set(true); e.preventDefault(); }
+    });
+    el.addEventListener("keyup", function (e) {
+      if (e.key === " " || e.key === "Enter") { set(false); e.preventDefault(); }
     });
   }
   holdBtn(document.getElementById("bb-left-btn"),  function (v) { keyLeft = v;  if (mode !== "playing") { step(); paint(); } });
   holdBtn(document.getElementById("bb-right-btn"), function (v) { keyRight = v; if (mode !== "playing") { step(); paint(); } });
+  document.getElementById("bb-launch-btn").addEventListener("click", function () { primary(); });
 
   /* ---- 글쇠 ---- */
   window.addEventListener("keydown", function (e) {
     var a = document.activeElement;
-    /* 단추에 초점이 있으면 빈칸 키는 그 단추 몫이다 */
-    if (a && a !== cv && a.tagName === "BUTTON") return;
-    if (a !== cv && mode !== "playing") return;
+    /* 좌우 단추나 다른 단추에 초점이 있으면 빈칸 키는 그 단추 몫이다 */
+    if (a && a !== cv && (a.tagName === "BUTTON" || a.tagName === "A" ||
+        a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.tagName === "SELECT")) return;
     if (e.key === "ArrowLeft")  { keyLeft = true;  e.preventDefault(); }
     if (e.key === "ArrowRight") { keyRight = true; e.preventDefault(); }
-    if (e.key === " " || e.key === "Spacebar") { toggle(); e.preventDefault(); }
+    if (e.key === " " || e.key === "Spacebar") { primary(); e.preventDefault(); }
     if (e.key === "Escape") pause();
+    if (e.key === "r" || e.key === "R") { newGame(); }
     if (mode !== "playing" && (keyLeft || keyRight)) { step(); paint(); }
   });
   window.addEventListener("keyup", function (e) {
     if (e.key === "ArrowLeft")  keyLeft = false;
     if (e.key === "ArrowRight") keyRight = false;
   });
-  cv.addEventListener("blur", function () { keyLeft = keyRight = false; });
+  cv.addEventListener("blur", function () { keyLeft = keyRight = false; clearHeld(); });
 
-  btnPlay.addEventListener("click", function () { toggle(); cv.focus(); });
-  btnRe.addEventListener("click", function () { stopLoop(); newGame(); });
+  btnPlay.addEventListener("click", function () { primary(); cv.focus(); });
+  btnRe.addEventListener("click", function () { newGame(); cv.focus(); });
 
-  /* 다른 쪽을 보면 저절로 멈춘다 */
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) pause();
-  });
+  /* 다른 쪽을 보거나 창을 떠나면 저절로 멈춘다 */
+  document.addEventListener("visibilitychange", function () { if (document.hidden) pause(); });
+  window.addEventListener("blur", pause);
 
   document.addEventListener("huhassi:lang", function () { sync(); });
 
@@ -556,6 +777,7 @@
   }
   window.addEventListener("orientationchange", function () { setTimeout(fit, 120); });
 
+  readHigh();
   newGame();
   fit();
 })();

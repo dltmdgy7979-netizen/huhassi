@@ -22,6 +22,10 @@
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .note{font-size:13px;color:var(--ink-2);line-height:1.6}
   .counter{font-size:12.5px;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
+  .consent{border-top:1px solid var(--line);padding-top:16px}
+  .consentbox{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.6;cursor:pointer}
+  .consentbox input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--orange);flex:none}
+  .consent .note{margin:10px 0 0 30px}
 </style>
 </head>
 <body>
@@ -82,10 +86,19 @@
       <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
     </div>
 
-    <p class="note">
-      <span data-lang-ko>적어 주신 내용은 답장하려고만 씁니다. 광고를 보내거나 다른 곳에 넘기지 않습니다. 비밀번호·주민등록번호·카드번호 같은 것은 적지 마세요.</span>
-      <span data-lang-en>What you write is used only to reply. No marketing, nothing passed on. Please don't include passwords, ID numbers or card details.</span>
-    </p>
+    <div class="consent">
+      <label class="consentbox">
+        <input type="checkbox" name="consent" id="consent" required>
+        <span>
+          <span data-lang-ko><b>답장 받을 곳·호칭·신청 내용</b>을 답장하는 데 쓰는 것에 동의합니다. 답장 후 6개월 보관하고 지웁니다. 동의하지 않으셔도 되지만, 그러면 답장을 드릴 방법이 없습니다. <a href="privacy.html">자세한 안내</a></span>
+          <span data-lang-en>I agree that <b>my contact, name and request</b> may be used to reply to me, kept for six months after the reply and then deleted. You may decline, but then there is no way to answer you. <a href="privacy.html">Full notice</a></span>
+        </span>
+      </label>
+      <p class="note">
+        <span data-lang-ko>광고를 보내거나 다른 곳에 넘기지 않습니다. 비밀번호·주민등록번호·카드번호 같은 것은 적지 마세요.</span>
+        <span data-lang-en>No marketing, nothing passed on. Please don't include passwords, ID numbers or card details.</span>
+      </p>
+    </div>
 
     <div class="row">
       <button class="btn btn-solid" type="submit" id="send" data-ko="보내기" data-en="Send">보내기</button>

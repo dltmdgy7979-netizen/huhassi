@@ -8,67 +8,88 @@
      카페 메뉴판 (Cafe Menu) — 후하씨 huhassi
      SPDX-License-Identifier: MIT
 
-     ▶ 여기만 바꾸세요
-       1) <title> — 카페 이름
-       2) .m-head 안의 카페 이름 / 한 줄 글
-       3) 메뉴 세 묶음(커피 / 논커피 / 디저트)의 이름·설명·HOT·ICE 값
-          - 한쪽만 파는 메뉴는 값 대신 <span class="m-dash">–</span> 를 넣으세요
-          - 시그니처로 보이고 싶은 줄은 <li class="m-sig"> 로 바꾸세요
-       4) .m-info 안의 원산지·알레르기 안내 줄
-       5) 맨 아래 .m-hours 의 영업시간
-     ▶ 색은 :root 의 --point 한 줄만 바꾸면 전체가 바뀝니다.
-     ▶ 인쇄: 브라우저 인쇄에서 'A4 · 세로 · 배율 100% · 머리글/바닥글 끄기' 로 하면
-       한 장에 깔끔히 떨어집니다.
-     ▶ 적혀 있는 카페 이름·가격은 모두 예시용 가짜입니다.
+     이 파일 하나가 전부입니다. 바깥에서 불러오는 것이 없습니다.
+     고치는 방법은 같은 폴더의 README.md 에 번호대로 적어 두었습니다.
+
+     색·글꼴·둥글기 → 아래 <style> 맨 위 '여기만 바꾸세요' 칸
+     글(카페 이름·메뉴·가격·안내) → <body> 안의 【 】 주석 칸
+
+     인쇄: 브라우저 인쇄 창에서 'A4 · 세로 · 배율 100% · 머리글/바닥글 끄기'
+           로 하면 A4 한 장에 그대로 떨어집니다.
+
+     ▶ 적혀 있는 카페 이름·메뉴·가격은 모두 지어낸 예시입니다.
      =========================================================== -->
 
+<!-- 【1】 브라우저 탭에 보이는 제목과 검색 설명 -->
 <title>○○커피 — 메뉴</title>
-<meta name="description" content="○○커피 메뉴판. 커피·논커피·디저트.">
+<meta name="description" content="하루 쓸 만큼만 볶는 동네 카페 ○○커피의 커피·논커피·디저트 메뉴.">
 
 <style>
+/* ███████████████  여기만 바꾸세요  ███████████████
+   아래 여덟 줄만 고치면 메뉴판 전체의 색·글꼴·모양이 같이 바뀝니다.
+   이 칸 밖의 CSS 는 손대지 않아도 됩니다.                        */
 :root{
-  --point:#FF6A13;        /* ← 이 색 하나만 바꾸면 분위기가 바뀝니다 */
-  --point-ink:#C14800;
-  --point-soft:#FFEEE2;
-  --ink:#1D1B19;
-  --ink-2:#6E6A66;
-  --ink-3:#9A948E;
-  --line:#E6E1DC;
-  --bg:#FFFFFF;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --point:   #FF6A13;   /* 포인트 색. 묶음 제목·시그니처 표시에 쓰입니다 */
+  --ink:     #1D1B19;   /* 본문 글자 색 */
+  --ink-2:   #64605C;   /* 흐린 글자 색 (메뉴 설명) */
+  --bg:      #FFFFFF;   /* 바탕 색 */
+  --soft:    #FAF6F2;   /* 연한 바탕 색 (안내 칸) */
+  --line:    #E6E1DC;   /* 선 색 */
+  --radius:  12px;      /* 모서리 둥글기. 0px 로 하면 각진 모양 */
+  --font:    -apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+                        /* 글꼴. 쓰고 싶은 글꼴 이름을 맨 앞에 "따옴표"로 넣으세요 */
 }
+/* ███████████  여기까지. 아래는 그대로 두세요  ███████████ */
+
+
+:root{
+  --point-ink:    color-mix(in srgb, var(--point) 72%, var(--ink));
+  --point-soft:   color-mix(in srgb, var(--point) 12%, #FFFFFF);
+  --ink-3:        color-mix(in srgb, var(--ink) 48%, #FFFFFF);
+}
+@supports not (color:color-mix(in srgb,#000 50%,#fff)){
+  :root{ --point-ink:#C14800; --point-soft:#FFEEE2; --ink-3:#938D87 }
+}
+
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
-  font-family:var(--sans);font-size:16px;line-height:1.6;
+  font-family:var(--font);font-size:16px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
 }
-:focus-visible{outline:3px solid var(--point);outline-offset:2px}
+:focus-visible{outline:3px solid var(--point);outline-offset:2px;border-radius:4px}
 
-.m-sheet{width:min(720px,100% - 28px);margin:0 auto;padding:30px 0 44px}
+.m-skip{
+  position:absolute;left:-9999px;top:0;z-index:20;
+  background:var(--point-ink);color:#fff;text-decoration:none;
+  padding:10px 16px;border-radius:0 0 10px 0;font-size:14px;font-weight:700}
+.m-skip:focus{left:0}
+
+.m-sheet{width:min(720px,100% - 26px);margin:0 auto;padding:26px 0 44px}
 
 /* ---- 머리 ---- */
-.m-head{text-align:center;padding-bottom:20px;border-bottom:2px solid var(--ink)}
-.m-head h1{margin:0;font-size:clamp(26px,7vw,36px);letter-spacing:.06em;font-weight:800}
-.m-head p{margin:10px 0 0;font-size:13.5px;color:var(--ink-2);letter-spacing:.04em}
+.m-head{text-align:center;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.m-head h1{margin:0;font-size:clamp(25px,7vw,36px);letter-spacing:.06em;font-weight:800}
+.m-head p{margin:9px 0 0;font-size:13px;color:var(--ink-2);letter-spacing:.03em}
 
 /* ---- 값 칸 머리글 (HOT / ICE) ---- */
 .m-cols{
-  display:flex;justify-content:flex-end;gap:0;
-  padding:10px 0 0;font-size:11.5px;letter-spacing:.14em;color:var(--ink-3)}
-.m-cols span{width:64px;text-align:right}
+  display:flex;justify-content:flex-end;
+  padding:10px 0 0;font-size:11px;letter-spacing:.14em;color:var(--ink-3)}
+.m-cols span{width:60px;text-align:right}
 
 /* ---- 묶음 ---- */
-.m-group{margin-top:26px;break-inside:avoid;page-break-inside:avoid}
+.m-group{margin-top:24px;break-inside:avoid;page-break-inside:avoid}
 .m-group > h2{
-  margin:0 0 6px;font-size:14px;font-weight:700;letter-spacing:.1em;
+  margin:0 0 5px;font-size:13.5px;font-weight:700;letter-spacing:.09em;
   color:var(--point-ink);display:flex;align-items:center;gap:10px}
 .m-group > h2::after{content:"";flex:1;height:1px;background:var(--line)}
 
 .m-list{margin:0;padding:0;list-style:none}
 .m-list li{
-  display:flex;align-items:baseline;gap:10px;
+  display:flex;align-items:baseline;gap:8px;
   padding:9px 0;border-bottom:1px dotted var(--line)}
 .m-list li:last-child{border-bottom:none}
 
@@ -76,7 +97,7 @@ body{
 .m-name b{font-weight:600;font-size:15.5px}
 .m-name small{display:block;font-size:12.5px;color:var(--ink-2);line-height:1.45;margin-top:1px}
 .m-price{
-  width:64px;flex:none;text-align:right;
+  width:60px;flex:none;text-align:right;
   font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink)}
 .m-price.m-second{color:var(--ink-2)}
 .m-dash{color:var(--ink-3)}
@@ -89,80 +110,98 @@ body{
   background:var(--point-soft);color:var(--point-ink);
   border-radius:999px;padding:1px 7px}
 
-/* 아주 좁은 화면: 설명을 이름 아래로, 값 칸은 그대로 */
-@media (max-width:360px){
-  .m-cols span{width:54px}
-  .m-price{width:54px;font-size:14px}
-  .m-name b{font-size:15px}
+/* 아주 좁은 화면 (320px 까지) */
+@media (max-width:370px){
+  .m-cols span{width:50px}
+  .m-price{width:50px;font-size:14px}
+  .m-name b{font-size:14.5px}
+  .m-name small{font-size:12px}
 }
 
 /* ---- 안내 줄 ---- */
 .m-info{
-  margin-top:28px;padding:14px 16px;
-  border:1px solid var(--line);border-radius:10px;
+  margin-top:26px;padding:14px 16px;background:var(--soft);
+  border:1px solid var(--line);border-radius:var(--radius);
   font-size:12px;color:var(--ink-2);line-height:1.6;break-inside:avoid}
+.m-info h2{margin:0 0 7px;font-size:12px;font-weight:700;color:var(--ink);letter-spacing:.06em}
 .m-info p{margin:0 0 .5em}
 .m-info p:last-child{margin:0}
 .m-info b{color:var(--ink);font-weight:600}
 
 /* ---- 영업시간 ---- */
 .m-hours{
-  margin-top:20px;padding-top:16px;border-top:2px solid var(--ink);
+  margin-top:18px;padding-top:15px;border-top:2px solid var(--ink);
   text-align:center;font-size:13px;color:var(--ink-2);break-inside:avoid}
-.m-hours b{display:block;color:var(--ink);font-size:14px;font-weight:700;letter-spacing:.06em;margin-bottom:6px}
+.m-hours h2{margin:0 0 5px;color:var(--ink);font-size:13.5px;font-weight:700;letter-spacing:.06em}
+
+.m-fine{margin:14px 0 0;text-align:center;font-size:11px;color:var(--ink-3)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 
 /* ===========================================================
-   인쇄 — A4 한 장에 떨어지게
+   인쇄 — A4 세로 한 장에 떨어지게
    =========================================================== */
 @media print{
-  @page{size:A4 portrait;margin:14mm 15mm}
+  @page{size:A4 portrait;margin:13mm 15mm}
   html,body{background:#fff}
-  body{font-size:10.5pt;line-height:1.45;color:#000}
+  body{font-size:10.5pt;line-height:1.42;color:#000}
   .m-sheet{width:auto;margin:0;padding:0}
-  .m-head{padding-bottom:10pt;border-bottom:1.6pt solid #000}
-  .m-head h1{font-size:22pt}
-  .m-head p{font-size:8.5pt;margin-top:5pt}
-  .m-cols{padding-top:6pt;font-size:7.5pt}
-  .m-cols span{width:17mm}
-  .m-group{margin-top:11pt}
-  .m-group > h2{font-size:9.5pt;margin-bottom:2pt;color:#000}
+  .m-skip,.m-fine{display:none !important}
+  .m-head{padding-bottom:9pt;border-bottom:1.6pt solid #000}
+  .m-head h1{font-size:21pt}
+  .m-head p{font-size:8.5pt;margin-top:4pt;color:#333}
+  .m-cols{padding-top:6pt;font-size:7pt;color:#555}
+  .m-cols span{width:16mm}
+  .m-group{margin-top:10pt}
+  .m-group > h2{font-size:9.5pt;margin-bottom:1.5pt;color:#000}
   .m-group > h2::after{background:#bbb}
-  .m-list li{padding:4.2pt 0;border-bottom:0.4pt dotted #bbb}
+  .m-list li{padding:3.9pt 0;border-bottom:0.4pt dotted #bbb}
   .m-name b{font-size:10.5pt}
-  .m-name small{font-size:8pt;line-height:1.3}
-  .m-price{width:17mm;font-size:10pt;color:#000}
+  .m-name small{font-size:7.8pt;line-height:1.28;color:#333}
+  .m-price{width:16mm;font-size:10pt;color:#000}
   .m-price.m-second{color:#444}
+  .m-dash{color:#777}
   .m-sig .m-name b::after{
     background:transparent;color:#000;border:0.5pt solid #000;
-    padding:0 3pt;font-size:7pt}
-  .m-info{margin-top:10pt;padding:6pt 8pt;font-size:7.5pt;line-height:1.4;border-color:#bbb}
-  .m-hours{margin-top:10pt;padding-top:7pt;border-top:1.2pt solid #000;font-size:8.5pt}
-  .m-hours b{font-size:9.5pt;margin-bottom:3pt}
+    padding:0 3pt;font-size:6.8pt}
+  .m-info{margin-top:9pt;padding:5pt 7pt;font-size:7.2pt;line-height:1.38;
+    border:0.4pt solid #bbb;background:#fff;border-radius:0;color:#333}
+  .m-info h2{font-size:7.4pt;margin-bottom:3pt}
+  .m-hours{margin-top:8pt;padding-top:6pt;border-top:1.2pt solid #000;font-size:8.4pt;color:#000}
+  .m-hours h2{font-size:9pt;margin-bottom:2.5pt}
 }
 </style>
 </head>
 <body>
 
-<main class="m-sheet">
+<a class="m-skip" href="#m-main">메뉴로 건너뛰기</a>
 
-  <!-- 2) 카페 이름 -->
+<main class="m-sheet" id="m-main">
+
+  <!-- 【2】 카페 이름 · 한 줄 글 -->
   <header class="m-head">
     <h1>○○커피</h1>
-    <p>매일 아침 그날 쓸 만큼만 볶습니다 · ○○시 ○○구 ○○로 00</p>
+    <p>그날 쓸 만큼만 아침에 볶습니다 · ○○시 ○○구 ○○로 00</p>
   </header>
 
   <div class="m-cols" aria-hidden="true"><span>HOT</span><span>ICE</span></div>
 
-  <!-- 3) 커피 -->
+  <!-- 【3】 메뉴 묶음.
+       · <li> … </li> 한 덩어리가 메뉴 한 줄입니다. 복사하거나 지워 개수를 바꾸세요.
+       · 왼쪽 숫자가 HOT, 오른쪽 숫자가 ICE 값입니다.
+       · 한쪽만 파는 메뉴는 그 자리 숫자를 <span class="m-dash">–</span> 로 두세요.
+       · 자랑할 메뉴는 <li> 를 <li class="m-sig"> 로 바꾸면 '시그니처' 표시가 붙습니다.
+       · 묶음을 더 만들려면 <section class="m-group"> … </section> 를 복사하세요. -->
+
   <section class="m-group">
     <h2>커피 COFFEE</h2>
     <ul class="m-list">
       <li>
-        <span class="m-name"><b>오늘의 드립</b><small>매일 바뀝니다. 문 앞 칠판에 그날 원두를 적어 둡니다</small></span>
+        <span class="m-name"><b>오늘의 드립</b><small>원두가 매일 바뀝니다. 문 앞 칠판에 그날 원두를 적어 둡니다</small></span>
         <span class="m-price">5,000</span><span class="m-price m-second"><span class="m-dash">–</span></span>
       </li>
       <li class="m-sig">
-        <span class="m-name"><b>흑설탕 라테</b><small>직접 끓인 흑설탕 시럽에 우유를 얇게 올렸습니다</small></span>
+        <span class="m-name"><b>흑설탕 라테</b><small>직접 끓인 흑설탕 시럽 위에 우유를 얇게 올렸습니다</small></span>
         <span class="m-price">5,500</span><span class="m-price m-second">6,000</span>
       </li>
       <li>
@@ -174,7 +213,7 @@ body{
         <span class="m-price">5,000</span><span class="m-price m-second">5,500</span>
       </li>
       <li>
-        <span class="m-name"><b>바닐라 라테</b><small>바닐라 빈을 담가 둔 시럽을 씁니다</small></span>
+        <span class="m-name"><b>바닐라 라테</b><small>바닐라 깍지를 담가 둔 시럽을 씁니다</small></span>
         <span class="m-price">5,500</span><span class="m-price m-second">6,000</span>
       </li>
       <li>
@@ -188,7 +227,6 @@ body{
     </ul>
   </section>
 
-  <!-- 논커피 -->
   <section class="m-group">
     <h2>논커피 NON-COFFEE</h2>
     <ul class="m-list">
@@ -197,7 +235,7 @@ body{
         <span class="m-price">5,500</span><span class="m-price m-second">6,000</span>
       </li>
       <li>
-        <span class="m-name"><b>제주 말차 라테</b><small>설탕을 넣지 않았습니다. 필요하면 따로 드립니다</small></span>
+        <span class="m-name"><b>말차 라테</b><small>설탕을 넣지 않았습니다. 필요하면 따로 드립니다</small></span>
         <span class="m-price">6,000</span><span class="m-price m-second">6,500</span>
       </li>
       <li>
@@ -205,17 +243,16 @@ body{
         <span class="m-price">5,500</span><span class="m-price m-second">6,000</span>
       </li>
       <li>
-        <span class="m-name"><b>생강 대추차</b><small>겨울에만 냅니다</small></span>
+        <span class="m-name"><b>생강 대추차</b><small>11월부터 2월까지만 냅니다</small></span>
         <span class="m-price">5,500</span><span class="m-price m-second"><span class="m-dash">–</span></span>
       </li>
       <li>
-        <span class="m-name"><b>오늘의 탄산</b><small>계절 과일을 갈아 탄산수에 섞습니다</small></span>
+        <span class="m-name"><b>오늘의 탄산</b><small>그날 과일을 갈아 탄산수에 섞습니다</small></span>
         <span class="m-price"><span class="m-dash">–</span></span><span class="m-price m-second">6,000</span>
       </li>
     </ul>
   </section>
 
-  <!-- 디저트 -->
   <section class="m-group">
     <h2>디저트 DESSERT</h2>
     <ul class="m-list">
@@ -224,7 +261,7 @@ body{
         <span class="m-price">4,000</span><span class="m-price m-second"><span class="m-dash">–</span></span>
       </li>
       <li>
-        <span class="m-name"><b>레몬 파운드</b><small>겉에 레몬즙을 한 번 바릅니다</small></span>
+        <span class="m-name"><b>레몬 파운드</b><small>구운 뒤 겉에 레몬즙을 한 번 바릅니다</small></span>
         <span class="m-price">4,500</span><span class="m-price m-second"><span class="m-dash">–</span></span>
       </li>
       <li>
@@ -232,25 +269,30 @@ body{
         <span class="m-price">3,500</span><span class="m-price m-second"><span class="m-dash">–</span></span>
       </li>
       <li>
-        <span class="m-name"><b>바스크 치즈케이크</b><small>조각으로 냅니다. 하루 열두 조각</small></span>
+        <span class="m-name"><b>치즈케이크</b><small>겉을 진하게 구웠습니다. 하루 열두 조각</small></span>
         <span class="m-price">6,500</span><span class="m-price m-second"><span class="m-dash">–</span></span>
       </li>
     </ul>
   </section>
 
-  <!-- 4) 원산지 · 알레르기 -->
-  <section class="m-info">
+  <!-- 【4】 원산지 · 알레르기 안내.
+       나라 이름과 품목은 반드시 실제로 쓰는 것으로 바꿔 주세요. -->
+  <section class="m-info" aria-labelledby="m-info-h">
+    <h2 id="m-info-h">안내</h2>
     <p><b>원산지</b> 커피 원두 — 에티오피아·콜롬비아·브라질 / 우유 — 국내산 / 밀가루 — 미국산 / 버터 — 프랑스산 / 대추·생강 — 국내산</p>
     <p><b>알레르기</b> 우유·밀·달걀·대두·땅콩·견과류가 들어간 메뉴가 있습니다. 같은 조리대를 쓰기 때문에 섞일 수 있으니, 알레르기가 있으시면 주문하실 때 꼭 말씀해 주세요.</p>
-    <p>모든 값은 부가세를 포함한 금액입니다. 매장 잔은 보증금 없이 드리고, 개인 잔을 가져오시면 500원 깎아 드립니다.</p>
+    <p>모든 값은 부가세를 포함한 금액입니다. 개인 잔을 가져오시면 500원 깎아 드립니다.</p>
   </section>
 
-  <!-- 5) 영업시간 -->
+  <!-- 【5】 영업시간 · 전화번호 -->
   <footer class="m-hours">
-    <b>영업시간</b>
+    <h2>영업시간</h2>
     평일 08:00 – 20:00 · 토·일 10:00 – 18:00 · 매주 화요일 휴무<br>
     마지막 주문 문 닫기 30분 전 · 문의 000-0000-0000
   </footer>
+
+  <!-- 쓰기 전에 아래 한 줄은 지우세요 -->
+  <p class="m-fine">이 메뉴판의 카페 이름·메뉴·가격은 모두 지어낸 예시입니다.</p>
 
 </main>
 </body>

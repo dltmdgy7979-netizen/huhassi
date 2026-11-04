@@ -102,6 +102,39 @@ git push -u origin main
 1. Supabase → **Table Editor** → `huhassi_requests`
 2. `created_at` 을 내림차순으로 두고 봅니다.
 3. 답장한 것은 `status` 칸을 `done` 으로, 안 할 것은 `no` 로 바꿔 두면 헷갈리지 않습니다.
+4. **보관 기간 정리** — 개인정보 안내에 "답장 후 6개월"이라고 적어 두었습니다.
+   가끔(반년에 한 번쯤) Supabase → SQL Editor 에서 아래를 실행해 오래된 것을 지우세요.
+   ```sql
+   delete from public.huhassi_requests
+   where status in ('done','no') and created_at < now() - interval '6 months';
+   ```
+
+## 8-2. 도메인 붙이기 (`huhassi` 도메인을 산 뒤)
+
+도메인은 아직 없어도 사이트는 돌아갑니다. 샀을 때 이 순서대로 하세요.
+
+1. **Railway 쪽에서 주소를 등록합니다**
+   - Railway → `huhassi` 프로젝트 → `huhassi-web` 서비스 → **Settings** → **Networking**
+   - **Custom Domain** 을 누르고 산 도메인을 적습니다 (예: `huhassi.com`, 그리고 `www.huhassi.com` 도 따로 한 번 더)
+   - Railway 가 **CNAME 값**을 보여 줍니다. 이 값을 복사합니다.
+
+2. **도메인 산 곳(가비아·후이즈 등)에서 DNS 를 바꿉니다**
+   - 그 사이트의 **DNS 관리** 화면으로 갑니다
+   - `www` 에 대해 **CNAME** 레코드를 만들고, 값에 1번에서 복사한 주소를 넣습니다
+   - 맨 앞 도메인(`huhassi.com` 처럼 www 없는 것)은 CNAME 을 못 쓰는 곳이 많습니다.
+     그럴 때는 그 사이트의 **포워딩(전달)** 기능으로 `www.huhassi.com` 으로 넘겨 두면 됩니다.
+
+3. **기다립니다.** 보통 10분~1시간, 길면 하루입니다.
+   Railway 의 도메인 옆이 초록색이 되고 자물쇠(https)가 자동으로 붙습니다.
+
+4. **사이트 주소를 새 도메인으로 바꿉니다** — 이걸 빠뜨리면 공유 미리보기와 검색이 옛 주소를 가리킵니다.
+   ```
+   SITE_BASE=https://www.huhassi.com node tools/build-seo.js
+   git add -A && git commit -m "도메인 변경" && git push
+   ```
+   이 명령 한 줄이 모든 쪽의 canonical·공유 미리보기 주소와 `sitemap.xml`·`robots.txt` 를 새 도메인으로 바꿔 줍니다.
+
+5. 바뀐 주소로 한 번 열어 보고, 카카오톡에 링크를 붙여 미리보기 그림이 뜨는지 봅니다.
 
 ## 9. 고치고 다시 올리기
 

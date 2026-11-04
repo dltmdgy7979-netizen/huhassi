@@ -11,35 +11,60 @@
 <script src="../../assets/i18n.js" defer></script>
 <style>
   /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
-  .d-drop{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+  .d-drop{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
     border:2px dashed var(--line-2);border-radius:var(--radius);background:var(--soft);
-    padding:22px 14px;transition:border-color .15s,background .15s}
+    padding:24px 14px;transition:border-color .15s,background .15s}
   .d-drop.is-over{border-color:var(--orange);background:var(--orange-soft)}
-  .d-drop p{margin:0;font-size:14.5px;color:var(--ink-2);max-width:34ch}
-  .d-drop input[type=file]{max-width:100%;font-size:13.5px}
+  .d-drop p{margin:0;font-size:14.5px;color:var(--ink-2);max-width:36ch;line-height:1.6}
+  .d-drop .d-pick{min-height:44px}
+  .d-drop input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
   .d-privacy{display:flex;gap:8px;align-items:flex-start;margin-top:12px;padding:10px 12px;
     border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;
-    font-size:13.5px;color:var(--ink-2)}
+    font-size:13.5px;color:var(--ink-2);line-height:1.6}
   .d-privacy strong{color:var(--ok);font-variation-settings:"wght" 700}
+
+  /* 화면 안 알림 자리 — alert() 를 쓰지 않습니다 */
+  .d-msg{margin:14px 0 0;padding:0;font-size:14px;line-height:1.6;min-height:1.3em;color:var(--ink-2)}
+  .d-msg.is-bad,.d-msg.is-warn{padding:11px 13px;border-radius:var(--radius-s);
+    background:var(--orange-soft);color:var(--orange-ink);
+    font-variation-settings:"wght" 620;overflow-wrap:anywhere}
+  .d-msg.is-busy{color:var(--orange-ink);font-variation-settings:"wght" 620}
+  .d-msg .d-spin{display:inline-block;width:12px;height:12px;margin-right:7px;
+    border:2px solid var(--orange-soft);border-top-color:var(--orange);border-radius:50%;
+    vertical-align:-1px;animation:d-turn .7s linear infinite}
+  @keyframes d-turn{to{transform:rotate(360deg)}}
+
+  /* 아직 사진이 없을 때 보여 주는 빈 화면 설명 */
+  .d-empty{margin-top:16px;border:1px dashed var(--line-2);border-radius:var(--radius);
+    background:#fff;padding:22px 16px;text-align:center;color:var(--ink-2);font-size:14.5px;
+    line-height:1.7}
+  .d-empty b{display:block;color:var(--ink);font-size:15.5px;
+    font-variation-settings:"wght" 700;margin-bottom:6px}
 
   .d-ba{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
   @media (min-width:600px){.d-ba{grid-template-columns:1fr 1fr}}
   .d-card{border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;padding:12px;min-width:0}
   .d-card h3{font-size:12.5px;color:var(--ink-2);font-variation-settings:"wght" 700;margin-bottom:8px}
   .d-card.is-out{border-color:var(--orange);background:#FFFCFA}
-  .d-shot{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--soft);
-    border:1px solid var(--line);border-radius:8px;margin-bottom:10px}
-  .d-nums{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;font-size:14px}
+  .d-shot{display:block;width:100%;max-width:100%;aspect-ratio:4/3;object-fit:contain;
+    background:var(--soft);border:1px solid var(--line);border-radius:8px;margin-bottom:10px}
+  .d-nums{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;font-size:14px}
   .d-nums .k{color:var(--ink-2);font-size:12.5px}
-  .d-nums .v{font-variation-settings:"wght" 700;font-variant-numeric:tabular-nums;word-break:break-all}
-  .d-saved{margin-top:14px;padding:12px 14px;border-radius:var(--radius-s);
+  .d-nums .v{font-variation-settings:"wght" 700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+  .d-saved{margin-top:14px;padding:13px 14px;border-radius:var(--radius-s);
     background:var(--orange-soft);color:var(--orange-ink);font-size:15px;
-    font-variation-settings:"wght" 700;text-align:center}
+    font-variation-settings:"wght" 700;text-align:center;line-height:1.55}
   .d-saved.is-worse{background:var(--soft);color:var(--ink-2)}
   .d-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .d-act .btn{min-height:44px}
   .d-val{font-family:var(--mono);font-size:12.5px;color:var(--orange-ink)}
-  .d-busy{font-size:13.5px;color:var(--ink-2);margin-top:10px}
-  @media (prefers-reduced-motion:reduce){.d-drop{transition:none}}
+  .d-off{opacity:.5}
+  @media (prefers-reduced-motion:reduce){
+    .d-drop{transition:none}
+    .d-msg .d-spin{animation:none}
+  }
 </style>
 </head>
 <body>
@@ -72,15 +97,17 @@
     <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
 
     <div class="d-drop" id="ic-drop">
-      <p data-ko="사진을 이 칸에 끌어다 놓거나, 아래에서 골라 주세요." data-en="Drag a photo into this box, or choose one below."></p>
-      <input type="file" id="ic-file" accept="image/*"
+      <p data-ko="사진을 이 칸에 끌어다 놓거나, 복사해 둔 사진을 Ctrl+V 로 붙여 넣거나, 아래 단추로 고르세요." data-en="Drag a photo onto this box, paste a copied image with Ctrl+V, or pick one with the button."></p>
+      <button class="btn btn-solid d-pick" type="button" id="ic-pick"
+              data-ko="사진 고르기" data-en="Choose a photo">사진 고르기</button>
+      <input type="file" id="ic-file" accept="image/*" tabindex="-1"
              data-ko-aria="사진 고르기" data-en-aria="Choose a photo">
     </div>
 
     <p class="d-privacy">
       <span aria-hidden="true">🔒</span>
       <span>
-        <span data-lang-ko><strong>사진은 이 기기를 떠나지 않습니다.</strong> 서버로 올리지 않고, 브라우저 안에서만 줄입니다.</span>
+        <span data-lang-ko><strong>사진은 이 기기를 떠나지 않습니다.</strong> 아무것도 올리지 않고(업로드 없음), 브라우저 안에서만 줄입니다.</span>
         <span data-lang-en><strong>Your photo never leaves this browser.</strong> Nothing is uploaded; the resizing happens on your own device.</span>
       </span>
     </p>
@@ -91,7 +118,7 @@
         <input type="range" id="ic-max" min="400" max="4000" step="100" value="1600"
                data-ko-aria="긴 쪽 최대 길이 (픽셀)" data-en-aria="Longest side in pixels">
       </label>
-      <label class="field">
+      <label class="field" id="ic-qwrap">
         <span><span data-ko="화질" data-en="Quality">화질</span> <span class="d-val" id="ic-qv">0.80</span></span>
         <input type="range" id="ic-q" min="0.4" max="1" step="0.02" value="0.8"
                data-ko-aria="화질 (0.4 에서 1.0)" data-en-aria="Quality from 0.4 to 1.0">
@@ -105,12 +132,21 @@
         </select>
       </label>
     </div>
-    <p class="hint" id="ic-note" data-ko="PNG 는 화질 값을 쓰지 않습니다. 사진은 JPEG 나 WebP 가 훨씬 작아집니다." data-en="PNG ignores the quality slider. For photos, JPEG or WebP come out far smaller."></p>
+    <p class="hint" data-ko="PNG 는 화질 값을 쓰지 않습니다 — PNG 를 고르면 화질 손잡이가 꺼집니다. 사진은 JPEG 나 WebP 가 훨씬 작아집니다." data-en="PNG ignores the quality slider — picking PNG switches it off. For photos, JPEG or WebP come out far smaller."></p>
 
-    <div class="d-ba">
+    <!-- 화면 안 알림 자리 (alert() 대신) -->
+    <p class="d-msg" id="ic-msg" role="status" aria-live="polite"></p>
+
+    <!-- 사진이 없을 때의 빈 화면 -->
+    <div class="d-empty" id="ic-empty">
+      <span data-lang-ko><b>아직 사진이 없습니다.</b>위 칸에 사진을 넣으면 원래 사진과 줄인 사진을 나란히 보여 주고, 용량이 몇 퍼센트 줄었는지 알려 줍니다. 그냥 구경만 하려면 ‘예시 사진 넣기’를 눌러 보세요.</span>
+      <span data-lang-en><b>No photo yet.</b>Drop one in above and you'll see the original and the shrunken copy side by side, with the percentage saved. Just looking? Press “Use a sample photo”.</span>
+    </div>
+
+    <div class="d-ba" id="ic-ba" hidden>
       <div class="d-card">
         <h3 data-ko="원래 사진" data-en="Before">원래 사진</h3>
-        <img class="d-shot" id="ic-before" alt="원래 사진 미리보기"
+        <img class="d-shot" id="ic-before" alt=""
              data-ko-aria="원래 사진 미리보기" data-en-aria="Preview of the original photo">
         <ul class="d-nums">
           <li><span class="k" data-ko="크기" data-en="Pixels">크기</span><span class="v" id="ic-bpx">—</span></li>
@@ -120,7 +156,7 @@
       </div>
       <div class="d-card is-out">
         <h3 data-ko="줄인 사진" data-en="After">줄인 사진</h3>
-        <img class="d-shot" id="ic-after" alt="줄인 사진 미리보기"
+        <img class="d-shot" id="ic-after" alt=""
              data-ko-aria="줄인 사진 미리보기" data-en-aria="Preview of the shrunken photo">
         <ul class="d-nums">
           <li><span class="k" data-ko="크기" data-en="Pixels">크기</span><span class="v" id="ic-apx">—</span></li>
@@ -130,26 +166,27 @@
       </div>
     </div>
 
-    <p class="d-saved" id="ic-saved" role="status" aria-live="polite"></p>
+    <p class="d-saved" id="ic-saved" hidden></p>
 
     <div class="d-act">
-      <a class="btn btn-solid" id="ic-dl" href="#" download
+      <a class="btn btn-solid" id="ic-dl" href="#" download aria-disabled="true"
          data-ko="줄인 사진 내려받기" data-en="Download the result">줄인 사진 내려받기</a>
-      <button class="btn" type="button" id="ic-reset"
-              data-ko="예시 사진으로 되돌리기" data-en="Back to the sample photo">예시 사진으로 되돌리기</button>
+      <button class="btn" type="button" id="ic-sample"
+              data-ko="예시 사진 넣기" data-en="Use a sample photo">예시 사진 넣기</button>
+      <button class="btn" type="button" id="ic-clear"
+              data-ko="비우기" data-en="Clear">비우기</button>
     </div>
-    <p class="d-busy" id="ic-busy" aria-live="polite"></p>
-    <p class="hint" data-ko="요즘 브라우저에서는 휴대폰 사진의 회전 정보를 읽어, 화면에 보이는 방향 그대로 저장합니다." data-en="In current browsers the photo's rotation tag is read, so it saves facing the way you see it here."></p>
+    <p class="hint" data-ko="아주 큰 사진(약 2,400만 화소 넘음)은 브라우저가 멈추지 않도록 작업용 크기로 먼저 한 번 줄입니다. 그때는 화면에 그렇게 적어 드립니다." data-en="A very large photo (over about 24 megapixels) is scaled down once to a working size first, so the tab does not freeze. The page tells you when that happens."></p>
   </section>
 
   <!-- 2) 사용법 5줄 -->
   <section class="panel soft" aria-labelledby="h-how">
     <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
     <ol class="howto">
-      <li data-ko="사진을 점선 칸에 끌어다 놓거나 '파일 선택'으로 고릅니다." data-en="Drop a photo on the dashed box, or pick one with the file button."></li>
+      <li data-ko="사진을 점선 칸에 끌어다 놓거나, Ctrl+V 로 붙여 넣거나, '사진 고르기'로 고릅니다." data-en="Drop a photo on the dashed box, paste one with Ctrl+V, or pick one with Choose a photo."></li>
       <li data-ko="'긴 쪽 최대 길이'를 옮겨 사진의 가로·세로 크기를 정합니다." data-en="Drag the longest-side slider to set how big the photo stays."></li>
-      <li data-ko="'화질'을 옮겨 용량과 선명함 사이를 맞춥니다." data-en="Drag the quality slider to trade sharpness against file size."></li>
-      <li data-ko="저장 형식을 JPEG·WebP·PNG 중에서 고릅니다." data-en="Choose JPEG, WebP or PNG as the output format."></li>
+      <li data-ko="저장 형식을 JPEG·WebP·PNG 중에서 고릅니다 (PNG 는 화질 값을 쓰지 않습니다)." data-en="Choose JPEG, WebP or PNG (PNG ignores the quality value)."></li>
+      <li data-ko="'화질'을 옮겨 가며 아래의 '몇 % 줄었는지'를 보고 맞춥니다." data-en="Nudge the quality slider and watch the percentage saved below."></li>
       <li data-ko="'줄인 사진 내려받기'를 눌러 파일을 받습니다." data-en="Press the download button to save the result."></li>
     </ol>
   </section>
@@ -174,7 +211,13 @@
           <td data-ko="가능" data-en="Allowed">가능</td>
         </tr>
         <tr>
-          <td data-ko="예시 사진 (캔버스로 그린 그림)" data-en="Sample photo (drawn on a canvas)">예시 사진 (캔버스로 그린 그림)</td>
+          <td data-ko="예시 사진 (캔버스로 직접 그린 그림)" data-en="Sample photo (drawn on a canvas)">예시 사진 (캔버스로 직접 그린 그림)</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="미리보기 그림 preview.svg" data-en="preview.svg thumbnail">미리보기 그림 preview.svg</td>
           <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
           <td>MIT</td>
           <td data-ko="가능" data-en="Allowed">가능</td>
@@ -218,35 +261,50 @@
 
 <script>
 /* 이미지 압축 — 순수 자바스크립트, 서버로 아무것도 보내지 않습니다.
-   SPDX-License-Identifier: MIT */
+   SPDX-License-Identifier: MIT
+
+   잘못된 입력을 어떻게 다루는지 한 눈에:
+     · 사진이 아닌 파일      → 무엇이 떨어졌는지 이름과 종류를 적어 알려 줍니다
+     · 파일이 너무 큼        → 몇 MB 인지 적고 받지 않습니다 (MAX_BYTES)
+     · 화소가 너무 많음      → 작업용 크기로 한 번 줄이고 그렇게 알려 줍니다 (WORK_PIXELS)
+     · 깨진 사진             → '읽을 수 없었습니다' 로 끝내고 전 상태를 지키지 않습니다
+   어느 경우에도 alert() 는 쓰지 않고, #ic-msg 자리에 한국어·영어로 적습니다. */
 (function () {
   "use strict";
+
+  /* 받지 않을 크기 / 한 번 줄이고 쓸 화소 수 */
+  var MAX_BYTES = 30 * 1024 * 1024;   // 30MB 넘으면 아예 받지 않습니다
+  var WORK_PIXELS = 24000000;         // 2,400만 화소 넘으면 작업용으로 줄입니다
 
   function t(ko, en) {
     return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
   }
   var $ = function (id) { return document.getElementById(id); };
 
-  var drop = $("ic-drop"), fileIn = $("ic-file");
+  var drop = $("ic-drop"), fileIn = $("ic-file"), pickBtn = $("ic-pick");
   var maxIn = $("ic-max"), maxV = $("ic-maxv");
-  var qIn = $("ic-q"), qV = $("ic-qv"), fmtIn = $("ic-fmt");
+  var qIn = $("ic-q"), qV = $("ic-qv"), qWrap = $("ic-qwrap"), fmtIn = $("ic-fmt");
+  var baEl = $("ic-ba"), emptyEl = $("ic-empty");
   var beforeImg = $("ic-before"), afterImg = $("ic-after");
   var bpx = $("ic-bpx"), bkb = $("ic-bkb"), bname = $("ic-bname");
   var apx = $("ic-apx"), akb = $("ic-akb"), aname = $("ic-aname");
-  var savedEl = $("ic-saved"), dlBtn = $("ic-dl"), resetBtn = $("ic-reset"), busyEl = $("ic-busy");
+  var savedEl = $("ic-saved"), msgEl = $("ic-msg");
+  var dlBtn = $("ic-dl"), sampleBtn = $("ic-sample"), clearBtn = $("ic-clear");
 
   /* 지금 다루는 사진 하나만 기억합니다. */
   var cur = {
-    blob: null,      // 원래 사진
-    name: "sample",  // 확장자 뺀 이름
-    bitmap: null,    // 그릴 수 있는 그림
-    w: 0, h: 0,
+    blob: null,      // 원래 파일
+    name: "photo",   // 확장자 뺀 이름
+    src: null,       // 그릴 수 있는 그림 (ImageBitmap / Image / Canvas)
+    w: 0, h: 0,      // 작업용 크기
+    ow: 0, oh: 0,    // 원래 크기 (작업용으로 줄였으면 다릅니다)
+    shrunk: false,   // 작업용으로 미리 줄였는가
     beforeUrl: "",   // 미리보기용 URL (바꿀 때 꼭 revoke)
     afterUrl: "",
     afterBlob: null
   };
 
-  /* --- 작은 도움 함수들 --- */
+  /* ---------- 작은 도움 함수들 ---------- */
   function kb(bytes) {
     if (bytes >= 1024 * 1024) return (bytes / 1048576).toFixed(2) + " MB";
     return Math.round(bytes / 1024).toLocaleString() + " KB";
@@ -260,11 +318,34 @@
     return "jpg";
   }
   function baseName(name) {
-    return (name || "photo").replace(/\.[^.]+$/, "").slice(0, 40) || "photo";
+    return String(name || "photo").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]/g, "")
+      .trim().slice(0, 40) || "photo";
+  }
+  /* 화면 안 알림. kind: ""(보통) / "busy" / "warn" / "bad" */
+  function msg(text, kind) {
+    msgEl.className = "d-msg" + (kind ? " is-" + kind : "");
+    msgEl.textContent = "";
+    if (kind === "busy") {
+      var sp = document.createElement("span");
+      sp.className = "d-spin";
+      sp.setAttribute("aria-hidden", "true");
+      msgEl.appendChild(sp);
+    }
+    msgEl.appendChild(document.createTextNode(text));
+  }
+  function setDownload(on) {
+    if (on) { dlBtn.removeAttribute("aria-disabled"); dlBtn.classList.remove("d-off"); }
+    else {
+      dlBtn.setAttribute("aria-disabled", "true");
+      dlBtn.classList.add("d-off");
+      dlBtn.removeAttribute("download");
+      dlBtn.setAttribute("href", "#");
+    }
   }
 
-  /* --- 그림 불러오기: 휴대폰 사진의 EXIF 방향은 브라우저가 반영해 줍니다 --- */
-  function loadBitmap(blob) {
+  /* ---------- 그림 불러오기 ----------
+     휴대폰 사진의 회전(EXIF) 정보는 브라우저가 반영해 줍니다. */
+  function loadImage(blob) {
     if (window.createImageBitmap) {
       try {
         return createImageBitmap(blob, { imageOrientation: "from-image" });
@@ -279,16 +360,34 @@
     });
   }
 
-  /* --- 다시 뽑기 (슬라이더를 움직이면 조금 기다렸다 한 번만) --- */
-  var timer = 0;
+  /* 화소가 너무 많으면 작업용 캔버스로 한 번 줄여 둡니다.
+     이렇게 해 두면 손잡이를 움직일 때마다 거대한 그림을 다시 그리지 않아
+     탭이 멈추지 않습니다. */
+  function toWorkable(img, w, h) {
+    if (w * h <= WORK_PIXELS) return { src: img, w: w, h: h, shrunk: false };
+    var k = Math.sqrt(WORK_PIXELS / (w * h));
+    var nw = Math.max(1, Math.round(w * k));
+    var nh = Math.max(1, Math.round(h * k));
+    var c = document.createElement("canvas");
+    c.width = nw; c.height = nh;
+    var x = c.getContext("2d");
+    x.imageSmoothingEnabled = true;
+    x.imageSmoothingQuality = "high";
+    x.drawImage(img, 0, 0, nw, nh);
+    return { src: c, w: nw, h: nh, shrunk: true };
+  }
+
+  /* ---------- 다시 뽑기 (손잡이를 움직이면 조금 기다렸다 한 번만) ---------- */
+  var timer = 0, running = false;
   function schedule() {
+    if (!cur.src) return;
     clearTimeout(timer);
-    busyEl.textContent = t("줄이는 중…", "Working…");
+    msg(t("줄이는 중…", "Working…"), "busy");
     timer = setTimeout(encode, 180);
   }
 
   function encode() {
-    if (!cur.bitmap) { busyEl.textContent = ""; return; }
+    if (!cur.src) return;
     var limit = parseInt(maxIn.value, 10);
     var type = fmtIn.value;
     var quality = parseFloat(qIn.value);
@@ -306,16 +405,17 @@
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, w, h);
     }
-    ctx.drawImage(cur.bitmap, 0, 0, w, h);
+    ctx.drawImage(cur.src, 0, 0, w, h);
 
+    running = true;
     canvas.toBlob(function (blob) {
-      busyEl.textContent = "";
+      running = false;
       if (!blob) {
-        savedEl.textContent = t("이 형식으로는 저장할 수 없습니다. 다른 형식을 골라 주세요.",
-                                "This browser cannot save that format. Try another one.");
+        msg(t("이 브라우저는 그 형식으로 저장하지 못합니다. 다른 형식을 골라 주세요.",
+               "This browser cannot save that format. Please choose another one."), "bad");
         return;
       }
-      /* WebP 를 못 만드는 브라우저는 PNG 를 돌려줍니다 */
+      /* WebP 를 못 만드는 브라우저는 PNG 를 돌려주기도 합니다 */
       freeUrl("afterUrl");
       cur.afterBlob = blob;
       cur.afterUrl = URL.createObjectURL(blob);
@@ -328,54 +428,151 @@
       aname.textContent = outName;
       dlBtn.href = cur.afterUrl;
       dlBtn.setAttribute("download", outName);
+      setDownload(true);
 
+      /* 고른 형식이 안 되어 다른 형식으로 저장됐다면 그대로 말해 줍니다 */
+      if (blob.type && type && blob.type !== type) {
+        msg(t("이 브라우저가 " + fmtLabel(type) + " 를 만들지 못해 " + fmtLabel(blob.type) + " 로 저장했습니다.",
+               "This browser cannot make " + fmtLabel(type) + ", so it saved " + fmtLabel(blob.type) + " instead."), "warn");
+      } else if (cur.shrunk) {
+        msg(t("원본이 아주 커서 작업용으로 " + cur.w + "×" + cur.h + " 로 먼저 줄였습니다.",
+               "The original was very large, so it was scaled to " + cur.w + "×" + cur.h + " to work with."), "warn");
+      } else {
+        msg("", "");
+      }
+
+      /* 줄었는지, 오히려 커졌는지 — 음수 퍼센트를 보여 주지 않고 그대로 말합니다 */
+      savedEl.hidden = false;
       var before = cur.blob ? cur.blob.size : 0;
       if (before > 0) {
         var pct = (1 - blob.size / before) * 100;
-        if (pct >= 0) {
+        if (pct >= 0.05) {
           savedEl.className = "d-saved";
-          savedEl.textContent = t("용량 " + pct.toFixed(1) + "% 줄었습니다 (" + kb(before) + " → " + kb(blob.size) + ")",
+          savedEl.textContent = t("용량이 " + pct.toFixed(1) + "% 줄었습니다 (" + kb(before) + " → " + kb(blob.size) + ")",
                                   pct.toFixed(1) + "% smaller (" + kb(before) + " → " + kb(blob.size) + ")");
+        } else if (pct > -0.05) {
+          savedEl.className = "d-saved is-worse";
+          savedEl.textContent = t("용량이 거의 그대로입니다 (" + kb(before) + " → " + kb(blob.size) + ")",
+                                  "Almost the same size (" + kb(before) + " → " + kb(blob.size) + ")");
         } else {
           savedEl.className = "d-saved is-worse";
-          savedEl.textContent = t("오히려 " + Math.abs(pct).toFixed(1) + "% 커졌습니다. 화질을 낮추거나 JPEG 를 써 보세요.",
-                                  Math.abs(pct).toFixed(1) + "% larger. Lower the quality or try JPEG.");
+          savedEl.textContent = t("줄지 않고 오히려 " + Math.abs(pct).toFixed(1) + "% 커졌습니다 ("
+                                  + kb(before) + " → " + kb(blob.size) + "). PNG 는 사진에서 자주 이렇게 됩니다 — JPEG 나 WebP 로 바꿔 보세요.",
+                                  "It got " + Math.abs(pct).toFixed(1) + "% bigger, not smaller ("
+                                  + kb(before) + " → " + kb(blob.size) + "). PNG often does this with photos — try JPEG or WebP.");
         }
+      } else {
+        savedEl.className = "d-saved is-worse";
+        savedEl.textContent = t("원래 용량을 알 수 없어 비교하지 않았습니다.",
+                                "The original size is unknown, so there is nothing to compare.");
       }
     }, type, quality);
   }
 
-  /* --- 새 사진 받기 --- */
+  function fmtLabel(type) {
+    if (type === "image/webp") return "WebP";
+    if (type === "image/png") return "PNG";
+    if (type === "image/jpeg") return "JPEG";
+    return String(type || "?");
+  }
+
+  /* ---------- 새 사진 받기 ---------- */
+  /* 무엇이 떨어졌는지 사람이 읽을 수 있게 적습니다 */
+  function describe(file) {
+    var nm = (file && file.name) ? String(file.name).slice(0, 60) : t("이름 없는 파일", "an unnamed file");
+    var ty = (file && file.type) ? file.type : t("종류를 알 수 없음", "unknown type");
+    return "‘" + nm + "’ (" + ty + ")";
+  }
+
   function accept(blob, name) {
-    if (!blob || (blob.type && blob.type.indexOf("image/") !== 0)) {
-      savedEl.className = "d-saved is-worse";
-      savedEl.textContent = t("사진 파일만 열 수 있습니다.", "Only image files, please.");
+    if (!blob) {
+      msg(t("파일을 찾지 못했습니다. 다시 한 번 넣어 주세요.",
+             "No file was found. Please try again."), "bad");
       return;
     }
-    busyEl.textContent = t("사진을 읽는 중…", "Reading the photo…");
-    loadBitmap(blob).then(function (bm) {
+    /* ① 사진이 아닌 것 — 무엇이었는지 이름과 종류를 적어 줍니다 */
+    if (!blob.type || blob.type.indexOf("image/") !== 0) {
+      msg(t(describe({ name: name, type: blob.type }) + " 은(는) 사진이 아닙니다. JPEG·PNG·WebP·GIF 같은 사진 파일만 열 수 있습니다.",
+             describe({ name: name, type: blob.type }) + " is not an image. Only photo files like JPEG, PNG, WebP or GIF can be opened."), "bad");
+      return;
+    }
+    /* ② 너무 큰 파일 — 몇 MB 인지 적고 받지 않습니다 */
+    if (blob.size > MAX_BYTES) {
+      msg(t("이 파일은 " + kb(blob.size) + " 로 너무 큽니다. "
+             + Math.round(MAX_BYTES / 1048576) + "MB 까지만 열 수 있습니다. 먼저 조금 줄여서 다시 넣어 주세요.",
+             "That file is " + kb(blob.size) + ", which is too big. Up to "
+             + Math.round(MAX_BYTES / 1048576) + "MB can be opened. Please shrink it a little first."), "bad");
+      return;
+    }
+
+    msg(t("사진을 읽는 중…", "Reading the photo…"), "busy");
+    loadImage(blob).then(function (img) {
+      var ow = img.width || img.naturalWidth;
+      var oh = img.height || img.naturalHeight;
+      if (!ow || !oh) throw new Error("size");
+
+      /* ③ 화소가 너무 많으면 작업용으로 한 번 줄입니다 */
+      var work = toWorkable(img, ow, oh);
+
+      /* 앞의 사진에서 쓰던 것을 정리합니다 */
+      if (cur.src && cur.src.close && cur.src !== work.src) {
+        try { cur.src.close(); } catch (e) {}
+      }
+      freeUrl("beforeUrl");
+
       cur.blob = blob;
       cur.name = baseName(name);
-      if (cur.bitmap && cur.bitmap.close) { try { cur.bitmap.close(); } catch (e) {} }
-      cur.bitmap = bm;
-      cur.w = bm.width || bm.naturalWidth;
-      cur.h = bm.height || bm.naturalHeight;
+      cur.src = work.src;
+      cur.w = work.w; cur.h = work.h;
+      cur.ow = ow; cur.oh = oh;
+      cur.shrunk = work.shrunk;
 
-      freeUrl("beforeUrl");
       cur.beforeUrl = URL.createObjectURL(blob);
       beforeImg.src = cur.beforeUrl;
-      bpx.textContent = cur.w.toLocaleString() + " × " + cur.h.toLocaleString() + " px";
+      beforeImg.alt = t("넣은 원래 사진", "The original photo you added");
+      afterImg.alt = t("줄인 사진", "The shrunken photo");
+
+      bpx.textContent = ow.toLocaleString() + " × " + oh.toLocaleString() + " px";
       bkb.textContent = kb(blob.size);
       bname.textContent = name || t("예시 사진", "sample photo");
+
+      baEl.hidden = false;
+      emptyEl.hidden = true;
+
+      /* 손잡이의 최대값을 사진보다 크게 두지 않습니다 (늘려도 선명해지지 않으니까) */
+      var longest = Math.max(ow, oh);
+      maxIn.max = String(Math.max(400, Math.min(4000, Math.ceil(longest / 100) * 100)));
+      if (parseInt(maxIn.value, 10) > parseInt(maxIn.max, 10)) maxIn.value = maxIn.max;
+      maxV.textContent = maxIn.value + "px";
+
       encode();
     }).catch(function () {
-      busyEl.textContent = "";
-      savedEl.className = "d-saved is-worse";
-      savedEl.textContent = t("이 사진은 읽을 수 없었습니다.", "That photo could not be read.");
+      msg(t("이 사진은 읽을 수 없었습니다. 파일이 깨졌거나 이 브라우저가 모르는 형식일 수 있습니다.",
+             "That photo could not be read. The file may be damaged, or in a format this browser does not know."), "bad");
     });
   }
 
-  /* --- 처음 보여 줄 예시 사진을 직접 그립니다 --- */
+  /* ---------- 비우기 ---------- */
+  function clearAll(quiet) {
+    clearTimeout(timer);
+    if (cur.src && cur.src.close) { try { cur.src.close(); } catch (e) {} }
+    freeUrl("beforeUrl"); freeUrl("afterUrl");
+    cur.blob = null; cur.src = null; cur.afterBlob = null;
+    cur.w = cur.h = cur.ow = cur.oh = 0; cur.shrunk = false;
+    beforeImg.removeAttribute("src"); afterImg.removeAttribute("src");
+    bpx.textContent = bkb.textContent = bname.textContent = "—";
+    apx.textContent = akb.textContent = aname.textContent = "—";
+    baEl.hidden = true;
+    emptyEl.hidden = false;
+    savedEl.hidden = true;
+    savedEl.textContent = "";
+    setDownload(false);
+    fileIn.value = "";
+    maxIn.max = "4000";
+    if (!quiet) msg(t("비웠습니다. 새 사진을 넣어 보세요.", "Cleared. Add another photo."), "");
+  }
+
+  /* ---------- 처음 보여 줄 예시 사진을 직접 그립니다 ---------- */
   function makeSample() {
     var c = document.createElement("canvas");
     c.width = 1600; c.height = 1200;
@@ -387,9 +584,11 @@
     x.fillStyle = "#FF6A13";
     x.beginPath(); x.arc(1180, 300, 150, 0, Math.PI * 2); x.fill();
     x.fillStyle = "#D14E00";
-    x.beginPath(); x.moveTo(-100, 900); x.quadraticCurveTo(420, 540, 900, 900); x.lineTo(900, 1200); x.lineTo(-100, 1200); x.fill();
+    x.beginPath(); x.moveTo(-100, 900); x.quadraticCurveTo(420, 540, 900, 900);
+    x.lineTo(900, 1200); x.lineTo(-100, 1200); x.fill();
     x.fillStyle = "#FF6A13";
-    x.beginPath(); x.moveTo(620, 960); x.quadraticCurveTo(1120, 600, 1700, 980); x.lineTo(1700, 1200); x.lineTo(620, 1200); x.fill();
+    x.beginPath(); x.moveTo(620, 960); x.quadraticCurveTo(1120, 600, 1700, 980);
+    x.lineTo(1700, 1200); x.lineTo(620, 1200); x.fill();
     /* 자글자글한 점을 뿌려 두면 압축 효과가 눈에 보입니다 */
     for (var i = 0; i < 5000; i++) {
       x.fillStyle = i % 2 ? "rgba(26,26,26,.07)" : "rgba(255,255,255,.22)";
@@ -398,24 +597,43 @@
     x.fillStyle = "#1A1A1A";
     x.font = "700 70px sans-serif";
     x.fillText("huhassi", 90, 170);
+    msg(t("예시 사진을 만드는 중…", "Drawing a sample photo…"), "busy");
     c.toBlob(function (b) {
       if (b) accept(b, t("예시-사진.jpg", "sample-photo.jpg"));
+      else msg(t("예시 사진을 만들지 못했습니다. 직접 사진을 넣어 주세요.",
+                  "The sample could not be drawn. Please add a photo of your own."), "bad");
     }, "image/jpeg", 0.95);
   }
 
-  /* --- 연결 --- */
+  /* ---------- 연결 ---------- */
   maxIn.addEventListener("input", function () { maxV.textContent = maxIn.value + "px"; schedule(); });
   qIn.addEventListener("input", function () { qV.textContent = parseFloat(qIn.value).toFixed(2); schedule(); });
-  fmtIn.addEventListener("change", function () {
-    qIn.disabled = (fmtIn.value === "image/png");
-    schedule();
-  });
+
+  function syncQuality() {
+    var isPng = (fmtIn.value === "image/png");
+    qIn.disabled = isPng;
+    qWrap.classList.toggle("d-off", isPng);
+  }
+  fmtIn.addEventListener("change", function () { syncQuality(); schedule(); });
+
+  pickBtn.addEventListener("click", function () { fileIn.click(); });
   fileIn.addEventListener("change", function () {
     var f = fileIn.files && fileIn.files[0];
     if (f) accept(f, f.name);
   });
-  resetBtn.addEventListener("click", function () { fileIn.value = ""; makeSample(); });
+  sampleBtn.addEventListener("click", function () { fileIn.value = ""; makeSample(); });
+  clearBtn.addEventListener("click", function () { clearAll(false); });
 
+  /* 내려받기를 아직 못 할 때는 눌러도 아무 일이 없게, 대신 이유를 적습니다 */
+  dlBtn.addEventListener("click", function (e) {
+    if (dlBtn.getAttribute("aria-disabled") === "true") {
+      e.preventDefault();
+      msg(t("먼저 사진을 넣어 주세요. 그러면 내려받을 수 있습니다.",
+             "Add a photo first, then you can download the result."), "bad");
+    }
+  });
+
+  /* 끌어다 놓기 */
   ["dragenter", "dragover"].forEach(function (ev) {
     drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("is-over"); });
   });
@@ -425,21 +643,58 @@
   drop.addEventListener("drop", function (e) {
     e.preventDefault();
     drop.classList.remove("is-over");
-    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if (f) accept(f, f.name);
+    var dt = e.dataTransfer;
+    var f = dt && dt.files && dt.files[0];
+    if (f) { accept(f, f.name); return; }
+    /* 파일이 아니라 글자나 링크를 떨어뜨린 경우 */
+    msg(t("파일이 아니라 다른 것이 떨어졌습니다. 사진 파일을 끌어다 놓아 주세요.",
+           "That was not a file. Please drag a photo file instead."), "bad");
   });
   /* 창 전체에 떨어뜨렸을 때 브라우저가 사진을 열어 버리지 않게 */
   window.addEventListener("dragover", function (e) { e.preventDefault(); });
   window.addEventListener("drop", function (e) { e.preventDefault(); });
 
+  /* 붙여 넣기 (Ctrl+V / Cmd+V) — 복사해 둔 사진을 바로 받습니다 */
+  document.addEventListener("paste", function (e) {
+    var cd = e.clipboardData;
+    if (!cd) return;
+    var tag = (document.activeElement && document.activeElement.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA") return;   // 글 칸에 붙여 넣는 건 건드리지 않습니다
+    var items = cd.items || [];
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].kind === "file") {
+        var f = items[i].getAsFile();
+        if (f) {
+          e.preventDefault();
+          accept(f, f.name || t("붙여넣은-사진", "pasted-image"));
+          return;
+        }
+      }
+    }
+    if (cd.files && cd.files.length) {
+      e.preventDefault();
+      accept(cd.files[0], cd.files[0].name);
+      return;
+    }
+    /* 글자만 복사해 온 경우 — 조용히 넘기지 않고 이유를 적습니다 */
+    if (cd.getData && cd.getData("text")) {
+      msg(t("복사판에 사진이 아니라 글자가 들어 있습니다. 사진을 복사해서 다시 붙여 넣어 주세요.",
+             "The clipboard holds text, not an image. Copy a photo and paste again."), "bad");
+    }
+  });
+
   document.addEventListener("huhassi:lang", function () {
-    if (cur.blob) encode();
+    if (cur.src && !running) encode();
+    else if (!cur.src) { msg("", ""); }
   });
   window.addEventListener("pagehide", function () { freeUrl("beforeUrl"); freeUrl("afterUrl"); });
 
+  /* ---------- 시작 ---------- */
   maxV.textContent = maxIn.value + "px";
   qV.textContent = parseFloat(qIn.value).toFixed(2);
-  makeSample();
+  syncQuality();
+  setDownload(false);
+  makeSample();     /* 열면 바로 무언가 돌아가고 있어야 하니 예시로 시작합니다 */
 })();
 </script>
 </body>
