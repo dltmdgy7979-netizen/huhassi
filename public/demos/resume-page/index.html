@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이력서·포트폴리오 — 후하씨 huhassi</title>
+<meta name="description" content="경력과 작업물을 한 장에 담는 이력서 페이지 틀. 인쇄 단추 하나로 A4 PDF 로 저장됩니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS */
+  .d-frame{
+    width:min(380px,100%);height:620px;margin:0 auto;
+    border:1px solid var(--line-2);border-radius:var(--radius-s);
+    background:#fff;box-shadow:var(--shadow);overflow:hidden}
+  .d-frame iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+  .d-open{display:block;text-align:center;margin-top:12px;font-size:14px}
+  .d-note{font-size:13.5px;color:var(--ink-2);margin:0 0 14px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">12</span>
+    <h1 data-ko="이력서·포트폴리오" data-en="Resume &amp; Portfolio">이력서·포트폴리오</h1>
+    <p class="lede" data-ko="이름·역량·경력·작업물·학력이 한 장에 들어가는 이력서 틀. 화면의 인쇄 단추를 누르면 머리글과 배경이 빠지고 링크 주소가 글자로 나오는 A4 PDF 가 됩니다." data-en="A one-page resume holding your name, strengths, jobs, work samples and schooling. Hit the print button and it saves as an A4 PDF with the headers and backgrounds stripped and link addresses spelled out."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="파일 한 개" data-en="One file">파일 한 개</span>
+      <span class="tag" data-ko="A4 PDF" data-en="A4 PDF">A4 PDF</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo">
+    <h2 id="h-demo" class="panel-title" data-ko="작동 미리보기" data-en="Live preview">작동 미리보기</h2>
+    <p class="d-note" data-ko="아래 칸이 실제 template.html 입니다. 안에서 밀어 내리면 전부 보입니다. 적혀 있는 이름·회사·연락처는 모두 예시용 가짜입니다." data-en="The box below is the real template.html. Scroll inside it to see the whole page. Every name, company and contact detail in it is an invented placeholder."></p>
+    <div class="d-frame">
+      <iframe src="template.html" title="이력서·포트폴리오 틀 미리보기" data-ko-title="이력서·포트폴리오 틀 미리보기" data-en-title="Resume and portfolio template preview" loading="lazy"></iframe>
+    </div>
+    <a class="d-open" href="template.html" target="_blank" rel="noopener" data-ko="새 창에서 크게 보기 ↗" data-en="Open it full size in a new tab ↗">새 창에서 크게 보기 ↗</a>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 하나만 꺼냅니다." data-en="Download the ZIP below and pull out the single file template.html."></li>
+      <li data-ko="글 편집기로 열어, 맨 위 주석에 적힌 여섯 군데를 차례로 찾습니다." data-en="Open it in a text editor and find the six spots listed in the comment at the top."></li>
+      <li data-ko="이름·한 줄 소개·연락처를 내 것으로 바꾸고, 핵심 역량 칸을 세~네 개로 고칩니다." data-en="Replace the name, one-line intro and contact details with yours, and rewrite the three or four strength boxes."></li>
+      <li data-ko="경력은 회사·기간·한 일 불릿으로, 작업물은 제목·설명·링크 세 카드로 채웁니다." data-en="Fill the jobs in as company, dates and bullets of what you did, and the samples as three cards with a title, a note and a link."></li>
+      <li data-ko="새 창에서 열어 ‘인쇄 → PDF 로 저장’ 을 누르고, A4·세로·머리글 끄기로 저장하면 그대로 이력서 PDF 가 됩니다." data-en="Open it in a new tab, press the save-as-PDF button, choose A4, portrait and headers off, and you have your resume PDF."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 파일 template.html" data-en="The template file template.html">틀 파일 template.html</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 안의 예시 글과 도형 (이름·경력·작업물 등)" data-en="The placeholder text and shapes inside the template (name, jobs, samples)">틀 안의 예시 글과 도형 (이름·경력·작업물 등)</td>
+          <td data-ko="후하씨가 직접 만듦 · 실제 사람이나 회사가 아닌 지어낸 예시" data-en="Made by huhassi · invented, not a real person or company">후하씨가 직접 만듦 · 실제 사람이나 회사가 아닌 지어낸 예시</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 파일의 글꼴" data-en="Typeface used by the template">틀 파일의 글꼴</td>
+          <td data-ko="바깥 글꼴 없음 · 기기에 있는 글꼴만 씀" data-en="No web font · system fonts only">바깥 글꼴 없음 · 기기에 있는 글꼴만 씀</td>
+          <td data-ko="해당 없음" data-en="Not applicable">해당 없음</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard (이 소개 쪽에만 씀)" data-en="Pretendard typeface (this page only)">글꼴 Pretendard (이 소개 쪽에만 씀)</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="template.html 은 혼자 돌아가는 파일 한 개입니다. 바깥에서 불러오는 것이 하나도 없으니, 이 파일만 복사해 쓰셔도 됩니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="template.html is a single self-contained file — it loads nothing from outside, so you can copy just that one file. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/resume-page" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/resume-page.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+</body>
+</html>

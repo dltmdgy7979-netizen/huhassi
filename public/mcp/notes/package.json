@@ -1,0 +1,17 @@
+{
+  "name": "huhassi-notes-mcp",
+  "version": "1.0.0",
+  "description": "로컬 메모 MCP — 내 컴퓨터의 메모 폴더(.md, .txt)를 찾고 읽어 주는 MCP 서버 / Local Notes MCP server",
+  "type": "module",
+  "license": "MIT",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  }
+}

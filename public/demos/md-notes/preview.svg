@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="마크다운 메모장 — 왼쪽에 마크다운, 오른쪽에 꾸며진 모습이 나란히 보이는 화면">
+  <rect width="640" height="360" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="640" height="54" fill="#FFF5EE"/>
+  <circle cx="26" cy="27" r="7" fill="#FF6A13"/>
+  <rect x="42" y="21" width="74" height="12" rx="6" fill="#1A1A1A"/>
+  <rect x="540" y="18" width="76" height="18" rx="9" fill="#FFEBDD"/>
+  <text x="578" y="31" font-family="sans-serif" font-size="10" font-weight="700" fill="#D14E00" text-anchor="middle">09</text>
+
+  <!-- 메모 이름 단추 -->
+  <rect x="24" y="68" width="124" height="26" rx="13" fill="#FF6A13"/>
+  <text x="86" y="85" font-family="sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">마크다운 메모장</text>
+  <rect x="156" y="68" width="92" height="26" rx="13" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="1.5"/>
+  <text x="202" y="85" font-family="sans-serif" font-size="11" fill="#6E6A66" text-anchor="middle">오늘 할 일</text>
+  <rect x="256" y="68" width="72" height="26" rx="13" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="1.5"/>
+  <text x="292" y="85" font-family="sans-serif" font-size="11" fill="#6E6A66" text-anchor="middle">장 볼 것</text>
+  <rect x="520" y="68" width="96" height="26" rx="13" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="1.5"/>
+  <text x="568" y="85" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">+ 새 메모</text>
+
+  <!-- 왼쪽: 쓰는 곳 -->
+  <rect x="24" y="106" width="290" height="208" rx="12" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1.5"/>
+  <text x="38" y="126" font-family="sans-serif" font-size="10" font-weight="700" fill="#6E6A66">쓰는 곳 (마크다운)</text>
+  <rect x="36" y="134" width="266" height="168" rx="8" fill="#FFFFFF" stroke="#E9E5E1"/>
+  <g font-family="monospace" font-size="11" fill="#1A1A1A">
+    <text x="48" y="152"><tspan fill="#FF6A13">#</tspan> 마크다운 메모장</text>
+    <text x="48" y="172">왼쪽에 쓰면 <tspan fill="#D14E00">**</tspan>바로<tspan fill="#D14E00">**</tspan></text>
+    <text x="48" y="188">오른쪽이 바뀝니다.</text>
+    <text x="48" y="212"><tspan fill="#FF6A13">##</tspan> 할 수 있는 것</text>
+    <text x="48" y="232"><tspan fill="#FF6A13">-</tspan> 제목, 목록, 인용</text>
+    <text x="48" y="248"><tspan fill="#FF6A13">-</tspan> <tspan fill="#D14E00">`코드`</tspan> 와 링크</text>
+    <text x="48" y="272"><tspan fill="#FF6A13">&gt;</tspan> 이 기기에만</text>
+    <text x="48" y="288"><tspan fill="#FF6A13">&gt;</tspan> 저장됩니다.</text>
+  </g>
+
+  <!-- 오른쪽: 보이는 모습 -->
+  <rect x="326" y="106" width="290" height="208" rx="12" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="1.5"/>
+  <text x="340" y="126" font-family="sans-serif" font-size="10" font-weight="700" fill="#6E6A66">보이는 모습</text>
+  <rect x="338" y="134" width="266" height="168" rx="8" fill="#FFF5EE" stroke="#E9E5E1"/>
+  <text x="352" y="158" font-family="sans-serif" font-size="17" font-weight="800" fill="#1A1A1A">마크다운 메모장</text>
+  <text x="352" y="180" font-family="sans-serif" font-size="11" fill="#1A1A1A">왼쪽에 쓰면 <tspan font-weight="800">바로</tspan> 오른쪽이</text>
+  <text x="352" y="194" font-family="sans-serif" font-size="11" fill="#1A1A1A">바뀝니다.</text>
+  <text x="352" y="218" font-family="sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">할 수 있는 것</text>
+  <circle cx="358" cy="234" r="2.5" fill="#6E6A66"/>
+  <text x="368" y="238" font-family="sans-serif" font-size="11" fill="#1A1A1A">제목, 목록, 인용</text>
+  <circle cx="358" cy="252" r="2.5" fill="#6E6A66"/>
+  <rect x="368" y="244" width="34" height="14" rx="4" fill="#FFEBDD"/>
+  <text x="372" y="255" font-family="monospace" font-size="10" fill="#D14E00">코드</text>
+  <text x="408" y="256" font-family="sans-serif" font-size="11" fill="#1A1A1A">와 링크</text>
+  <rect x="352" y="266" width="3" height="28" fill="#FF6A13"/>
+  <text x="364" y="278" font-family="sans-serif" font-size="11" fill="#6E6A66">이 기기에만</text>
+  <text x="364" y="291" font-family="sans-serif" font-size="11" fill="#6E6A66">저장됩니다.</text>
+
+  <!-- 아래 단추 -->
+  <rect x="24" y="326" width="132" height="26" rx="13" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="1.5"/>
+  <text x="90" y="343" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">.md 로 내려받기</text>
+  <rect x="166" y="326" width="104" height="26" rx="13" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="1.5"/>
+  <text x="218" y="343" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">HTML 복사</text>
+  <text x="290" y="343" font-family="sans-serif" font-size="11" fill="#6E6A66">치는 대로 저장 · autosave</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="스네이크 놀이 화면 미리보기">
+  <rect width="640" height="360" fill="#FFFFFF"/>
+  <rect x="24" y="22" width="300" height="26" rx="13" fill="#FFF5EE"/>
+  <circle cx="40" cy="35" r="6" fill="#FF6A13"/>
+  <text x="56" y="40" font-family="system-ui, sans-serif" font-size="15" fill="#6E6A66">점수 18 · 최고 42</text>
+
+  <rect x="24" y="64" width="372" height="268" rx="12" fill="#FFF5EE" stroke="#E9E5E1"/>
+  <g stroke="#E9E5E1" stroke-width="1" opacity="0.8">
+    <path d="M90 64V332M156 64V332M222 64V332M288 64V332M354 64V332"/>
+    <path d="M24 130H396M24 196H396M24 262H396"/>
+  </g>
+
+  <g fill="#FF6A13">
+    <rect x="96" y="202" width="54" height="54" rx="10"/>
+    <rect x="162" y="202" width="54" height="54" rx="10"/>
+    <rect x="162" y="136" width="54" height="54" rx="10"/>
+    <rect x="228" y="136" width="54" height="54" rx="10"/>
+  </g>
+  <rect x="294" y="136" width="54" height="54" rx="14" fill="#D14E00"/>
+  <circle cx="312" cy="156" r="5" fill="#FFFFFF"/>
+  <circle cx="332" cy="156" r="5" fill="#FFFFFF"/>
+
+  <circle cx="321" cy="289" r="17" fill="#FFEBDD" stroke="#FF6A13" stroke-width="3"/>
+  <path d="M321 275v-9" stroke="#17794C" stroke-width="4" stroke-linecap="round"/>
+
+  <g>
+    <rect x="432" y="96" width="76" height="76" rx="16" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
+    <path d="M470 118l-14 20h28z" fill="#1A1A1A"/>
+    <rect x="432" y="188" width="76" height="76" rx="16" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
+    <path d="M470 242l14-20h-28z" fill="#1A1A1A"/>
+    <rect x="524" y="142" width="76" height="76" rx="16" fill="#FFFFFF" stroke="#D8D2CC" stroke-width="2"/>
+    <path d="M578 180l-20-14v28z" fill="#1A1A1A"/>
+    <rect x="340" y="142" width="76" height="76" rx="16" fill="none"/>
+  </g>
+  <rect x="432" y="284" width="168" height="48" rx="24" fill="#FF6A13"/>
+  <text x="516" y="314" text-anchor="middle" font-family="system-ui, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF">다시 하기</text>
+</svg>

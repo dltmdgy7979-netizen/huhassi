@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR 코드 만들기 QR Code Maker — 후하씨 huhassi</title>
+<meta name="description" content="주소나 글을 QR 코드로 만들어 PNG로 내려받습니다. 색과 크기를 고를 수 있고, 모든 일이 브라우저 안에서 끝납니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
+  .d-grid{display:grid;gap:18px}
+  @media (min-width:720px){.d-grid{grid-template-columns:1fr minmax(0,300px)}}
+
+  .d-out{display:flex;flex-direction:column;align-items:center;gap:12px;
+    background:var(--soft);border:1px solid var(--line);border-radius:var(--radius-s);padding:16px}
+  .d-canvas{display:block;width:100%;max-width:260px;height:auto;image-rendering:pixelated;
+    border:1px solid var(--line);border-radius:6px;background:#fff}
+  .d-size-out{font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+
+  .d-colors{display:flex;flex-wrap:wrap;gap:14px;margin-top:4px}
+  .d-color{display:flex;align-items:center;gap:8px}
+  .d-color span{font-size:13px;color:var(--ink-2);font-variation-settings:"wght" 560}
+
+  .d-warn{margin-top:10px;font-size:13.5px;color:var(--orange-ink);
+    background:var(--orange-soft);border-radius:var(--radius-s);padding:8px 11px}
+  .d-warn[hidden]{display:none}
+  .d-warn::before{content:"! ";font-family:var(--mono);font-variation-settings:"wght" 700}
+
+  .d-fail{border:1px solid var(--line-2);border-radius:var(--radius-s);padding:16px;
+    background:var(--soft);font-size:14.5px}
+  .d-fail[hidden]{display:none}
+  .d-fail p{margin:0 0 6px;font-variation-settings:"wght" 700}
+  .d-fail small{color:var(--ink-2);display:block;font-size:13.5px}
+
+  .d-swatches{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .d-swatch{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);
+    cursor:pointer;padding:0}
+  .d-swatch:hover{border-color:var(--orange)}
+
+  @media (prefers-reduced-motion:reduce){
+    .d-swatch,.d-canvas,.d-warn{transition:none;animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">06</span>
+    <h1 data-ko="QR 코드 만들기" data-en="QR Code Maker">QR 코드 만들기</h1>
+    <p class="lede" data-ko="주소나 글을 QR 코드로 만들어 PNG로 내려받습니다. 색과 크기를 고를 수 있고, 모든 일이 브라우저 안에서 끝납니다." data-en="Turn a link or some text into a QR code and download it as a PNG. Pick the size and colours; everything happens in your browser."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="설치 없음" data-en="No install">설치 없음</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo">
+    <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
+
+    <div class="d-fail" id="qr-fail" hidden>
+      <div data-lang-ko>
+        <p>QR 만드는 꾸러미를 불러오지 못했습니다.</p>
+        <small>인터넷 연결을 확인하고 이 쪽을 다시 열어 주세요. 연결이 막혀 있으면 이 데모만 돌아가지 않습니다. 코드를 내려받아 컴퓨터에서 쓰실 때도 꾸러미 파일 하나가 함께 있어야 합니다.</small>
+      </div>
+      <div data-lang-en>
+        <p>The QR library could not be loaded.</p>
+        <small>Check your connection and open this page again. If the network is blocked, only this one demo stops working. If you download the code, keep the library file next to it.</small>
+      </div>
+    </div>
+
+    <div class="d-grid" id="qr-ui">
+      <div>
+        <div class="field">
+          <span data-ko="주소나 글" data-en="Link or text">주소나 글</span>
+          <textarea id="qr-text" rows="3" maxlength="900"
+            data-ko-ph="https://example.com 또는 전하고 싶은 글"
+            data-en-ph="https://example.com or any text you like">https://huhassi.example/hello</textarea>
+        </div>
+
+        <div class="controls" style="margin-top:14px">
+          <div class="field">
+            <span><span data-ko="크기" data-en="Size">크기</span> <span class="d-size-out" id="qr-size-out">320px</span></span>
+            <input type="range" id="qr-size" min="160" max="880" step="40" value="320"
+              data-ko-aria="그림 크기" data-en-aria="Image size">
+          </div>
+          <div class="field">
+            <span data-ko="오류 고침 수준" data-en="Error correction">오류 고침 수준</span>
+            <select id="qr-ec">
+              <option value="L" data-ko="L — 가장 작게" data-en="L — smallest">L — 가장 작게</option>
+              <option value="M" selected data-ko="M — 보통 (권함)" data-en="M — normal (recommended)">M — 보통 (권함)</option>
+              <option value="Q" data-ko="Q — 조금 튼튼하게" data-en="Q — sturdier">Q — 조금 튼튼하게</option>
+              <option value="H" data-ko="H — 가장 튼튼하게" data-en="H — sturdiest">H — 가장 튼튼하게</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-colors">
+          <label class="d-color">
+            <input type="color" id="qr-fg" value="#1A1A1A"
+              data-ko-aria="무늬 색" data-en-aria="Pattern colour">
+            <span data-ko="무늬 색" data-en="Pattern colour">무늬 색</span>
+          </label>
+          <label class="d-color">
+            <input type="color" id="qr-bg" value="#FFFFFF"
+              data-ko-aria="바탕 색" data-en-aria="Background colour">
+            <span data-ko="바탕 색" data-en="Background colour">바탕 색</span>
+          </label>
+          <button class="btn btn-sm" type="button" id="qr-default"
+            data-ko="기본 색으로" data-en="Default colours">기본 색으로</button>
+        </div>
+
+        <div class="d-swatches" role="group" data-ko-aria="미리 고른 무늬 색" data-en-aria="Preset pattern colours">
+          <button class="d-swatch" type="button" data-fg="#1A1A1A" style="background:#1A1A1A"
+            data-ko-title="먹색" data-en-title="Ink"></button>
+          <button class="d-swatch" type="button" data-fg="#D14E00" style="background:#D14E00"
+            data-ko-title="진한 주황" data-en-title="Deep orange"></button>
+          <button class="d-swatch" type="button" data-fg="#FF6A13" style="background:#FF6A13"
+            data-ko-title="주황" data-en-title="Orange"></button>
+          <button class="d-swatch" type="button" data-fg="#17794C" style="background:#17794C"
+            data-ko-title="초록" data-en-title="Green"></button>
+        </div>
+
+        <p class="d-warn" id="qr-warn" hidden></p>
+        <p class="hint" id="qr-note"></p>
+      </div>
+
+      <div class="d-out">
+        <canvas id="qr-canvas" class="d-canvas" width="320" height="320"
+          data-ko-aria="만들어진 QR 코드 그림" data-en-aria="The QR code image"></canvas>
+        <button class="btn btn-solid" type="button" id="qr-dl"
+          data-ko="PNG 로 내려받기" data-en="Download as PNG">PNG 로 내려받기</button>
+      </div>
+    </div>
+
+    <p class="sr" id="qr-live" role="status" aria-live="polite"></p>
+
+    <p class="hint" data-ko="적은 글은 아무 곳에도 보내지 않습니다. QR 은 이 기기 안에서 그려지고, 내려받기도 브라우저가 바로 저장합니다." data-en="Nothing you type is sent anywhere. The code is drawn on this device and the download is saved straight by your browser."></p>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="칸에 주소나 전하고 싶은 글을 적습니다." data-en="Type a link or some text into the box."></li>
+      <li data-ko="막대를 끌어 그림 크기를 정합니다." data-en="Drag the slider to set the image size."></li>
+      <li data-ko="오류 고침 수준을 고릅니다. 잘 모르면 M 으로 둡니다." data-en="Choose an error-correction level — leave it on M if unsure."></li>
+      <li data-ko="무늬 색과 바탕 색을 고르고, 경고가 뜨면 더 진하게 바꿉니다." data-en="Pick the pattern and background colours, and darken them if a warning appears."></li>
+      <li data-ko="‘PNG 로 내려받기’를 눌러 그림을 저장합니다." data-en="Press download as PNG to save the image."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="QR 무늬를 셈하는 꾸러미" data-en="The QR pattern library">QR 무늬를 셈하는 꾸러미</td>
+          <td><code>kazuhikoarase/qrcode-generator</code></td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="Download it, open index.html, and it runs. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/qr-maker" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/qr-maker.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+
+<!-- 바깥 꾸러미 하나: qrcode-generator (MIT). 못 불러오면 다른 곳에서 한 번 더 받아 본다 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>window.qrcode||document.write('<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"><\/script>');</script>
+
+<script>
+/* QR 코드 만들기 — SPDX-License-Identifier: MIT */
+(function () {
+  "use strict";
+  var t = function (ko, en) {
+    return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
+  };
+
+  var elFail = document.getElementById("qr-fail");
+  var elUI   = document.getElementById("qr-ui");
+
+  /* 꾸러미를 못 불러왔으면 빈 화면을 보여 주지 않고 사정을 적는다 */
+  if (typeof window.qrcode !== "function") {
+    elFail.hidden = false;
+    elUI.hidden = true;
+    return;
+  }
+
+  var elText = document.getElementById("qr-text");
+  var elSize = document.getElementById("qr-size");
+  var elSizeOut = document.getElementById("qr-size-out");
+  var elEc   = document.getElementById("qr-ec");
+  var elFg   = document.getElementById("qr-fg");
+  var elBg   = document.getElementById("qr-bg");
+  var elWarn = document.getElementById("qr-warn");
+  var elNote = document.getElementById("qr-note");
+  var elLive = document.getElementById("qr-live");
+  var cv     = document.getElementById("qr-canvas");
+  var ctx    = cv.getContext("2d");
+  var btnDl  = document.getElementById("qr-dl");
+
+  var QUIET = 4;          /* QR 규격이 요구하는 테두리 여백 (칸 수) */
+  var lastOk = false;
+
+  /* ---- 색 밝기와 맞비침 (WCAG 식) ---- */
+  function hex2rgb(h) {
+    h = String(h).replace("#", "");
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function lum(h) {
+    var c = hex2rgb(h).map(function (v) {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  function ratio(a, b) {
+    var la = lum(a), lb = lum(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  }
+
+  function say(msg) { elLive.textContent = msg; }
+
+  /* ---- 그리기 ---- */
+  function draw() {
+    var text = elText.value;
+    var px = Number(elSize.value) || 320;
+    var ec = elEc.value;
+    var fg = elFg.value, bg = elBg.value;
+
+    elSizeOut.textContent = px + "px";
+
+    /* 색이 너무 비슷하면 카메라가 못 읽는다 */
+    var r = ratio(fg, bg);
+    var dark = lum(fg) < lum(bg);
+    if (r < 4) {
+      elWarn.hidden = false;
+      elWarn.textContent = t(
+        "두 색이 너무 비슷해서(대비 " + r.toFixed(1) + ":1) 카메라가 못 읽을 수 있습니다. 무늬를 더 진하게 하거나 바탕을 더 밝게 해 주세요.",
+        "These two colours are too close (contrast " + r.toFixed(1) + ":1) and a camera may fail to read it. Darken the pattern or lighten the background."
+      );
+    } else if (!dark) {
+      elWarn.hidden = false;
+      elWarn.textContent = t(
+        "무늬가 바탕보다 밝습니다. 대부분의 카메라는 어두운 무늬 + 밝은 바탕만 읽습니다.",
+        "The pattern is lighter than the background. Most cameras only read a dark pattern on a light background."
+      );
+    } else if (r < 7) {
+      elWarn.hidden = false;
+      elWarn.textContent = t(
+        "읽히기는 하지만 대비가 넉넉하지 않습니다(" + r.toFixed(1) + ":1). 인쇄할 거라면 더 진한 색이 좋습니다.",
+        "Readable, but the contrast is not generous (" + r.toFixed(1) + ":1). For print, a darker colour is safer."
+      );
+    } else {
+      elWarn.hidden = true;
+      elWarn.textContent = "";
+    }
+
+    if (!text.trim()) {
+      /* 빈 화면 금지: 안내만 그려 둔다 */
+      cv.width = px; cv.height = px;
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, px, px);
+      ctx.fillStyle = "#6E6A66";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = Math.max(12, Math.round(px / 20)) + "px sans-serif";
+      ctx.fillText(t("글을 적어 주세요", "Type something"), px / 2, px / 2);
+      elNote.textContent = t("칸이 비어 있습니다.", "The box is empty.");
+      btnDl.disabled = true;
+      lastOk = false;
+      return;
+    }
+
+    var qr;
+    try {
+      qr = window.qrcode(0, ec);        /* 0 = 글 길이에 맞춰 알아서 */
+      qr.addData(text);
+      qr.make();
+    } catch (e) {
+      cv.width = px; cv.height = px;
+      ctx.fillStyle = "#FFF5EE"; ctx.fillRect(0, 0, px, px);
+      ctx.fillStyle = "#D14E00";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = Math.max(12, Math.round(px / 22)) + "px sans-serif";
+      ctx.fillText(t("글이 너무 깁니다", "That text is too long"), px / 2, px / 2);
+      elNote.textContent = t(
+        "글이 너무 길어 QR 하나에 담기지 않습니다. 줄이거나 오류 고침 수준을 L 로 낮춰 보세요.",
+        "The text is too long for one QR code. Shorten it, or drop the error-correction level to L."
+      );
+      btnDl.disabled = true;
+      lastOk = false;
+      say(t("글이 너무 길어 만들지 못했습니다.", "Too long to encode."));
+      return;
+    }
+
+    var n = qr.getModuleCount();
+    var total = n + QUIET * 2;
+    /* 칸 하나를 정수 픽셀로 맞춰 흐려지지 않게 하고, 남는 만큼은 여백으로 둔다 */
+    var cell = Math.max(1, Math.floor(px / total));
+    var side = cell * total;
+
+    cv.width = side; cv.height = side;
+    cv.style.maxWidth = Math.min(side, 260) + "px";
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, side, side);
+    ctx.fillStyle = fg;
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        if (qr.isDark(y, x)) {
+          ctx.fillRect((x + QUIET) * cell, (y + QUIET) * cell, cell, cell);
+        }
+      }
+    }
+
+    elNote.textContent = t(
+      "무늬 " + n + "×" + n + " 칸, 그림 " + side + "×" + side + "px, 오류 고침 " + ec + ". 글자 " + text.length + "자.",
+      n + "×" + n + " modules, " + side + "×" + side + "px, error correction " + ec + ", " + text.length + " characters."
+    );
+    btnDl.disabled = false;
+    lastOk = true;
+  }
+
+  /* 글을 칠 때마다 바로 그리지 않고 조금 기다린다 */
+  var timer = 0;
+  function later() {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      draw();
+      if (lastOk) say(t("QR 코드를 새로 그렸습니다.", "The QR code has been redrawn."));
+    }, 220);
+  }
+
+  elText.addEventListener("input", later);
+  elSize.addEventListener("input", function () { elSizeOut.textContent = elSize.value + "px"; later(); });
+  elEc.addEventListener("change", draw);
+  elFg.addEventListener("input", later);
+  elBg.addEventListener("input", later);
+
+  document.getElementById("qr-default").addEventListener("click", function () {
+    elFg.value = "#1A1A1A"; elBg.value = "#FFFFFF"; draw();
+    say(t("기본 색으로 돌렸습니다.", "Back to the default colours."));
+  });
+
+  document.querySelectorAll(".d-swatch").forEach(function (b) {
+    b.addEventListener("click", function () { elFg.value = b.dataset.fg; draw(); });
+  });
+
+  btnDl.addEventListener("click", function () {
+    if (!lastOk) return;
+    var name = "qr-" + new Date().toISOString().slice(0, 10) + ".png";
+    try {
+      cv.toBlob(function (blob) {
+        if (!blob) { fallbackDl(name); return; }
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        say(t("PNG 로 내려받았습니다.", "Saved as a PNG."));
+      }, "image/png");
+    } catch (e) { fallbackDl(name); }
+  });
+
+  function fallbackDl(name) {
+    try {
+      var a = document.createElement("a");
+      a.href = cv.toDataURL("image/png"); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      say(t("PNG 로 내려받았습니다.", "Saved as a PNG."));
+    } catch (e) {
+      say(t("내려받기가 막혔습니다. 그림을 길게 눌러 저장해 주세요.",
+            "The download was blocked. Press and hold the image to save it."));
+    }
+  }
+
+  document.addEventListener("huhassi:lang", draw);
+
+  draw();
+})();
+</script>
+</body>
+</html>

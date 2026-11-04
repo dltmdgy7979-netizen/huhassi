@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>만들어 주세요 — 후하씨 huhassi</title>
+<meta name="description" content="원하는 걸 적어 주세요. 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/demo.css">
+<script src="assets/i18n.js" defer></script>
+<script src="assets/request.js" defer></script>
+<style>
+  .formgrid{display:grid;gap:16px}
+  .formgrid .field{flex:none;min-width:0}
+  .req{color:var(--orange-ink)}
+  .msg{margin-top:16px;border-radius:var(--radius-s);padding:14px 16px;font-size:14.5px;display:none}
+  .msg.show{display:block}
+  .msg.ok{background:#EAF7F0;border:1px solid #BFE5D2;color:#115C3C}
+  .msg.bad{background:#FFF0EA;border:1px solid #FFD2BC;color:#A33A00}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .note{font-size:13px;color:var(--ink-2);line-height:1.6}
+  .counter{font-size:12.5px;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="request.html" aria-current="page" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="about.html" data-ko="소개" data-en="About">소개</a>
+      <a class="tlink" href="license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <h1 data-ko="무엇을 만들어 드릴까요" data-en="What should I make">무엇을 만들어 드릴까요</h1>
+    <p class="lede">
+      <span data-lang-ko>여기 있는 것과 비슷한 크기면 됩니다. 작은 도구, 간단한 놀이, 한 장짜리 페이지, 쓰기 좋은 프롬프트 정도요. 시간이 되고 관심이 가면 무료로 만들어 두고 연락드립니다. 취미로 하는 일이라 늦거나, 못 하겠다고 말씀드릴 수도 있습니다.</span>
+      <span data-lang-en>Anything about the size of what is already here: a small tool, a simple game, a one-page site, a prompt worth keeping. If I have the time and the idea interests me, I'll build it for free and get back to you. It's a hobby, so I may be slow, or say no.</span>
+    </p>
+  </div>
+
+  <form class="panel formgrid" id="reqform" novalidate>
+    <label class="field">
+      <span data-ko="어떻게 부를까요" data-en="What should I call you">어떻게 부를까요</span>
+      <input type="text" name="name" maxlength="100" autocomplete="nickname"
+             data-ko-ph="아무 이름이나 괜찮습니다" data-en-ph="Any name is fine">
+    </label>
+
+    <label class="field">
+      <span>
+        <span data-ko="답장 받을 곳" data-en="Where I should reply">답장 받을 곳</span>
+        <b class="req">*</b>
+      </span>
+      <input type="text" name="contact" maxlength="200" required autocomplete="email"
+             data-ko-ph="메일 주소나 오픈카톡 링크" data-en-ph="Email address or a chat link">
+    </label>
+
+    <label class="field">
+      <span data-ko="어떤 종류인가요" data-en="What kind of thing">어떤 종류인가요</span>
+      <select name="kind" id="kind"></select>
+    </label>
+
+    <label class="field">
+      <span>
+        <span data-ko="무엇이 필요하신가요" data-en="What do you need">무엇이 필요하신가요</span>
+        <b class="req">*</b>
+      </span>
+      <textarea name="body" id="body" rows="7" maxlength="4000" required
+        data-ko-ph="어디에 쓸 것인지, 꼭 있어야 하는 기능 한두 가지를 적어 주시면 좋습니다."
+        data-en-ph="Tell me where you'd use it and the one or two things it must do."></textarea>
+      <span class="counter"><span id="count">0</span> / 4000</span>
+    </label>
+
+    <div class="hp" aria-hidden="true">
+      <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <p class="note">
+      <span data-lang-ko>적어 주신 내용은 답장하려고만 씁니다. 광고를 보내거나 다른 곳에 넘기지 않습니다. 비밀번호·주민등록번호·카드번호 같은 것은 적지 마세요.</span>
+      <span data-lang-en>What you write is used only to reply. No marketing, nothing passed on. Please don't include passwords, ID numbers or card details.</span>
+    </p>
+
+    <div class="row">
+      <button class="btn btn-solid" type="submit" id="send" data-ko="보내기" data-en="Send">보내기</button>
+      <a class="btn" href="index.html" data-ko="그만두기" data-en="Cancel">그만두기</a>
+    </div>
+
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+  </form>
+
+  <a class="backlink" href="index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+</body>
+</html>

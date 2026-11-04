@@ -1,0 +1,71 @@
+/* 후하씨 huhassi — 데모 한 쪽의 공통 외피
+   SPDX-License-Identifier: MIT */
+
+.demo-head{padding:26px 0 18px}
+.demo-head .num{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.05em;
+  color:var(--orange-ink);background:var(--orange-soft);border-radius:999px;padding:3px 10px;margin-bottom:12px}
+.demo-head h1{font-size:clamp(26px,6.4vw,40px)}
+.demo-head .lede{margin-top:12px}
+.demo-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tag{font-size:12.5px;color:var(--ink-2);border:1px solid var(--line);background:#fff;
+  border-radius:999px;padding:4px 11px}
+.tag.free{background:var(--orange-soft);color:var(--orange-ink);border-color:transparent;
+  font-variation-settings:"wght" 640}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:18px;margin:20px 0}
+.panel.soft{background:var(--soft);box-shadow:none}
+.panel-title{font-size:13.5px;font-variation-settings:"wght" 700;margin:0 0 14px;
+  color:var(--ink-2);letter-spacing:-.01em}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.field{display:flex;flex-direction:column;gap:6px;flex:1 1 160px;min-width:140px}
+.field > span{font-size:13px;color:var(--ink-2);font-variation-settings:"wght" 560}
+input[type=text],input[type=number],input[type=search],input[type=email],input[type=date],
+input[type=url],select,textarea{
+  width:100%;background:#fff;border:1px solid var(--line-2);border-radius:var(--radius-s);padding:10px 12px}
+input:focus,select:focus,textarea:focus{border-color:var(--orange)}
+textarea{resize:vertical;line-height:1.6}
+input[type=range]{width:100%;accent-color:var(--orange)}
+input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line-2);border-radius:var(--radius-s);background:#fff}
+
+.statline{display:flex;flex-wrap:wrap;gap:10px 26px;margin:0;padding:0;list-style:none}
+.statline li{display:flex;flex-direction:column}
+.statline .k{font-size:12.5px;color:var(--ink-2)}
+.statline .v{font-size:25px;font-variation-settings:"wght" 760;line-height:1.15;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+.stage{display:block;width:100%;background:var(--soft);border:1px solid var(--line);
+  border-radius:var(--radius-s);touch-action:none}
+.hint{font-size:13.5px;color:var(--ink-2);margin-top:10px}
+
+/* 사용법 다섯 줄 */
+.howto{margin:0;padding:0;list-style:none;counter-reset:s}
+.howto li{counter-increment:s;position:relative;padding:8px 0 8px 32px;font-size:14.5px;
+  border-bottom:1px solid var(--line)}
+.howto li:last-child{border-bottom:none}
+.howto li::before{content:counter(s);position:absolute;left:0;top:9px;width:21px;height:21px;
+  border-radius:50%;background:var(--orange-soft);color:var(--orange-ink);font-size:11.5px;
+  font-family:var(--mono);display:grid;place-items:center}
+
+/* 출처·라이선스 */
+.lic-table{width:100%;border-collapse:collapse;font-size:14px}
+.lic-table th,.lic-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.lic-table th{font-size:12.5px;color:var(--ink-2);font-variation-settings:"wght" 620;white-space:nowrap}
+.lic-table tr:last-child td,.lic-table tr:last-child th{border-bottom:none}
+.lic-table code{font-family:var(--mono);font-size:12.5px}
+
+pre.code{background:#FAF8F6;border:1px solid var(--line);border-radius:var(--radius-s);
+  padding:14px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;margin:0}
+.copybar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+
+.takeit{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.askline{background:var(--soft);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;margin:24px 0 0}
+.askline h2{font-size:19px}
+.askline p{margin:8px 0 14px;color:var(--ink-2);font-size:14.5px}
+
+.backlink{display:inline-flex;gap:7px;align-items:center;font-size:14px;color:var(--ink-2);
+  text-decoration:none;margin:26px 0 8px}
+.backlink:hover{color:var(--orange-ink)}
+.copied{background:var(--ok) !important;border-color:var(--ok) !important;color:#fff !important}

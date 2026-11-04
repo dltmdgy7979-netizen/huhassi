@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- ===========================================================
+     링크 프로필 (Link Profile) — 후하씨 huhassi
+     SPDX-License-Identifier: MIT
+
+     ▶ 여기만 바꾸세요
+       색: 아래 :root 의 --point 한 줄.
+           그 한 줄만 바꾸면 바탕·단추·글자 색이 함께 따라옵니다.
+           (예: #FF6A13 주황 / #2F6FED 파랑 / #1F9D74 초록 / #7A5AF8 보라)
+       글: 본문의 1) 이름 2) 한 줄 소개 3) 링크 단추 여섯 개 4) 맨 아래 안내.
+     ▶ 링크 단추는 <a> 한 덩어리를 복사하거나 지워서 개수를 늘리고 줄이면 됩니다.
+       단추 높이는 최소 48px 로 잡혀 있어 손가락으로 누르기 좋습니다.
+     ▶ 적혀 있는 이름·주소·연락처는 모두 예시용 가짜입니다.
+     =========================================================== -->
+
+<title>오늘의 모음 — 링크</title>
+<meta name="description" content="링크 모음 한 장. 프로필에 걸어 두는 주소입니다.">
+
+<style>
+:root{
+  /* ▼▼▼ 여기만 바꾸세요 ▼▼▼ */
+  --point:#FF6A13;
+  /* ▲▲▲ 여기만 바꾸세요 ▲▲▲ */
+
+  /* 아래 색들은 --point 를 섞어 자동으로 따라옵니다. 손대지 않아도 됩니다. */
+  --point-ink:color-mix(in srgb, var(--point) 76%, #1A1A1A);
+  --point-soft:color-mix(in srgb, var(--point) 13%, #FFFFFF);
+  --point-line:color-mix(in srgb, var(--point) 30%, #FFFFFF);
+  --bg:color-mix(in srgb, var(--point) 7%, #FFFFFF);
+  --ink:#1D1B19;
+  --ink-2:#64605C;
+  --radius:18px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+}
+/* color-mix 를 모르는 오래된 브라우저를 위한 대비 색 */
+@supports not (color:color-mix(in srgb,#000 50%,#fff)){
+  :root{
+    --point-ink:#C14800;
+    --point-soft:#FFEEE2;
+    --point-line:#FFD2B5;
+    --bg:#FFF6F0;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;
+  background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:3px solid var(--point);outline-offset:3px;border-radius:12px}
+
+.p-wrap{width:min(440px,100% - 32px);margin:0 auto;padding:40px 0 48px;text-align:center}
+
+/* ---- 둥근 프로필 사진 자리 ---- */
+.p-avatar{
+  width:104px;height:104px;margin:0 auto 18px;
+  border-radius:50%;overflow:hidden;
+  border:3px solid #fff;
+  box-shadow:0 2px 4px rgba(26,26,26,.06),0 14px 28px -16px rgba(26,26,26,.35);
+  background:var(--point-soft);
+  display:grid;place-items:center;position:relative}
+.p-avatar::before{ /* 사진 대신 둔 도형 — 실제 사진을 넣으려면 아래 주석을 보세요 */
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 118%, var(--point) 0 42%, transparent 42.5%),
+    radial-gradient(circle at 50% 36%, var(--point) 0 17%, transparent 17.5%),
+    var(--point-soft);
+  opacity:.5}
+.p-avatar span{
+  position:relative;z-index:1;font-size:10.5px;line-height:1.3;color:var(--point-ink);
+  font-weight:700;max-width:72px}
+.p-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---- 이름 · 한 줄 소개 ---- */
+.p-wrap h1{margin:0;font-size:25px;font-weight:800;letter-spacing:-.02em}
+.p-bio{margin:8px auto 28px;max-width:28ch;font-size:14.5px;color:var(--ink-2)}
+
+/* ---- 링크 단추 ---- */
+.p-links{display:flex;flex-direction:column;gap:11px;text-align:left}
+.p-links a{
+  min-height:48px;                      /* 손가락으로 누르기 좋은 최소 높이 */
+  display:flex;flex-direction:column;justify-content:center;gap:1px;
+  padding:11px 18px;
+  background:#fff;border:1px solid var(--point-line);border-radius:var(--radius);
+  text-decoration:none;color:var(--ink);
+  box-shadow:0 1px 2px rgba(26,26,26,.04);
+  transition:transform .14s ease, border-color .14s ease}
+.p-links a:hover{border-color:var(--point);transform:translateY(-2px)}
+.p-links a:active{transform:translateY(0)}
+.p-links b{font-size:15.5px;font-weight:700;line-height:1.35}
+.p-links small{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+
+/* 첫 단추는 꽉 찬 색으로 — 가장 보여 주고 싶은 링크를 여기에 */
+.p-links a.p-main{
+  background:var(--point);border-color:var(--point);color:#fff}
+.p-links a.p-main small{color:#fff;opacity:.88}
+.p-links a.p-main:hover{border-color:var(--point)}
+
+/* ---- 맨 아래 안내 ---- */
+.p-foot{margin:30px 0 0;font-size:11.5px;color:var(--ink-2);line-height:1.6}
+.p-foot a{color:var(--point-ink)}
+
+@media (prefers-reduced-motion:reduce){
+  .p-links a{transition:none}
+  .p-links a:hover{transform:none}
+}
+@media print{
+  body{background:#fff}
+  .p-links a{box-shadow:none;border-color:#999;background:#fff;color:#000}
+  .p-links a.p-main{background:#fff;color:#000}
+  .p-links a.p-main small{color:#333}
+  .p-links a::after{content:" " attr(href);font-size:9pt;color:#555;word-break:break-all}
+  .p-avatar{display:none}
+}
+</style>
+</head>
+<body>
+
+<main class="p-wrap">
+
+  <!-- 프로필 사진 자리
+       실제 사진을 넣으려면 아래 <div class="p-avatar"> … </div> 전체를
+       <div class="p-avatar"><img src="사진.jpg" alt="프로필 사진"></div>
+       로 바꾸세요. 정사각형 사진이 가장 잘 맞습니다. -->
+  <div class="p-avatar" role="img" aria-label="프로필 사진이 들어갈 자리">
+    <span>사진 자리</span>
+  </div>
+
+  <!-- 1) 이름 -->
+  <h1>오늘의 모음</h1>
+
+  <!-- 2) 한 줄 소개 -->
+  <p class="p-bio">작은 가게와 동네 소식을 주에 한 번씩 적어 보냅니다.</p>
+
+  <!-- 3) 링크 단추 여섯 개 — 덩어리를 복사하거나 지워 개수를 바꾸세요 -->
+  <nav class="p-links">
+    <a class="p-main" href="https://example.com/letter" rel="noopener">
+      <b>주간 소식 받아 보기</b>
+      <small>매주 목요일 아침, 짧은 글 한 통</small>
+    </a>
+    <a href="https://example.com/notes" rel="noopener">
+      <b>지난 글 모아 보기</b>
+      <small>그동안 보낸 글 서른여덟 편</small>
+    </a>
+    <a href="https://example.com/shop" rel="noopener">
+      <b>만든 것 보기</b>
+      <small>작은 책과 엽서 몇 가지</small>
+    </a>
+    <a href="https://example.com/talk" rel="noopener">
+      <b>강연·모임 신청</b>
+      <small>동네 기록 모임 · 매달 셋째 토요일</small>
+    </a>
+    <a href="https://example.com/ask" rel="noopener">
+      <b>궁금한 것 물어보기</b>
+      <small>짧게 적어 주시면 이틀 안에 답합니다</small>
+    </a>
+    <a href="mailto:hello@example.com">
+      <b>메일로 연락하기</b>
+      <small>hello@example.com</small>
+    </a>
+  </nav>
+
+  <!-- 4) 맨 아래 안내 -->
+  <p class="p-foot">
+    이 쪽에 적힌 이름·링크·메일 주소는 모두 예시입니다.<br>
+    링크를 눌러도 아무 곳으로도 보내지 않고, 어떤 기록도 남기지 않습니다.
+  </p>
+
+</main>
+</body>
+</html>

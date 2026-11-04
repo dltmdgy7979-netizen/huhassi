@@ -1,0 +1,17 @@
+{
+  "name": "huhassi-holidays-mcp",
+  "version": "1.0.0",
+  "description": "공휴일 조회 MCP — 한국 공휴일을 대화창에서 물어볼 수 있게 해 주는 MCP 서버 / Korean Holidays MCP server",
+  "type": "module",
+  "license": "MIT",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  }
+}

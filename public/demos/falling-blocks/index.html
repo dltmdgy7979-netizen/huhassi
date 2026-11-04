@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>블록 쌓기 — 후하씨 huhassi</title>
+<meta name="description" content="떨어지는 일곱 가지 블록을 돌리고 옮겨 한 줄을 가득 채우면 줄이 사라지는 놀이. 손가락과 키보드 모두 됩니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS — 클래스는 d- 로 시작 */
+  .d-game{max-width:460px;margin:0 auto}
+  .d-field{display:grid;grid-template-columns:minmax(118px,220px) minmax(0,1fr);gap:12px;align-items:start}
+  .d-stage{position:relative;width:100%}
+  .d-well{
+    display:block;width:100%;height:auto;aspect-ratio:1/2;
+    background:var(--soft);border:1px solid var(--line);border-radius:var(--radius-s);
+    touch-action:none;
+  }
+  .d-stage:focus-visible,.d-well:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  .d-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .d-nextbox{border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;padding:8px}
+  .d-nextbox .k{font-size:12px;color:var(--ink-2);display:block;margin-bottom:4px}
+  .d-next{display:block;width:100%;height:auto;aspect-ratio:4/3;background:var(--soft);
+    border-radius:8px;border:1px solid var(--line)}
+  .d-nums{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+  .d-nums li{display:flex;flex-direction:column;min-width:0}
+  .d-nums .k{font-size:12px;color:var(--ink-2)}
+  .d-nums .v{font-size:19px;font-variation-settings:"wght" 760;line-height:1.15;
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .d-over{
+    position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+    background:rgba(255,255,255,.92);border-radius:var(--radius-s);padding:10px;
+  }
+  .d-over[hidden]{display:none}
+  .d-over h3{font-size:16px;margin-bottom:4px}
+  .d-over p{color:var(--ink-2);font-size:13px;margin:6px 0 12px}
+  .d-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:14px auto 0}
+  .d-pad .btn{min-height:50px;padding:10px 6px;font-size:17px}
+  .d-pad .d-rot{grid-column:2;grid-row:1}
+  .d-pad .d-hard{grid-column:3;grid-row:1;font-size:13.5px}
+  .d-pad .d-l{grid-column:1;grid-row:2}
+  .d-pad .d-dn{grid-column:2;grid-row:2}
+  .d-pad .d-r{grid-column:3;grid-row:2}
+  .d-pad .d-pause{grid-column:1;grid-row:1;font-size:13.5px}
+  .d-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+  @media (max-width:359px){
+    .d-field{grid-template-columns:minmax(0,1fr)}
+    .d-stage{max-width:200px;margin:0 auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">02</span>
+    <h1 data-ko="블록 쌓기" data-en="Falling Blocks">블록 쌓기</h1>
+    <p class="lede" data-ko="일곱 가지 블록이 하나씩 떨어집니다. 돌리고 옮겨서 한 줄을 가득 채우면 그 줄이 사라집니다." data-en="Seven block shapes drop one by one. Turn them, slide them, and a row vanishes once you fill it."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="설치 없음" data-en="No install">설치 없음</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo" id="gamewrap">
+    <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
+
+    <div class="d-game">
+      <div class="d-field">
+        <div class="d-stage">
+          <canvas class="d-well" id="well" width="200" height="400" tabindex="0"
+                  data-ko-aria="블록이 떨어지는 통. 방향키로 옮기고 위쪽 키로 돌립니다." 
+                  data-en-aria="The well where blocks fall. Move with the arrow keys, turn with the up key."></canvas>
+          <div class="d-over" id="over" hidden>
+            <div>
+              <h3 id="over-title" data-ko="끝났습니다" data-en="Game over">끝났습니다</h3>
+              <p id="over-text" data-ko="블록이 천장까지 쌓였습니다." data-en="The blocks reached the ceiling."></p>
+              <button class="btn btn-solid btn-sm" type="button" id="again" data-ko="다시 하기" data-en="Restart">다시 하기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-side">
+          <div class="d-nextbox">
+            <span class="k" data-ko="다음 블록" data-en="Next">다음 블록</span>
+            <canvas class="d-next" id="next" width="120" height="90" role="img"
+                    data-ko-aria="다음에 떨어질 블록" data-en-aria="The block that comes next"></canvas>
+          </div>
+          <ul class="d-nums">
+            <li><span class="k" data-ko="점수" data-en="Score">점수</span><span class="v" id="score">0</span></li>
+            <li><span class="k" data-ko="최고 점수" data-en="Best">최고 점수</span><span class="v" id="best">0</span></li>
+            <li><span class="k" data-ko="지운 줄" data-en="Lines">지운 줄</span><span class="v" id="lines">0</span></li>
+            <li><span class="k" data-ko="단계" data-en="Level">단계</span><span class="v" id="level">1</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="d-pad" role="group" data-ko-aria="조작 단추" data-en-aria="Control buttons">
+        <button class="btn d-pause" type="button" id="pause" data-ko="멈춤" data-en="Pause">멈춤</button>
+        <button class="btn d-rot" type="button" data-act="rotate" data-ko-aria="블록 돌리기" data-en-aria="Turn the block"><span aria-hidden="true">↻</span></button>
+        <button class="btn d-hard" type="button" data-act="hard" data-ko="쿵" data-en="Drop" data-ko-aria="바닥까지 한 번에 내리기" data-en-aria="Drop all the way down">쿵</button>
+        <button class="btn d-l" type="button" data-act="left" data-ko-aria="왼쪽으로" data-en-aria="Move left"><span aria-hidden="true">←</span></button>
+        <button class="btn d-dn" type="button" data-act="down" data-ko-aria="한 칸 내리기" data-en-aria="Move down one"><span aria-hidden="true">↓</span></button>
+        <button class="btn d-r" type="button" data-act="right" data-ko-aria="오른쪽으로" data-en-aria="Move right"><span aria-hidden="true">→</span></button>
+      </div>
+
+      <div class="d-actions">
+        <button class="btn btn-sm" type="button" id="reset" data-ko="새로 시작" data-en="New game">새로 시작</button>
+      </div>
+
+      <p class="hint" data-ko="통을 한 번 눌러 고른 뒤 키보드를 쓸 수 있습니다. 방향키로 옮기고, 위쪽 키로 돌리고, 띄어쓰기 키로 바닥까지 내립니다." data-en="Tap the well once to focus it, then use the keyboard: arrow keys to move, up to turn, space to drop to the floor."></p>
+      <p class="sr" id="live" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="← → 단추나 방향키로 떨어지는 블록을 좌우로 옮깁니다." data-en="Slide the falling block left and right with the ← → buttons or the arrow keys."></li>
+      <li data-ko="↻ 단추나 위쪽 방향키를 눌러 블록을 90도 돌립니다." data-en="Tap ↻ or press the up arrow to turn the block a quarter turn."></li>
+      <li data-ko="↓ 단추나 아래쪽 방향키를 누르고 있으면 블록이 빨리 내려갑니다." data-en="Hold ↓ or the down arrow to make the block fall faster."></li>
+      <li data-ko="'쿵' 단추나 띄어쓰기 키를 누르면 바닥까지 한 번에 떨어집니다." data-en="Tap Drop or press the space bar to send the block straight to the floor."></li>
+      <li data-ko="한 줄이 가득 차면 사라지고 점수가 오릅니다. '멈춤'으로 잠깐 쉴 수 있습니다." data-en="A full row disappears and your score rises; tap Pause to take a break."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <p class="hint" data-ko="이 놀이는 후하씨가 처음부터 직접 짠 것입니다. 남의 코드·그림·이름을 가져다 쓰지 않았고, 어느 회사의 상표도 쓰지 않았습니다. 그래서 마음 놓고 고쳐 쓰고 팔 수 있습니다." data-en="This game was written from scratch by huhassi. No one else's code, art or product name is used, and no company's trademark appears in it, so you can change it and sell it with a clear conscience."></p>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="블록 일곱 모양과 미리보기 그림" data-en="The seven block shapes and the preview image">블록 일곱 모양과 미리보기 그림</td>
+          <td data-ko="후하씨가 직접 그린 캔버스·SVG" data-en="Canvas and SVG drawn by huhassi">후하씨가 직접 그린 캔버스·SVG</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="Download it, open index.html, and it runs. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/falling-blocks" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/falling-blocks.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+
+<script>
+/* 블록 쌓기 — 후하씨가 처음부터 직접 짠 떨어지는 블록 놀이.
+   남의 코드나 상표를 쓰지 않았습니다. SPDX-License-Identifier: MIT */
+(function () {
+  "use strict";
+
+  var COLS = 10, ROWS = 20, KEY = "huhassi-falling-best";
+
+  /* 블록 일곱 모양. 각 모양은 n×n 네모 안의 채워진 칸 좌표로 적는다.
+     돌릴 때는 (x,y) → (n-1-y, x) 로 네모째 돌린다. */
+  var SHAPES = [
+    { n: 4, cells: [[0,1],[1,1],[2,1],[3,1]], tone: 0 }, /* 긴 막대 */
+    { n: 2, cells: [[0,0],[1,0],[0,1],[1,1]], tone: 1 }, /* 네모 */
+    { n: 3, cells: [[1,0],[0,1],[1,1],[2,1]], tone: 2 }, /* 가운데 혹 */
+    { n: 3, cells: [[1,0],[2,0],[0,1],[1,1]], tone: 3 }, /* 오른쪽 어긋남 */
+    { n: 3, cells: [[0,0],[1,0],[1,1],[2,1]], tone: 4 }, /* 왼쪽 어긋남 */
+    { n: 3, cells: [[0,0],[0,1],[1,1],[2,1]], tone: 5 }, /* 왼쪽 갈고리 */
+    { n: 3, cells: [[2,0],[0,1],[1,1],[2,1]], tone: 6 }  /* 오른쪽 갈고리 */
+  ];
+  /* 주황 계열 일곱 가지. 색만으로 뜻을 전하지 않습니다 — 모양 자체가 구분을 맡습니다. */
+  var TONES = ["#FF6A13","#FFB488","#D14E00","#FF9A60","#E65A09","#FFCBA8","#B04200"];
+
+  var wrap = document.getElementById("gamewrap");
+  var well = document.getElementById("well");
+  var nextCv = document.getElementById("next");
+  var wctx = well.getContext("2d");
+  var nctx = nextCv.getContext("2d");
+  var elScore = document.getElementById("score");
+  var elBest = document.getElementById("best");
+  var elLines = document.getElementById("lines");
+  var elLevel = document.getElementById("level");
+  var elLive = document.getElementById("live");
+  var over = document.getElementById("over");
+  var overTitle = document.getElementById("over-title");
+  var overText = document.getElementById("over-text");
+  var btnAgain = document.getElementById("again");
+  var btnReset = document.getElementById("reset");
+  var btnPause = document.getElementById("pause");
+
+  var slow = false;
+  try {
+    var mq = window.matchMedia("(prefers-reduced-motion:reduce)");
+    slow = mq.matches;
+    if (mq.addEventListener) mq.addEventListener("change", function (e) { slow = e.matches; });
+  } catch (e) {}
+
+  var field = [];     /* field[r][c] = 0 또는 색 번호+1 */
+  var piece = null, nextPiece = null;
+  var score = 0, best = 0, cleared = 0, level = 1;
+  var dead = false, paused = false;
+  var fallMs = 800, acc = 0, last = 0, rafId = 0;
+  var flashRows = [], flashLeft = 0;
+
+  function t(ko, en) {
+    return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
+  }
+  function readBest() {
+    try { return Math.max(0, parseInt(localStorage.getItem(KEY), 10) || 0); }
+    catch (e) { return 0; }
+  }
+  function saveBest() { try { localStorage.setItem(KEY, String(best)); } catch (e) {} }
+  function say(m) { elLive.textContent = m; }
+
+  function blankField() {
+    field = [];
+    for (var r = 0; r < ROWS; r++) {
+      var row = [];
+      for (var c = 0; c < COLS; c++) row.push(0);
+      field.push(row);
+    }
+  }
+
+  function rotateCells(cells, n) {
+    return cells.map(function (p) { return [n - 1 - p[1], p[0]]; });
+  }
+
+  function makePiece(which) {
+    var s = SHAPES[which];
+    return {
+      which: which, n: s.n, tone: s.tone,
+      cells: s.cells.map(function (p) { return [p[0], p[1]]; }),
+      x: Math.floor((COLS - s.n) / 2),
+      y: s.n === 4 ? -1 : 0
+    };
+  }
+  function pickShape() { return Math.floor(Math.random() * SHAPES.length); }
+
+  function fits(p, nx, ny, cells) {
+    var cs = cells || p.cells;
+    for (var i = 0; i < cs.length; i++) {
+      var x = nx + cs[i][0], y = ny + cs[i][1];
+      if (x < 0 || x >= COLS || y >= ROWS) return false;
+      if (y >= 0 && field[y][x]) return false;
+    }
+    return true;
+  }
+
+  function lock(p) {
+    for (var i = 0; i < p.cells.length; i++) {
+      var x = p.x + p.cells[i][0], y = p.y + p.cells[i][1];
+      if (y >= 0 && y < ROWS && x >= 0 && x < COLS) field[y][x] = p.tone + 1;
+    }
+  }
+
+  function fullRows() {
+    var out = [];
+    for (var r = 0; r < ROWS; r++) {
+      var full = true;
+      for (var c = 0; c < COLS; c++) if (!field[r][c]) { full = false; break; }
+      if (full) out.push(r);
+    }
+    return out;
+  }
+
+  function removeRows(rows) {
+    rows.slice().sort(function (a, b) { return a - b; }).forEach(function (r) {
+      field.splice(r, 1);
+      var row = [];
+      for (var c = 0; c < COLS; c++) row.push(0);
+      field.unshift(row);
+    });
+  }
+
+  var LINE_SCORE = [0, 100, 300, 500, 800];
+
+  function speedFor(lv) { return Math.max(90, 800 - (lv - 1) * 68); }
+
+  function settle() {
+    lock(piece);
+    var rows = fullRows();
+    if (rows.length) {
+      score += LINE_SCORE[rows.length] * level;
+      cleared += rows.length;
+      var newLevel = Math.floor(cleared / 10) + 1;
+      if (newLevel !== level) {
+        level = newLevel;
+        fallMs = speedFor(level);
+        say(t("단계 " + level + ". 블록이 조금 빨라집니다.", "Level " + level + ". The blocks fall a little faster."));
+      } else {
+        say(t(rows.length + "줄을 지웠습니다. 점수 " + score + "점.", "Cleared " + rows.length + " row(s). Score " + score + "."));
+      }
+      if (score > best) { best = score; saveBest(); }
+      flashRows = rows;
+      flashLeft = slow ? 0 : 140;
+      removeRows(rows);
+    }
+    piece = nextPiece;
+    nextPiece = makePiece(pickShape());
+    drawNext();
+    if (!fits(piece, piece.x, piece.y)) {
+      dead = true;
+      over.hidden = false;
+      overTitle.textContent = t("끝났습니다", "Game over");
+      overText.textContent = t("블록이 천장까지 쌓였습니다.", "The blocks reached the ceiling.");
+      btnAgain.focus();
+      say(t("끝났습니다. 점수 " + score + "점, 지운 줄 " + cleared + "줄, 최고 점수 " + best + "점.",
+            "Game over. Score " + score + ", " + cleared + " rows cleared, best " + best + "."));
+    }
+    paint();
+  }
+
+  function step() {
+    if (fits(piece, piece.x, piece.y + 1)) { piece.y++; }
+    else { settle(); }
+  }
+
+  function act(what) {
+    if (dead) return;
+    if (paused && what !== "pause") return;
+    if (what === "left" && fits(piece, piece.x - 1, piece.y)) piece.x--;
+    else if (what === "right" && fits(piece, piece.x + 1, piece.y)) piece.x++;
+    else if (what === "down") {
+      if (fits(piece, piece.x, piece.y + 1)) { piece.y++; score += 1; acc = 0; }
+      else { settle(); return; }
+    }
+    else if (what === "rotate") {
+      var turned = rotateCells(piece.cells, piece.n);
+      /* 벽에 닿으면 한 칸씩 밀어 보고, 그래도 안 되면 돌리지 않는다 */
+      var kicks = [[0,0],[-1,0],[1,0],[-2,0],[2,0],[0,-1]];
+      for (var i = 0; i < kicks.length; i++) {
+        var nx = piece.x + kicks[i][0], ny = piece.y + kicks[i][1];
+        if (fits(piece, nx, ny, turned)) { piece.cells = turned; piece.x = nx; piece.y = ny; break; }
+      }
+    }
+    else if (what === "hard") {
+      var dropped = 0;
+      while (fits(piece, piece.x, piece.y + 1)) { piece.y++; dropped++; }
+      score += dropped * 2;
+      settle();
+      return;
+    }
+    paint();
+    syncNums();
+  }
+
+  function syncNums() {
+    elScore.textContent = String(score);
+    elBest.textContent = String(best);
+    elLines.textContent = String(cleared);
+    elLevel.textContent = String(level);
+  }
+
+  /* ---- 그리기 ---- */
+  function sizeCanvas(cv, ctx, wCss, hCss) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.max(1, Math.round(wCss * dpr)), h = Math.max(1, Math.round(hCss * dpr));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    ctx.setTransform(w / wCss, 0, 0, h / hCss, 0, 0);
+    return { w: wCss, h: hCss };
+  }
+
+  function block(ctx, x, y, s, fill) {
+    ctx.fillStyle = fill;
+    ctx.fillRect(x + 0.5, y + 0.5, s - 1, s - 1);
+    ctx.strokeStyle = "rgba(255,255,255,.62)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 1.5, y + 1.5, s - 3, s - 3);
+    ctx.strokeStyle = "rgba(26,26,26,.16)";
+    ctx.strokeRect(x + 0.5, y + 0.5, s - 1, s - 1);
+  }
+
+  function paint() {
+    var rect = well.getBoundingClientRect();
+    var cssW = rect.width || 200;
+    var cssH = cssW * 2;
+    var box = sizeCanvas(well, wctx, cssW, cssH);
+    var s = box.w / COLS;
+
+    wctx.clearRect(0, 0, box.w, box.h);
+    wctx.fillStyle = "#FFF5EE";
+    wctx.fillRect(0, 0, box.w, box.h);
+
+    /* 눈금 */
+    wctx.strokeStyle = "#F2E7DD";
+    wctx.lineWidth = 1;
+    for (var c = 1; c < COLS; c++) {
+      wctx.beginPath(); wctx.moveTo(c * s, 0); wctx.lineTo(c * s, box.h); wctx.stroke();
+    }
+    for (var r = 1; r < ROWS; r++) {
+      wctx.beginPath(); wctx.moveTo(0, r * s); wctx.lineTo(box.w, r * s); wctx.stroke();
+    }
+
+    /* 쌓인 블록 */
+    for (r = 0; r < ROWS; r++) {
+      for (c = 0; c < COLS; c++) {
+        if (field[r][c]) block(wctx, c * s, r * s, s, TONES[field[r][c] - 1]);
+      }
+    }
+
+    /* 줄이 사라질 때 잠깐 번쩍 (움직임 줄이기를 켜 두면 건너뜁니다) */
+    if (flashLeft > 0 && flashRows.length) {
+      wctx.fillStyle = "rgba(255,106,19,.35)";
+      flashRows.forEach(function (r2) { wctx.fillRect(0, r2 * s, box.w, s); });
+    }
+
+    if (piece && !dead) {
+      /* 떨어질 자리 미리 보기 */
+      var gy = piece.y;
+      while (fits(piece, piece.x, gy + 1)) gy++;
+      wctx.strokeStyle = "rgba(209,78,0,.45)";
+      wctx.lineWidth = 2;
+      piece.cells.forEach(function (p) {
+        var x = (piece.x + p[0]) * s, y = (gy + p[1]) * s;
+        if (gy + p[1] >= 0) wctx.strokeRect(x + 2, y + 2, s - 4, s - 4);
+      });
+      piece.cells.forEach(function (p) {
+        var y = piece.y + p[1];
+        if (y >= 0) block(wctx, (piece.x + p[0]) * s, y * s, s, TONES[piece.tone]);
+      });
+    }
+
+    if (paused && !dead) {
+      wctx.fillStyle = "rgba(255,255,255,.82)";
+      wctx.fillRect(0, box.h / 2 - 26, box.w, 52);
+      wctx.fillStyle = "#D14E00";
+      wctx.font = "700 " + Math.max(13, Math.round(box.w / 11)) + "px sans-serif";
+      wctx.textAlign = "center";
+      wctx.textBaseline = "middle";
+      wctx.fillText(t("멈춤", "Paused"), box.w / 2, box.h / 2);
+    }
+  }
+
+  function drawNext() {
+    var rect = nextCv.getBoundingClientRect();
+    var cssW = rect.width || 120, cssH = cssW * 0.75;
+    var box = sizeCanvas(nextCv, nctx, cssW, cssH);
+    nctx.clearRect(0, 0, box.w, box.h);
+    nctx.fillStyle = "#FFF5EE";
+    nctx.fillRect(0, 0, box.w, box.h);
+    if (!nextPiece) return;
+    var cs = nextPiece.cells;
+    var xs = cs.map(function (p) { return p[0]; }), ys = cs.map(function (p) { return p[1]; });
+    var w = Math.max.apply(null, xs) - Math.min.apply(null, xs) + 1;
+    var h = Math.max.apply(null, ys) - Math.min.apply(null, ys) + 1;
+    var s = Math.min((box.w - 12) / w, (box.h - 12) / h, 20);
+    var ox = (box.w - w * s) / 2 - Math.min.apply(null, xs) * s;
+    var oy = (box.h - h * s) / 2 - Math.min.apply(null, ys) * s;
+    cs.forEach(function (p) { block(nctx, ox + p[0] * s, oy + p[1] * s, s, TONES[nextPiece.tone]); });
+  }
+
+  /* ---- 흐름 ---- */
+  function tick(now) {
+    rafId = requestAnimationFrame(tick);
+    if (!last) last = now;
+    var dt = Math.min(now - last, 200);
+    last = now;
+    if (flashLeft > 0) { flashLeft -= dt; if (flashLeft <= 0) flashRows = []; paint(); }
+    if (dead || paused) return;
+    acc += dt;
+    while (acc >= fallMs) { acc -= fallMs; step(); if (dead) break; }
+    syncNums();
+    paint();
+  }
+
+  function reset() {
+    blankField();
+    score = 0; cleared = 0; level = 1; fallMs = speedFor(1);
+    dead = false; paused = false; acc = 0; last = 0;
+    flashRows = []; flashLeft = 0;
+    over.hidden = true;
+    btnPause.textContent = t("멈춤", "Pause");
+    piece = makePiece(pickShape());
+    nextPiece = makePiece(pickShape());
+    drawNext();
+    syncNums();
+    paint();
+    say(t("새 놀이를 시작했습니다.", "A new game has started."));
+  }
+
+  function togglePause() {
+    if (dead) return;
+    paused = !paused;
+    btnPause.textContent = paused ? t("계속", "Resume") : t("멈춤", "Pause");
+    btnPause.setAttribute("aria-pressed", paused ? "true" : "false");
+    say(paused ? t("멈췄습니다.", "Paused.") : t("다시 시작합니다.", "Resumed."));
+    paint();
+  }
+
+  /* 단추 */
+  wrap.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-act]") : null;
+    if (b) { act(b.getAttribute("data-act")); well.focus(); }
+  });
+  btnPause.addEventListener("click", togglePause);
+  btnReset.addEventListener("click", function () { reset(); well.focus(); });
+  btnAgain.addEventListener("click", function () { reset(); well.focus(); });
+
+  /* 키보드 — 이 데모 칸 안에 초점이 있을 때만 */
+  wrap.addEventListener("keydown", function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var k = e.key;
+    var map = { ArrowLeft: "left", ArrowRight: "right", ArrowDown: "down", ArrowUp: "rotate" };
+    if (k === " " || k === "Spacebar") {
+      if (e.target === btnPause || e.target === btnReset || e.target === btnAgain) return;
+      e.preventDefault(); act("hard"); return;
+    }
+    if (k === "p" || k === "P") { e.preventDefault(); togglePause(); return; }
+    if (map[k]) { e.preventDefault(); act(map[k]); }
+  });
+
+  /* 손가락 — 좌우로 쓸면 옮기고, 톡 누르면 돌리고, 아래로 쓸면 쿵 */
+  var sx = 0, sy = 0, st = 0, moved = 0, tracking = false;
+  well.addEventListener("touchstart", function (e) {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    st = Date.now(); moved = 0; tracking = true;
+  }, { passive: true });
+  well.addEventListener("touchmove", function (e) {
+    if (!tracking) return;
+    e.preventDefault();
+    var tp = e.touches[0];
+    var stepPx = Math.max(18, well.getBoundingClientRect().width / COLS);
+    var dx = tp.clientX - sx;
+    while (dx >= stepPx) { act("right"); sx += stepPx; dx -= stepPx; moved = 1; }
+    while (dx <= -stepPx) { act("left"); sx -= stepPx; dx += stepPx; moved = 1; }
+  }, { passive: false });
+  well.addEventListener("touchend", function (e) {
+    if (!tracking) return;
+    tracking = false;
+    var tp = e.changedTouches && e.changedTouches[0];
+    if (!tp) return;
+    var dy = tp.clientY - sy, dur = Date.now() - st;
+    if (!moved && Math.abs(dy) > 44 && dy > 0) { act("hard"); return; }
+    if (!moved && Math.abs(dy) < 16 && dur < 320) act("rotate");
+  }, { passive: true });
+
+  window.addEventListener("resize", function () { paint(); drawNext(); });
+  document.addEventListener("huhassi:lang", function () {
+    btnPause.textContent = paused ? t("계속", "Resume") : t("멈춤", "Pause");
+    paint();
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && !paused && !dead) togglePause();
+  });
+
+  best = readBest();
+  reset();
+  elLive.textContent = "";
+  rafId = requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

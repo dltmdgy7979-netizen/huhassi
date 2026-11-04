@@ -1,0 +1,78 @@
+/* 후하씨 huhassi — 첫 화면 (모바일 먼저)
+   SPDX-License-Identifier: MIT */
+
+.hero{padding:40px 0 34px}
+.hero h1{text-wrap:balance;max-width:14ch}
+.hero .lede{margin-top:18px}
+.hero .cta{margin-top:24px;display:flex;flex-wrap:wrap;gap:10px}
+@media (min-width:900px){
+  .hero{padding:68px 0 52px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:48px;align-items:start}
+  .hero h1{max-width:12ch}
+  .hero .cta{margin-top:20px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .hero h1{animation:rise .55s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+}
+
+.filters{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);padding:12px 0;border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;gap:10px}
+@media (min-width:760px){.filters{flex-direction:row;align-items:center;justify-content:space-between}}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line-2);background:#fff;cursor:pointer;
+  padding:7px 13px;border-radius:999px;font-size:14px;color:var(--ink-2);
+  font-variation-settings:"wght" 560;white-space:nowrap}
+.chip:hover{border-color:var(--orange);color:var(--orange-ink)}
+.chip[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff;
+  font-variation-settings:"wght" 660}
+.chip .c{font-variant-numeric:tabular-nums;opacity:.72;margin-left:6px;font-size:12.5px}
+.search{display:block}
+.search input{background:#fff;border:1px solid var(--line-2);border-radius:999px;
+  padding:9px 15px;width:100%}
+@media (min-width:760px){.search{flex:0 1 250px}}
+
+.grid{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}
+@media (min-width:620px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+
+.card{display:flex}
+.card a{display:flex;flex-direction:column;width:100%;text-decoration:none;color:inherit;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow)}
+.card a:hover{border-color:var(--orange)}
+@media (prefers-reduced-motion:no-preference){
+  .card a{transition:border-color .15s ease, transform .15s ease}
+  .card a:hover{transform:translateY(-2px)}
+}
+.thumb{aspect-ratio:16/9;background:var(--soft);border-bottom:1px solid var(--line);
+  display:block;width:100%;object-fit:cover}
+.thumb-fallback{display:grid;place-items:center;font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+.card .body{padding:15px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card .toprow{display:flex;align-items:center;gap:8px}
+.card .n{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink-2);
+  background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+.card .kind{font-size:12.5px;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.card .kind i{width:7px;height:7px;border-radius:50%;background:var(--orange);font-style:normal;flex:none}
+.card[data-cat="game"] .kind i{background:#FF6A13}
+.card[data-cat="tool"] .kind i{background:#2E7BD6}
+.card[data-cat="site"] .kind i{background:#17794C}
+.card[data-cat="mcp"] .kind i{background:#7A3DD0}
+.card[data-cat="prompt"] .kind i{background:#C58A00}
+.card h3{letter-spacing:-.02em}
+.card p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.card .foot{margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:8px;
+  font-size:12.5px;color:var(--ink-2)}
+.card .price{background:var(--orange-soft);color:var(--orange-ink);border-radius:999px;
+  padding:2px 9px;font-variation-settings:"wght" 640}
+.card .lic{border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+
+.askband{margin:40px 0 0;background:var(--soft);border:1px solid var(--line);
+  border-radius:var(--radius);padding:24px}
+@media (min-width:760px){.askband{padding:32px;display:flex;align-items:center;gap:28px}}
+.askband h2{letter-spacing:-.025em}
+.askband p{margin:10px 0 0;color:var(--ink-2);max-width:48ch}
+.askband .btn{margin-top:16px;flex:none}
+@media (min-width:760px){.askband .btn{margin-top:0;margin-left:auto}}

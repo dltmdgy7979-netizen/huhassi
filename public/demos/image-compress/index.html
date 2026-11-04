@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이미지 압축 — 후하씨 huhassi</title>
+<meta name="description" content="사진 크기와 용량을 줄여 내려받습니다. 사진은 서버로 가지 않고 브라우저 안에서만 처리됩니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
+  .d-drop{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+    border:2px dashed var(--line-2);border-radius:var(--radius);background:var(--soft);
+    padding:22px 14px;transition:border-color .15s,background .15s}
+  .d-drop.is-over{border-color:var(--orange);background:var(--orange-soft)}
+  .d-drop p{margin:0;font-size:14.5px;color:var(--ink-2);max-width:34ch}
+  .d-drop input[type=file]{max-width:100%;font-size:13.5px}
+  .d-privacy{display:flex;gap:8px;align-items:flex-start;margin-top:12px;padding:10px 12px;
+    border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;
+    font-size:13.5px;color:var(--ink-2)}
+  .d-privacy strong{color:var(--ok);font-variation-settings:"wght" 700}
+
+  .d-ba{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
+  @media (min-width:600px){.d-ba{grid-template-columns:1fr 1fr}}
+  .d-card{border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;padding:12px;min-width:0}
+  .d-card h3{font-size:12.5px;color:var(--ink-2);font-variation-settings:"wght" 700;margin-bottom:8px}
+  .d-card.is-out{border-color:var(--orange);background:#FFFCFA}
+  .d-shot{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--soft);
+    border:1px solid var(--line);border-radius:8px;margin-bottom:10px}
+  .d-nums{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;font-size:14px}
+  .d-nums .k{color:var(--ink-2);font-size:12.5px}
+  .d-nums .v{font-variation-settings:"wght" 700;font-variant-numeric:tabular-nums;word-break:break-all}
+  .d-saved{margin-top:14px;padding:12px 14px;border-radius:var(--radius-s);
+    background:var(--orange-soft);color:var(--orange-ink);font-size:15px;
+    font-variation-settings:"wght" 700;text-align:center}
+  .d-saved.is-worse{background:var(--soft);color:var(--ink-2)}
+  .d-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .d-val{font-family:var(--mono);font-size:12.5px;color:var(--orange-ink)}
+  .d-busy{font-size:13.5px;color:var(--ink-2);margin-top:10px}
+  @media (prefers-reduced-motion:reduce){.d-drop{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">07</span>
+    <h1 data-ko="이미지 압축" data-en="Image Compressor">이미지 압축</h1>
+    <p class="lede" data-ko="사진 크기와 용량을 줄여 내려받습니다. 사진은 서버로 가지 않고 브라우저 안에서만 처리됩니다." data-en="Shrink a photo and download it. Nothing is uploaded — it all happens in your browser."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="설치 없음" data-en="No install">설치 없음</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo">
+    <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
+
+    <div class="d-drop" id="ic-drop">
+      <p data-ko="사진을 이 칸에 끌어다 놓거나, 아래에서 골라 주세요." data-en="Drag a photo into this box, or choose one below."></p>
+      <input type="file" id="ic-file" accept="image/*"
+             data-ko-aria="사진 고르기" data-en-aria="Choose a photo">
+    </div>
+
+    <p class="d-privacy">
+      <span aria-hidden="true">🔒</span>
+      <span>
+        <span data-lang-ko><strong>사진은 이 기기를 떠나지 않습니다.</strong> 서버로 올리지 않고, 브라우저 안에서만 줄입니다.</span>
+        <span data-lang-en><strong>Your photo never leaves this browser.</strong> Nothing is uploaded; the resizing happens on your own device.</span>
+      </span>
+    </p>
+
+    <div class="controls" style="margin-top:16px">
+      <label class="field">
+        <span><span data-ko="긴 쪽 최대 길이" data-en="Longest side">긴 쪽 최대 길이</span> <span class="d-val" id="ic-maxv">1600px</span></span>
+        <input type="range" id="ic-max" min="400" max="4000" step="100" value="1600"
+               data-ko-aria="긴 쪽 최대 길이 (픽셀)" data-en-aria="Longest side in pixels">
+      </label>
+      <label class="field">
+        <span><span data-ko="화질" data-en="Quality">화질</span> <span class="d-val" id="ic-qv">0.80</span></span>
+        <input type="range" id="ic-q" min="0.4" max="1" step="0.02" value="0.8"
+               data-ko-aria="화질 (0.4 에서 1.0)" data-en-aria="Quality from 0.4 to 1.0">
+      </label>
+      <label class="field">
+        <span data-ko="저장 형식" data-en="Output format">저장 형식</span>
+        <select id="ic-fmt">
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/webp">WebP</option>
+          <option value="image/png">PNG</option>
+        </select>
+      </label>
+    </div>
+    <p class="hint" id="ic-note" data-ko="PNG 는 화질 값을 쓰지 않습니다. 사진은 JPEG 나 WebP 가 훨씬 작아집니다." data-en="PNG ignores the quality slider. For photos, JPEG or WebP come out far smaller."></p>
+
+    <div class="d-ba">
+      <div class="d-card">
+        <h3 data-ko="원래 사진" data-en="Before">원래 사진</h3>
+        <img class="d-shot" id="ic-before" alt="원래 사진 미리보기"
+             data-ko-aria="원래 사진 미리보기" data-en-aria="Preview of the original photo">
+        <ul class="d-nums">
+          <li><span class="k" data-ko="크기" data-en="Pixels">크기</span><span class="v" id="ic-bpx">—</span></li>
+          <li><span class="k" data-ko="용량" data-en="File size">용량</span><span class="v" id="ic-bkb">—</span></li>
+          <li><span class="k" data-ko="파일 이름" data-en="File name">파일 이름</span><span class="v" id="ic-bname">—</span></li>
+        </ul>
+      </div>
+      <div class="d-card is-out">
+        <h3 data-ko="줄인 사진" data-en="After">줄인 사진</h3>
+        <img class="d-shot" id="ic-after" alt="줄인 사진 미리보기"
+             data-ko-aria="줄인 사진 미리보기" data-en-aria="Preview of the shrunken photo">
+        <ul class="d-nums">
+          <li><span class="k" data-ko="크기" data-en="Pixels">크기</span><span class="v" id="ic-apx">—</span></li>
+          <li><span class="k" data-ko="용량" data-en="File size">용량</span><span class="v" id="ic-akb">—</span></li>
+          <li><span class="k" data-ko="파일 이름" data-en="File name">파일 이름</span><span class="v" id="ic-aname">—</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="d-saved" id="ic-saved" role="status" aria-live="polite"></p>
+
+    <div class="d-act">
+      <a class="btn btn-solid" id="ic-dl" href="#" download
+         data-ko="줄인 사진 내려받기" data-en="Download the result">줄인 사진 내려받기</a>
+      <button class="btn" type="button" id="ic-reset"
+              data-ko="예시 사진으로 되돌리기" data-en="Back to the sample photo">예시 사진으로 되돌리기</button>
+    </div>
+    <p class="d-busy" id="ic-busy" aria-live="polite"></p>
+    <p class="hint" data-ko="요즘 브라우저에서는 휴대폰 사진의 회전 정보를 읽어, 화면에 보이는 방향 그대로 저장합니다." data-en="In current browsers the photo's rotation tag is read, so it saves facing the way you see it here."></p>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="사진을 점선 칸에 끌어다 놓거나 '파일 선택'으로 고릅니다." data-en="Drop a photo on the dashed box, or pick one with the file button."></li>
+      <li data-ko="'긴 쪽 최대 길이'를 옮겨 사진의 가로·세로 크기를 정합니다." data-en="Drag the longest-side slider to set how big the photo stays."></li>
+      <li data-ko="'화질'을 옮겨 용량과 선명함 사이를 맞춥니다." data-en="Drag the quality slider to trade sharpness against file size."></li>
+      <li data-ko="저장 형식을 JPEG·WebP·PNG 중에서 고릅니다." data-en="Choose JPEG, WebP or PNG as the output format."></li>
+      <li data-ko="'줄인 사진 내려받기'를 눌러 파일을 받습니다." data-en="Press the download button to save the result."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="예시 사진 (캔버스로 그린 그림)" data-en="Sample photo (drawn on a canvas)">예시 사진 (캔버스로 그린 그림)</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="Download it, open index.html, and it runs. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/image-compress" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/image-compress.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+
+<script>
+/* 이미지 압축 — 순수 자바스크립트, 서버로 아무것도 보내지 않습니다.
+   SPDX-License-Identifier: MIT */
+(function () {
+  "use strict";
+
+  function t(ko, en) {
+    return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
+  }
+  var $ = function (id) { return document.getElementById(id); };
+
+  var drop = $("ic-drop"), fileIn = $("ic-file");
+  var maxIn = $("ic-max"), maxV = $("ic-maxv");
+  var qIn = $("ic-q"), qV = $("ic-qv"), fmtIn = $("ic-fmt");
+  var beforeImg = $("ic-before"), afterImg = $("ic-after");
+  var bpx = $("ic-bpx"), bkb = $("ic-bkb"), bname = $("ic-bname");
+  var apx = $("ic-apx"), akb = $("ic-akb"), aname = $("ic-aname");
+  var savedEl = $("ic-saved"), dlBtn = $("ic-dl"), resetBtn = $("ic-reset"), busyEl = $("ic-busy");
+
+  /* 지금 다루는 사진 하나만 기억합니다. */
+  var cur = {
+    blob: null,      // 원래 사진
+    name: "sample",  // 확장자 뺀 이름
+    bitmap: null,    // 그릴 수 있는 그림
+    w: 0, h: 0,
+    beforeUrl: "",   // 미리보기용 URL (바꿀 때 꼭 revoke)
+    afterUrl: "",
+    afterBlob: null
+  };
+
+  /* --- 작은 도움 함수들 --- */
+  function kb(bytes) {
+    if (bytes >= 1024 * 1024) return (bytes / 1048576).toFixed(2) + " MB";
+    return Math.round(bytes / 1024).toLocaleString() + " KB";
+  }
+  function freeUrl(key) {
+    if (cur[key]) { try { URL.revokeObjectURL(cur[key]); } catch (e) {} cur[key] = ""; }
+  }
+  function extOf(type) {
+    if (type === "image/webp") return "webp";
+    if (type === "image/png") return "png";
+    return "jpg";
+  }
+  function baseName(name) {
+    return (name || "photo").replace(/\.[^.]+$/, "").slice(0, 40) || "photo";
+  }
+
+  /* --- 그림 불러오기: 휴대폰 사진의 EXIF 방향은 브라우저가 반영해 줍니다 --- */
+  function loadBitmap(blob) {
+    if (window.createImageBitmap) {
+      try {
+        return createImageBitmap(blob, { imageOrientation: "from-image" });
+      } catch (e) { /* 아래 방법으로 */ }
+    }
+    return new Promise(function (ok, no) {
+      var url = URL.createObjectURL(blob);
+      var im = new Image();
+      im.onload = function () { URL.revokeObjectURL(url); ok(im); };
+      im.onerror = function () { URL.revokeObjectURL(url); no(new Error("decode")); };
+      im.src = url;
+    });
+  }
+
+  /* --- 다시 뽑기 (슬라이더를 움직이면 조금 기다렸다 한 번만) --- */
+  var timer = 0;
+  function schedule() {
+    clearTimeout(timer);
+    busyEl.textContent = t("줄이는 중…", "Working…");
+    timer = setTimeout(encode, 180);
+  }
+
+  function encode() {
+    if (!cur.bitmap) { busyEl.textContent = ""; return; }
+    var limit = parseInt(maxIn.value, 10);
+    var type = fmtIn.value;
+    var quality = parseFloat(qIn.value);
+
+    var scale = Math.min(1, limit / Math.max(cur.w, cur.h));
+    var w = Math.max(1, Math.round(cur.w * scale));
+    var h = Math.max(1, Math.round(cur.h * scale));
+
+    var canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    var ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    if (type !== "image/png") {            // 투명한 곳은 흰색으로
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.drawImage(cur.bitmap, 0, 0, w, h);
+
+    canvas.toBlob(function (blob) {
+      busyEl.textContent = "";
+      if (!blob) {
+        savedEl.textContent = t("이 형식으로는 저장할 수 없습니다. 다른 형식을 골라 주세요.",
+                                "This browser cannot save that format. Try another one.");
+        return;
+      }
+      /* WebP 를 못 만드는 브라우저는 PNG 를 돌려줍니다 */
+      freeUrl("afterUrl");
+      cur.afterBlob = blob;
+      cur.afterUrl = URL.createObjectURL(blob);
+      afterImg.src = cur.afterUrl;
+
+      var realExt = extOf(blob.type || type);
+      var outName = cur.name + "-" + w + "x" + h + "." + realExt;
+      apx.textContent = w.toLocaleString() + " × " + h.toLocaleString() + " px";
+      akb.textContent = kb(blob.size);
+      aname.textContent = outName;
+      dlBtn.href = cur.afterUrl;
+      dlBtn.setAttribute("download", outName);
+
+      var before = cur.blob ? cur.blob.size : 0;
+      if (before > 0) {
+        var pct = (1 - blob.size / before) * 100;
+        if (pct >= 0) {
+          savedEl.className = "d-saved";
+          savedEl.textContent = t("용량 " + pct.toFixed(1) + "% 줄었습니다 (" + kb(before) + " → " + kb(blob.size) + ")",
+                                  pct.toFixed(1) + "% smaller (" + kb(before) + " → " + kb(blob.size) + ")");
+        } else {
+          savedEl.className = "d-saved is-worse";
+          savedEl.textContent = t("오히려 " + Math.abs(pct).toFixed(1) + "% 커졌습니다. 화질을 낮추거나 JPEG 를 써 보세요.",
+                                  Math.abs(pct).toFixed(1) + "% larger. Lower the quality or try JPEG.");
+        }
+      }
+    }, type, quality);
+  }
+
+  /* --- 새 사진 받기 --- */
+  function accept(blob, name) {
+    if (!blob || (blob.type && blob.type.indexOf("image/") !== 0)) {
+      savedEl.className = "d-saved is-worse";
+      savedEl.textContent = t("사진 파일만 열 수 있습니다.", "Only image files, please.");
+      return;
+    }
+    busyEl.textContent = t("사진을 읽는 중…", "Reading the photo…");
+    loadBitmap(blob).then(function (bm) {
+      cur.blob = blob;
+      cur.name = baseName(name);
+      if (cur.bitmap && cur.bitmap.close) { try { cur.bitmap.close(); } catch (e) {} }
+      cur.bitmap = bm;
+      cur.w = bm.width || bm.naturalWidth;
+      cur.h = bm.height || bm.naturalHeight;
+
+      freeUrl("beforeUrl");
+      cur.beforeUrl = URL.createObjectURL(blob);
+      beforeImg.src = cur.beforeUrl;
+      bpx.textContent = cur.w.toLocaleString() + " × " + cur.h.toLocaleString() + " px";
+      bkb.textContent = kb(blob.size);
+      bname.textContent = name || t("예시 사진", "sample photo");
+      encode();
+    }).catch(function () {
+      busyEl.textContent = "";
+      savedEl.className = "d-saved is-worse";
+      savedEl.textContent = t("이 사진은 읽을 수 없었습니다.", "That photo could not be read.");
+    });
+  }
+
+  /* --- 처음 보여 줄 예시 사진을 직접 그립니다 --- */
+  function makeSample() {
+    var c = document.createElement("canvas");
+    c.width = 1600; c.height = 1200;
+    var x = c.getContext("2d");
+    var sky = x.createLinearGradient(0, 0, 0, 760);
+    sky.addColorStop(0, "#FFF5EE");
+    sky.addColorStop(1, "#FFEBDD");
+    x.fillStyle = sky; x.fillRect(0, 0, 1600, 1200);
+    x.fillStyle = "#FF6A13";
+    x.beginPath(); x.arc(1180, 300, 150, 0, Math.PI * 2); x.fill();
+    x.fillStyle = "#D14E00";
+    x.beginPath(); x.moveTo(-100, 900); x.quadraticCurveTo(420, 540, 900, 900); x.lineTo(900, 1200); x.lineTo(-100, 1200); x.fill();
+    x.fillStyle = "#FF6A13";
+    x.beginPath(); x.moveTo(620, 960); x.quadraticCurveTo(1120, 600, 1700, 980); x.lineTo(1700, 1200); x.lineTo(620, 1200); x.fill();
+    /* 자글자글한 점을 뿌려 두면 압축 효과가 눈에 보입니다 */
+    for (var i = 0; i < 5000; i++) {
+      x.fillStyle = i % 2 ? "rgba(26,26,26,.07)" : "rgba(255,255,255,.22)";
+      x.fillRect(Math.random() * 1600, Math.random() * 1200, 3, 3);
+    }
+    x.fillStyle = "#1A1A1A";
+    x.font = "700 70px sans-serif";
+    x.fillText("huhassi", 90, 170);
+    c.toBlob(function (b) {
+      if (b) accept(b, t("예시-사진.jpg", "sample-photo.jpg"));
+    }, "image/jpeg", 0.95);
+  }
+
+  /* --- 연결 --- */
+  maxIn.addEventListener("input", function () { maxV.textContent = maxIn.value + "px"; schedule(); });
+  qIn.addEventListener("input", function () { qV.textContent = parseFloat(qIn.value).toFixed(2); schedule(); });
+  fmtIn.addEventListener("change", function () {
+    qIn.disabled = (fmtIn.value === "image/png");
+    schedule();
+  });
+  fileIn.addEventListener("change", function () {
+    var f = fileIn.files && fileIn.files[0];
+    if (f) accept(f, f.name);
+  });
+  resetBtn.addEventListener("click", function () { fileIn.value = ""; makeSample(); });
+
+  ["dragenter", "dragover"].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("is-over"); });
+  });
+  ["dragleave", "dragend"].forEach(function (ev) {
+    drop.addEventListener(ev, function () { drop.classList.remove("is-over"); });
+  });
+  drop.addEventListener("drop", function (e) {
+    e.preventDefault();
+    drop.classList.remove("is-over");
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) accept(f, f.name);
+  });
+  /* 창 전체에 떨어뜨렸을 때 브라우저가 사진을 열어 버리지 않게 */
+  window.addEventListener("dragover", function (e) { e.preventDefault(); });
+  window.addEventListener("drop", function (e) { e.preventDefault(); });
+
+  document.addEventListener("huhassi:lang", function () {
+    if (cur.blob) encode();
+  });
+  window.addEventListener("pagehide", function () { freeUrl("beforeUrl"); freeUrl("afterUrl"); });
+
+  maxV.textContent = maxIn.value + "px";
+  qV.textContent = parseFloat(qIn.value).toFixed(2);
+  makeSample();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>카페 메뉴판 — 후하씨 huhassi</title>
+<meta name="description" content="사진 없이 글자만으로 깔끔하게 보이는 카페 메뉴판 틀. A4 한 장에 그대로 인쇄됩니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS */
+  .d-frame{
+    width:min(380px,100%);height:620px;margin:0 auto;
+    border:1px solid var(--line-2);border-radius:var(--radius-s);
+    background:#fff;box-shadow:var(--shadow);overflow:hidden}
+  .d-frame iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+  .d-open{display:block;text-align:center;margin-top:12px;font-size:14px}
+  .d-note{font-size:13.5px;color:var(--ink-2);margin:0 0 14px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">11</span>
+    <h1 data-ko="카페 메뉴판" data-en="Cafe Menu">카페 메뉴판</h1>
+    <p class="lede" data-ko="사진 한 장 없이 글자만으로 보기 좋은 메뉴판 틀. 커피·논커피·디저트 세 묶음에 HOT·ICE 두 값이 들어가고, A4 한 장에 그대로 인쇄됩니다." data-en="A text-only menu that still looks good — coffee, non-coffee and dessert, with separate hot and iced prices, and it prints onto a single sheet of A4."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="파일 한 개" data-en="One file">파일 한 개</span>
+      <span class="tag" data-ko="A4 인쇄" data-en="Prints on A4">A4 인쇄</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo">
+    <h2 id="h-demo" class="panel-title" data-ko="작동 미리보기" data-en="Live preview">작동 미리보기</h2>
+    <p class="d-note" data-ko="아래 칸이 실제 template.html 입니다. 안에서 밀어 내리면 전부 보입니다. 적혀 있는 카페 이름·메뉴·가격은 모두 예시용 가짜입니다." data-en="The box below is the real template.html. Scroll inside it to see the whole menu. Every cafe name, item and price in it is an invented placeholder."></p>
+    <div class="d-frame">
+      <iframe src="template.html" title="카페 메뉴판 틀 미리보기" data-ko-title="카페 메뉴판 틀 미리보기" data-en-title="Cafe menu template preview" loading="lazy"></iframe>
+    </div>
+    <a class="d-open" href="template.html" target="_blank" rel="noopener" data-ko="새 창에서 크게 보기 ↗" data-en="Open it full size in a new tab ↗">새 창에서 크게 보기 ↗</a>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="아래 ZIP 을 내려받아 그 안의 template.html 하나만 꺼냅니다." data-en="Download the ZIP below and pull out the single file template.html."></li>
+      <li data-ko="글 편집기로 열어, 맨 위 주석에 적힌 다섯 군데를 차례로 찾습니다." data-en="Open it in a text editor and find the five spots listed in the comment at the top."></li>
+      <li data-ko="카페 이름을 바꾸고, 메뉴 세 묶음의 이름·설명·HOT·ICE 가격을 우리 메뉴로 고칩니다." data-en="Change the cafe name, then rewrite each of the three groups with your own items, notes and hot/iced prices."></li>
+      <li data-ko="한쪽만 파는 메뉴는 가격 대신 줄표를 두고, 자랑할 메뉴는 그 줄을 m-sig 로 바꿔 시그니처 표시를 붙입니다." data-en="Leave a dash where you only sell one temperature, and change a row's class to m-sig to mark it as a signature."></li>
+      <li data-ko="원산지·알레르기 안내와 맨 아래 영업시간을 고친 뒤, 인쇄에서 A4·세로·배율 100%·머리글 끄기로 뽑으면 한 장에 떨어집니다." data-en="Update the origin and allergy notes and the hours at the bottom, then print at A4, portrait, 100% scale with headers off — it lands on one sheet."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 파일 template.html" data-en="The template file template.html">틀 파일 template.html</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 안의 예시 글과 도형 (카페 이름·메뉴·가격 등)" data-en="The placeholder text and shapes inside the template (cafe name, items, prices)">틀 안의 예시 글과 도형 (카페 이름·메뉴·가격 등)</td>
+          <td data-ko="후하씨가 직접 만듦 · 실제 카페가 아닌 지어낸 예시" data-en="Made by huhassi · invented, not a real business">후하씨가 직접 만듦 · 실제 카페가 아닌 지어낸 예시</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="틀 파일의 글꼴" data-en="Typeface used by the template">틀 파일의 글꼴</td>
+          <td data-ko="바깥 글꼴 없음 · 기기에 있는 글꼴만 씀" data-en="No web font · system fonts only">바깥 글꼴 없음 · 기기에 있는 글꼴만 씀</td>
+          <td data-ko="해당 없음" data-en="Not applicable">해당 없음</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard (이 소개 쪽에만 씀)" data-en="Pretendard typeface (this page only)">글꼴 Pretendard (이 소개 쪽에만 씀)</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="template.html 은 혼자 돌아가는 파일 한 개입니다. 바깥에서 불러오는 것이 하나도 없으니, 이 파일만 복사해 쓰셔도 됩니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="template.html is a single self-contained file — it loads nothing from outside, so you can copy just that one file. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/cafe-menu" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/cafe-menu.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마크다운 메모장 — 후하씨 huhassi</title>
+<meta name="description" content="왼쪽에 쓰면 오른쪽에 꾸며져 보이는 메모장. 이 기기에만 저장되고 파일로 내려받을 수 있습니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS. 클래스는 d- 로 시작 */
+  .d-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+  .d-top .d-grow{flex:1 1 120px;min-width:0}
+
+  .d-notes{list-style:none;display:flex;gap:8px;overflow-x:auto;margin:0 0 14px;padding:0 0 4px;
+    -webkit-overflow-scrolling:touch}
+  .d-notes li{flex:0 0 auto}
+  .d-tab{border:1px solid var(--line-2);background:#fff;border-radius:999px;padding:7px 14px;
+    font-size:13.5px;cursor:pointer;max-width:46vw;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;font-variation-settings:"wght" 560}
+  .d-tab:hover{border-color:var(--orange);color:var(--orange-ink)}
+  .d-tab[aria-current="true"]{background:var(--orange);border-color:var(--orange);color:#fff;
+    font-variation-settings:"wght" 680}
+
+  .d-split{display:grid;grid-template-columns:1fr;gap:12px}
+  @media (min-width:820px){.d-split{grid-template-columns:1fr 1fr}}
+  .d-pane{border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;
+    padding:12px;min-width:0;display:flex;flex-direction:column}
+  .d-pane > h3{font-size:12.5px;color:var(--ink-2);font-variation-settings:"wght" 700;
+    margin:0 0 8px}
+  .d-pane textarea{min-height:300px;flex:1 1 auto;font-family:var(--mono);font-size:13.5px;
+    line-height:1.7;border:1px solid var(--line);border-radius:8px;padding:10px}
+  .d-out{min-height:300px;overflow-wrap:anywhere;font-size:15px;line-height:1.72;
+    border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--soft)}
+  .d-out > :first-child{margin-top:0}
+  .d-out > :last-child{margin-bottom:0}
+  .d-out h1{font-size:25px;margin:18px 0 8px;letter-spacing:-.02em}
+  .d-out h2{font-size:20px;margin:18px 0 8px}
+  .d-out h3{font-size:16.5px;margin:16px 0 6px}
+  .d-out p{margin:0 0 .9em}
+  .d-out ul,.d-out ol{margin:0 0 .9em;padding-left:1.4em}
+  .d-out li{margin:.15em 0}
+  .d-out blockquote{margin:0 0 .9em;padding:4px 0 4px 14px;border-left:3px solid var(--orange);
+    color:var(--ink-2);background:#fff;border-radius:0 8px 8px 0}
+  .d-out blockquote p:last-child{margin-bottom:0}
+  .d-out code{font-family:var(--mono);font-size:.88em;background:var(--orange-soft);
+    color:var(--orange-ink);padding:.1em .34em;border-radius:5px}
+  .d-out pre{background:#FAF8F6;border:1px solid var(--line);border-radius:8px;padding:12px;
+    overflow-x:auto;margin:0 0 .9em}
+  .d-out pre code{background:none;color:var(--ink);padding:0;font-size:12.5px;line-height:1.6}
+  .d-out hr{border:0;border-top:1px solid var(--line-2);margin:16px 0}
+  .d-out a{color:var(--orange-ink);text-decoration:underline}
+  .d-out strong{font-variation-settings:"wght" 760}
+
+  .d-bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+  .d-say{font-size:13.5px;color:var(--ok);min-height:1.4em;margin:8px 0 0;
+    font-variation-settings:"wght" 600}
+  .d-say.is-bad{color:var(--orange-ink)}
+
+  .d-tab,.d-out a{transition:border-color .15s,background .15s,color .15s}
+  @media (prefers-reduced-motion:reduce){
+    .d-tab,.d-out a{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">09</span>
+    <h1 data-ko="마크다운 메모장" data-en="Markdown Notepad">마크다운 메모장</h1>
+    <p class="lede" data-ko="왼쪽에 쓰면 오른쪽에 꾸며져 보이는 메모장. 이 기기에만 저장되고 파일로 내려받을 수 있습니다." data-en="Write on the left, see it formatted on the right. Saved on this device only, downloadable as a file."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="설치 없음" data-en="No install">설치 없음</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo">
+    <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
+
+    <div class="d-top">
+      <button class="btn btn-sm btn-solid" type="button" id="md-new" data-ko="새 메모" data-en="New note">새 메모</button>
+      <button class="btn btn-sm" type="button" id="md-rename" data-ko="이름 바꾸기" data-en="Rename">이름 바꾸기</button>
+      <button class="btn btn-sm" type="button" id="md-del" data-ko="이 메모 지우기" data-en="Delete this note">이 메모 지우기</button>
+    </div>
+
+    <ul class="d-notes" id="md-tabs" aria-label="메모 목록"
+        data-ko-aria="메모 목록" data-en-aria="Note list"></ul>
+
+    <div class="d-split">
+      <div class="d-pane">
+        <h3 data-ko="쓰는 곳 (마크다운)" data-en="Write here (Markdown)">쓰는 곳 (마크다운)</h3>
+        <textarea id="md-src" spellcheck="false"
+                  data-ko-aria="마크다운 쓰는 곳" data-en-aria="Markdown editor"
+                  data-ko-ph="# 제목&#10;&#10;여기에 적어 보세요." data-en-ph="# A heading&#10;&#10;Start typing here."></textarea>
+      </div>
+      <div class="d-pane">
+        <h3 data-ko="보이는 모습" data-en="What it looks like">보이는 모습</h3>
+        <div class="d-out" id="md-out" aria-live="polite"
+             data-ko-aria="꾸며진 모습" data-en-aria="Rendered result"></div>
+      </div>
+    </div>
+
+    <div class="d-bar">
+      <button class="btn btn-sm" type="button" id="md-dl" data-ko=".md 로 내려받기" data-en="Download .md">.md 로 내려받기</button>
+      <button class="btn btn-sm" type="button" id="md-copy" data-ko="HTML 복사" data-en="Copy HTML">HTML 복사</button>
+      <button class="btn btn-sm" type="button" id="md-sample" data-ko="예시 메모 되살리기" data-en="Bring back the sample">예시 메모 되살리기</button>
+    </div>
+    <p class="d-say" id="md-say" role="status" aria-live="polite"></p>
+    <p class="hint" data-ko="치는 대로 이 브라우저에 저장됩니다. 서버로는 아무것도 보내지 않습니다. 붙여 넣은 글에 든 태그는 글자로만 보이게 처리합니다." data-en="It saves to this browser as you type. Nothing is sent anywhere. Any tags in pasted text are shown as plain characters."></p>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="왼쪽 칸에 마크다운으로 글을 씁니다." data-en="Write in Markdown in the left box."></li>
+      <li data-ko="오른쪽에서 꾸며진 모습을 바로 확인합니다." data-en="Check the formatted result on the right."></li>
+      <li data-ko="'새 메모'로 메모를 더하고, 위쪽 이름을 눌러 옮겨 다닙니다." data-en="Add notes with New note, and switch between them with the name buttons."></li>
+      <li data-ko="'이름 바꾸기'와 '이 메모 지우기'로 목록을 정리합니다." data-en="Tidy the list with Rename and Delete this note."></li>
+      <li data-ko="'.md 로 내려받기'나 'HTML 복사'로 글을 밖으로 가져갑니다." data-en="Take the text out with Download .md or Copy HTML."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="마크다운 변환기" data-en="Markdown renderer">마크다운 변환기</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="Download it, open index.html, and it runs. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/md-notes" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/md-notes.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+
+<script>
+/* 마크다운 메모장 — 바깥 라이브러리 없음. 글은 이 브라우저에만 저장됩니다.
+   SPDX-License-Identifier: MIT */
+
+/* ============================================================
+   1부. 아주 작은 마크다운 변환기
+   ------------------------------------------------------------
+   순서가 중요합니다.
+   ① 먼저 & < > 를 글자로 바꿔 둡니다 (escapeHtml).
+      이걸 맨 먼저 하면, 붙여 넣은 글에 <script> 가 들어 있어도
+      그냥 글자로 보일 뿐 화면에 끼어들 수 없습니다.
+   ② 그 다음에야 우리가 만든 태그를 붙입니다.
+   ③ 링크 주소는 http: / https: / mailto: 만 받고 나머지는 버립니다.
+   ============================================================ */
+var huhassiMd = (function () {
+  "use strict";
+
+  /* ① & < > 를 글자로. 따옴표도 함께 막아 둡니다. */
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  /* ③ 받아 줄 주소인지 봅니다. 아니면 빈 값 → 링크를 만들지 않습니다. */
+  function safeUrl(raw) {
+    var u = String(raw).trim();
+    if (/^(https?:|mailto:)/i.test(u)) return u;        // 좋은 주소
+    if (/^[/#?]/.test(u)) return u;                      // 같은 사이트 안 주소
+    return "";                                           // javascript: data: 등은 버립니다
+  }
+
+  /* 한 줄 안의 꾸밈: `코드` → **굵게** → *기울임* → [글](주소)
+     `코드` 를 가장 먼저 꺼내 자리를 비워 두면, 코드 안의 별표가
+     굵게·기울임으로 잘못 변하지 않습니다. */
+  function inline(line) {
+    var codes = [];
+    var s = escapeHtml(line);
+
+    /* `코드` 를 뽑아내 번호표로 바꿔 둡니다 */
+    s = s.replace(/`([^`]+)`/g, function (_, code) {
+      codes.push(code);
+      return "\u0000" + (codes.length - 1) + "\u0000";
+    });
+
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+
+    /* [글](주소) — 주소가 허락된 것일 때만 <a> 가 됩니다 */
+    s = s.replace(/\[([^\]\n]*)\]\(([^)\s]+)\)/g, function (whole, text, url) {
+      var ok = safeUrl(url);
+      if (!ok) return text;                              // 수상하면 글자만 남깁니다
+      return '<a href="' + ok + '" rel="noopener nofollow">' + text + "</a>";
+    });
+
+    /* 번호표를 <code> 로 되돌립니다 */
+    s = s.replace(/\u0000(\d+)\u0000/g, function (_, i) {
+      return "<code>" + codes[+i] + "</code>";
+    });
+    return s;
+  }
+
+  /* 줄 단위로 읽어 내려가며 덩어리를 만듭니다 */
+  function render(src) {
+    var lines = String(src == null ? "" : src).replace(/\r\n?/g, "\n").split("\n");
+    var out = [];
+    var i = 0;
+
+    function paragraph(buf) {
+      if (!buf.length) return;
+      out.push("<p>" + buf.map(inline).join("<br>") + "</p>");
+      buf.length = 0;
+    }
+
+    var buf = [];
+    while (i < lines.length) {
+      var line = lines[i];
+
+      /* ``` 로 감싼 코드 덩어리 — 안쪽은 꾸미지 않고 글자로만 보여 줍니다 */
+      if (/^```/.test(line.trim())) {
+        paragraph(buf);
+        i++;
+        var code = [];
+        while (i < lines.length && !/^```/.test(lines[i].trim())) { code.push(lines[i]); i++; }
+        i++;                                             // 닫는 ``` 넘기기
+        out.push("<pre><code>" + escapeHtml(code.join("\n")) + "</code></pre>");
+        continue;
+      }
+
+      /* --- 가로줄 */
+      if (/^\s*(---|\*\*\*|___)\s*$/.test(line)) {
+        paragraph(buf); out.push("<hr>"); i++; continue;
+      }
+
+      /* # ## ### 제목 */
+      var h = /^(#{1,3})\s+(.*)$/.exec(line);
+      if (h) {
+        paragraph(buf);
+        var n = h[1].length;
+        out.push("<h" + n + ">" + inline(h[2].trim()) + "</h" + n + ">");
+        i++; continue;
+      }
+
+      /* > 인용 — 이어지는 > 줄을 모두 모읍니다 */
+      if (/^\s*>\s?/.test(line)) {
+        paragraph(buf);
+        var quote = [];
+        while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+          quote.push(lines[i].replace(/^\s*>\s?/, ""));
+          i++;
+        }
+        out.push("<blockquote>" + render(quote.join("\n")) + "</blockquote>");
+        continue;
+      }
+
+      /* - 목록 */
+      if (/^\s*[-*+]\s+/.test(line)) {
+        paragraph(buf);
+        var ul = [];
+        while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+          ul.push("<li>" + inline(lines[i].replace(/^\s*[-*+]\s+/, "")) + "</li>");
+          i++;
+        }
+        out.push("<ul>" + ul.join("") + "</ul>");
+        continue;
+      }
+
+      /* 1. 번호 목록 */
+      if (/^\s*\d+[.)]\s+/.test(line)) {
+        paragraph(buf);
+        var first = /^\s*(\d+)/.exec(line)[1];
+        var ol = [];
+        while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
+          ol.push("<li>" + inline(lines[i].replace(/^\s*\d+[.)]\s+/, "")) + "</li>");
+          i++;
+        }
+        var startAttr = (first === "1") ? "" : ' start="' + escapeHtml(first) + '"';
+        out.push("<ol" + startAttr + ">" + ol.join("") + "</ol>");
+        continue;
+      }
+
+      /* 빈 줄은 글 덩어리를 끊습니다 */
+      if (!line.trim()) { paragraph(buf); i++; continue; }
+
+      /* 그 밖은 보통 글 */
+      buf.push(line);
+      i++;
+    }
+    paragraph(buf);
+    return out.join("\n");
+  }
+
+  return { render: render, escapeHtml: escapeHtml, safeUrl: safeUrl };
+})();
+
+/* ============================================================
+   2부. 메모장 화면
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var KEY = "huhassi-mdnotes-v1";
+  function t(ko, en) {
+    return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
+  }
+  var $ = function (id) { return document.getElementById(id); };
+
+  var tabsEl = $("md-tabs"), srcEl = $("md-src"), outEl = $("md-out"), sayEl = $("md-say");
+  var notes = [];     /* { id, name, body } — name 이 비면 글에서 제목을 뽑습니다 */
+  var curId = "";
+
+  var idn = 0;
+  function nextId() { idn += 1; return "n" + idn + "-" + Date.now().toString(36); }
+
+  function sampleNotes() {
+    return [
+      {
+        id: nextId(),
+        name: "",
+        body: [
+          "# 마크다운 메모장",
+          "",
+          "왼쪽에 쓰면 오른쪽이 **바로** 바뀝니다. *기울임*, `코드`, 그리고 링크도 됩니다.",
+          "",
+          "## 할 수 있는 것",
+          "",
+          "- 제목 세 단계 (`#`, `##`, `###`)",
+          "- 목록과 번호 목록",
+          "- 인용과 가로줄",
+          "- [후하씨 둘러보기](https://github.com/dltmdgy7979-netizen/huhassi)",
+          "",
+          "1. 글을 씁니다",
+          "2. 모습을 봅니다",
+          "3. 파일로 받습니다",
+          "",
+          "> 치는 대로 이 브라우저에 저장됩니다. 서버로는 가지 않습니다.",
+          "",
+          "---",
+          "",
+          "```",
+          "글자 그대로 보여 줄 곳은",
+          "이렇게 ``` 로 감싸면 됩니다.",
+          "```"
+        ].join("\n")
+      },
+      {
+        id: nextId(),
+        name: "",
+        body: "# 오늘 할 일\n\n- [ ] 로 적어도 글자로 보입니다\n- 장 볼 것 적어 두기\n- 저녁에 산책\n"
+      }
+    ];
+  }
+
+  /* 이름이 없으면 첫 제목 → 없으면 첫 줄 */
+  function titleOf(note) {
+    if (note.name) return note.name;
+    var lines = String(note.body || "").split("\n");
+    for (var i = 0; i < lines.length; i++) {
+      var L = lines[i].trim();
+      if (!L) continue;
+      var h = /^#{1,3}\s+(.*)$/.exec(L);
+      if (h) return h[1].trim().slice(0, 40);
+      return L.replace(/^[>\-*+\s]+/, "").slice(0, 40) || t("제목 없음", "Untitled");
+    }
+    return t("빈 메모", "Empty note");
+  }
+
+  /* ---------- 저장 ---------- */
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      var got = JSON.parse(raw);
+      if (!got || !Array.isArray(got.notes) || !got.notes.length) return null;
+      var ok = [];
+      got.notes.forEach(function (n) {
+        if (!n || typeof n !== "object") return;
+        if (ok.length >= 60) return;
+        ok.push({
+          id: nextId(),
+          name: String(n.name == null ? "" : n.name).slice(0, 40),
+          body: String(n.body == null ? "" : n.body).slice(0, 200000)
+        });
+      });
+      if (!ok.length) return null;
+      return ok;
+    } catch (e) { return null; }
+  }
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        notes: notes.map(function (n) { return { name: n.name, body: n.body }; })
+      }));
+    } catch (e) {
+      say(t("이 브라우저에 저장할 수 없습니다. 글은 화면에서만 살아 있습니다.",
+            "This browser will not let the page save. The text lives only on screen."), true);
+    }
+  }
+
+  function current() {
+    for (var i = 0; i < notes.length; i++) if (notes[i].id === curId) return notes[i];
+    return notes[0];
+  }
+
+  function say(msg, bad) {
+    sayEl.textContent = msg;
+    sayEl.className = "d-say" + (bad ? " is-bad" : "");
+  }
+
+  /* ---------- 그리기 ---------- */
+  function drawTabs() {
+    tabsEl.textContent = "";
+    notes.forEach(function (n) {
+      var li = document.createElement("li");
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "d-tab";
+      b.textContent = titleOf(n);
+      b.setAttribute("aria-current", n.id === curId ? "true" : "false");
+      b.addEventListener("click", function () {
+        curId = n.id;
+        srcEl.value = n.body;
+        drawTabs(); preview();
+      });
+      li.appendChild(b);
+      tabsEl.appendChild(li);
+    });
+  }
+
+  function preview() {
+    outEl.innerHTML = huhassiMd.render(srcEl.value);
+    /* 바깥으로 나가는 링크는 새 창으로 */
+    outEl.querySelectorAll("a[href]").forEach(function (a) {
+      if (/^(https?:|mailto:)/i.test(a.getAttribute("href") || "")) a.target = "_blank";
+    });
+  }
+
+  /* 치는 대로 저장 — 다만 글자마다가 아니라 잠깐 쉴 때 한 번 */
+  var timer = 0;
+  srcEl.addEventListener("input", function () {
+    var n = current();
+    if (n) n.body = srcEl.value;
+    preview();
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      save();
+      drawTabs();                 /* 첫 제목이 바뀌면 이름 단추도 따라 바뀝니다 */
+      say(t("저장했습니다.", "Saved."), false);
+    }, 500);
+  });
+
+  /* ---------- 단추들 ---------- */
+  $("md-new").addEventListener("click", function () {
+    if (notes.length >= 60) {
+      say(t("메모는 60개까지만 둘 수 있습니다.", "Up to 60 notes, sorry."), true);
+      return;
+    }
+    var n = { id: nextId(), name: "", body: t("# 새 메모\n\n", "# New note\n\n") };
+    notes.unshift(n);
+    curId = n.id;
+    srcEl.value = n.body;
+    save(); drawTabs(); preview();
+    srcEl.focus();
+    srcEl.setSelectionRange(srcEl.value.length, srcEl.value.length);
+    say(t("새 메모를 만들었습니다.", "A new note is ready."), false);
+  });
+
+  $("md-rename").addEventListener("click", function () {
+    var n = current();
+    if (!n) return;
+    var asked = window.prompt(t("메모 이름 (비우면 첫 제목을 씁니다)",
+                                "Note name (leave empty to use the first heading)"), n.name);
+    if (asked === null) return;
+    n.name = String(asked).slice(0, 40).trim();
+    save(); drawTabs();
+    say(t("이름을 바꿨습니다.", "Renamed."), false);
+  });
+
+  $("md-del").addEventListener("click", function () {
+    var n = current();
+    if (!n) return;
+    if (notes.length <= 1) {
+      say(t("마지막 한 개는 지울 수 없습니다. 글만 비워 보세요.",
+            "The last note cannot be deleted. Clear its text instead."), true);
+      return;
+    }
+    if (!window.confirm(t("'" + titleOf(n) + "' 을(를) 지울까요?",
+                          "Delete “" + titleOf(n) + "”?"))) return;
+    notes = notes.filter(function (x) { return x.id !== n.id; });
+    curId = notes[0].id;
+    srcEl.value = notes[0].body;
+    save(); drawTabs(); preview();
+    say(t("지웠습니다.", "Deleted."), false);
+  });
+
+  $("md-dl").addEventListener("click", function () {
+    var n = current();
+    if (!n) return;
+    var safe = titleOf(n).replace(/[\\/:*?"<>|]/g, "").trim().slice(0, 40) || "note";
+    var blob = new Blob([srcEl.value], { type: "text/markdown;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = safe + ".md";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    say(t("파일로 내려받았습니다.", "Saved as a file."), false);
+  });
+
+  $("md-copy").addEventListener("click", function () {
+    var html = huhassiMd.render(srcEl.value);
+    var btn = $("md-copy");
+    function done() {
+      btn.classList.add("copied");
+      say(t("HTML 을 복사했습니다.", "HTML copied."), false);
+      setTimeout(function () { btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(html).then(done, fallback);
+    } else { fallback(); }
+
+    function fallback() {
+      /* 클립보드를 못 쓰는 브라우저를 위해 */
+      var ta = document.createElement("textarea");
+      ta.value = html;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+      if (ok) done();
+      else say(t("복사가 막혀 있습니다. 오른쪽 글을 직접 골라 복사해 주세요.",
+                 "Copying is blocked here. Select the rendered text and copy it by hand."), true);
+    }
+  });
+
+  $("md-sample").addEventListener("click", function () {
+    notes = sampleNotes();
+    curId = notes[0].id;
+    srcEl.value = notes[0].body;
+    save(); drawTabs(); preview();
+    say(t("예시 메모로 되돌렸습니다.", "Back to the sample notes."), false);
+  });
+
+  document.addEventListener("huhassi:lang", drawTabs);
+
+  /* ---------- 시작 ---------- */
+  var kept = load();
+  if (kept) {
+    notes = kept;
+  } else {
+    notes = sampleNotes();
+    save();
+  }
+  curId = notes[0].id;
+  srcEl.value = notes[0].body;
+  drawTabs();
+  preview();
+})();
+</script>
+</body>
+</html>

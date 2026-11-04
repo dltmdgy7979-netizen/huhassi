@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="로컬 메모 MCP 미리보기 — 메모 파일 목록과 검색 결과">
+  <rect width="640" height="360" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="640" height="360" fill="#FFF5EE"/>
+
+  <text x="34" y="36" font-size="12" font-family="monospace" fill="#D14E00">MCP · 15</text>
+
+  <!-- 왼쪽: 메모 폴더 목록 -->
+  <g font-family="sans-serif">
+    <rect x="34" y="52" width="238" height="258" rx="16" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+    <text x="54" y="80" font-size="13" fill="#6E6A66">메모 폴더</text>
+
+    <!-- 파일 줄들 -->
+    <g font-size="12.5" fill="#1A1A1A">
+      <rect x="50" y="94" width="206" height="34" rx="9" fill="#FFEBDD"/>
+      <rect x="62" y="104" width="12" height="15" rx="2" fill="#FF6A13"/>
+      <text x="84" y="110" font-family="monospace" font-size="11.5" fill="#1A1A1A">일기/2026-01.md</text>
+      <text x="84" y="124" font-size="10.5" fill="#6E6A66">11-02 · 4KB</text>
+
+      <rect x="62" y="146" width="12" height="15" rx="2" fill="#D8D2CC"/>
+      <text x="84" y="152" font-family="monospace" font-size="11.5">아이디어.md</text>
+      <text x="84" y="166" font-size="10.5" fill="#6E6A66">10-29 · 2KB</text>
+
+      <rect x="62" y="188" width="12" height="15" rx="2" fill="#D8D2CC"/>
+      <text x="84" y="194" font-family="monospace" font-size="11.5">집/보일러.txt</text>
+      <text x="84" y="208" font-size="10.5" fill="#6E6A66">10-18 · 1KB</text>
+
+      <rect x="62" y="230" width="12" height="15" rx="2" fill="#D8D2CC"/>
+      <text x="84" y="236" font-family="monospace" font-size="11.5">읽은책.md</text>
+      <text x="84" y="250" font-size="10.5" fill="#6E6A66">10-05 · 7KB</text>
+
+      <rect x="62" y="272" width="12" height="15" rx="2" fill="#D8D2CC"/>
+      <text x="84" y="278" font-family="monospace" font-size="11.5">할일.txt</text>
+      <text x="84" y="292" font-size="10.5" fill="#6E6A66">09-30 · 1KB</text>
+    </g>
+  </g>
+
+  <!-- 오른쪽: 검색 결과 -->
+  <g font-family="sans-serif">
+    <rect x="292" y="52" width="302" height="118" rx="14" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+    <text x="310" y="78" font-size="13" fill="#6E6A66">물음</text>
+    <text x="310" y="99" font-size="13.5" fill="#1A1A1A">메모에서 '보일러' 찾아봐</text>
+    <rect x="310" y="114" width="266" height="38" rx="9" fill="#FAF8F6" stroke="#E9E5E1" stroke-width="1.5"/>
+    <text x="322" y="131" font-family="monospace" font-size="11" fill="#D14E00">집/보일러.txt:7</text>
+    <text x="322" y="145" font-size="11" fill="#1A1A1A">…난방 안 되면 리셋 단추를 길게…</text>
+
+    <rect x="292" y="184" width="302" height="56" rx="14" fill="#FFEBDD"/>
+    <text x="310" y="206" font-size="13" fill="#D14E00" font-weight="700">바깥으로 보내지 않음</text>
+    <text x="310" y="226" font-size="12.5" fill="#1A1A1A">내 컴퓨터에서 읽기만 합니다</text>
+
+    <!-- 도구 칩 -->
+    <g font-size="11.5">
+      <rect x="292" y="258" width="114" height="28" rx="14" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+      <text x="304" y="276" font-family="monospace" fill="#1A1A1A">search_notes</text>
+
+      <rect x="414" y="258" width="92" height="28" rx="14" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+      <text x="426" y="276" font-family="monospace" fill="#1A1A1A">read_note</text>
+
+      <rect x="292" y="296" width="100" height="28" rx="14" fill="#FFFFFF" stroke="#E9E5E1" stroke-width="2"/>
+      <text x="304" y="314" font-family="monospace" fill="#1A1A1A">list_notes</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>스네이크 — 후하씨 huhassi</title>
+<meta name="description" content="먹이를 먹을수록 길어지고 조금씩 빨라지는 뱀 놀이. 손가락으로 쓸거나 방향키로 움직이고, 벽 통과도 켤 수 있습니다.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FF6A13'/><circle cx='16' cy='16' r='6' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/demo.css">
+<script src="../../assets/i18n.js" defer></script>
+<style>
+  /* 이 쪽에만 필요한 CSS — 클래스는 d- 로 시작 */
+  .d-game{max-width:420px;margin:0 auto}
+  .d-top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-bottom:14px}
+  .d-stage{position:relative;width:100%;max-width:420px;margin:0 auto}
+  .d-field{
+    display:block;width:100%;height:auto;aspect-ratio:1/1;
+    background:var(--soft);border:1px solid var(--line);border-radius:var(--radius-s);
+    touch-action:none;
+  }
+  .d-field:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  .d-over{
+    position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+    background:rgba(255,255,255,.92);border-radius:var(--radius-s);padding:16px;
+  }
+  .d-over[hidden]{display:none}
+  .d-over h3{margin-bottom:4px}
+  .d-over p{color:var(--ink-2);font-size:14px;margin:6px 0 14px}
+  .d-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:264px;margin:14px auto 0}
+  .d-pad .btn{min-height:52px;padding:11px 8px;font-size:19px}
+  .d-pad .d-up{grid-column:2;grid-row:1}
+  .d-pad .d-left{grid-column:1;grid-row:2}
+  .d-pad .d-down{grid-column:2;grid-row:2}
+  .d-pad .d-right{grid-column:3;grid-row:2}
+  .d-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin-top:14px}
+  /* 벽 통과 켜고 끄기 */
+  .d-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:14px;
+    border:1px solid var(--line-2);background:#fff;border-radius:999px;padding:7px 14px 7px 11px}
+  .d-toggle:hover{border-color:var(--orange)}
+  .d-toggle input{width:17px;height:17px;accent-color:var(--orange);margin:0;flex:none}
+  .d-toggle .d-state{font-variation-settings:"wght" 640;color:var(--ink-2);font-size:12.5px}
+  .d-toggle input:checked ~ .d-state{color:var(--orange-ink)}
+  @media (prefers-reduced-motion:reduce){
+    .d-field{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="dot" aria-hidden="true"></span>후하씨<small>huhassi</small></a>
+    <nav>
+      <a class="tlink" href="../../prompts.html" data-ko="프롬프트" data-en="Prompts">프롬프트</a>
+      <a class="tlink" href="../../request.html" data-ko="만들어 주세요" data-en="Request">만들어 주세요</a>
+      <a class="tlink" href="../../license.html" data-ko="라이선스" data-en="Licence">라이선스</a>
+      <button class="langbtn" type="button">EN</button>
+    </nav>
+  </header>
+
+  <div class="demo-head">
+    <span class="num">03</span>
+    <h1 data-ko="스네이크" data-en="Snake">스네이크</h1>
+    <p class="lede" data-ko="먹이를 먹으면 몸이 한 칸 길어지고 조금씩 빨라집니다. 자기 몸을 물지 않게 길을 내 보세요." data-en="Each bite makes the snake one square longer and a touch faster. Steer so it never bites itself."></p>
+    <div class="demo-meta">
+      <span class="tag free" data-ko="무료" data-en="Free">무료</span>
+      <span class="tag">MIT</span>
+      <span class="tag" data-ko="설치 없음" data-en="No install">설치 없음</span>
+      <span class="tag" data-ko="휴대폰에서도" data-en="Works on a phone">휴대폰에서도</span>
+    </div>
+  </div>
+
+  <!-- 1) 작동 미리보기 -->
+  <section class="panel" aria-labelledby="h-demo" id="gamewrap">
+    <h2 id="h-demo" class="panel-title" data-ko="직접 해 보기" data-en="Try it">직접 해 보기</h2>
+
+    <div class="d-game">
+      <div class="d-top">
+        <ul class="statline">
+          <li><span class="k" data-ko="점수" data-en="Score">점수</span><span class="v" id="score">0</span></li>
+          <li><span class="k" data-ko="최고 점수" data-en="Best">최고 점수</span><span class="v" id="best">0</span></li>
+          <li><span class="k" data-ko="길이" data-en="Length">길이</span><span class="v" id="len">3</span></li>
+        </ul>
+      </div>
+
+      <div class="d-stage">
+        <canvas class="d-field" id="field" width="360" height="360" tabindex="0"
+                data-ko-aria="스네이크 말판. 방향키로 뱀을 움직입니다."
+                data-en-aria="Snake board. Steer the snake with the arrow keys."></canvas>
+        <div class="d-over" id="over" hidden>
+          <div>
+            <h3 id="over-title" data-ko="끝났습니다" data-en="Game over">끝났습니다</h3>
+            <p id="over-text" data-ko="뱀이 벽에 부딪혔습니다." data-en="The snake hit a wall."></p>
+            <button class="btn btn-solid" type="button" id="again" data-ko="다시 하기" data-en="Restart">다시 하기</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-pad" role="group" data-ko-aria="방향 단추" data-en-aria="Direction buttons">
+        <button class="btn d-up" type="button" data-dir="up" data-ko-aria="위로" data-en-aria="Go up"><span aria-hidden="true">↑</span></button>
+        <button class="btn d-left" type="button" data-dir="left" data-ko-aria="왼쪽으로" data-en-aria="Go left"><span aria-hidden="true">←</span></button>
+        <button class="btn d-down" type="button" data-dir="down" data-ko-aria="아래로" data-en-aria="Go down"><span aria-hidden="true">↓</span></button>
+        <button class="btn d-right" type="button" data-dir="right" data-ko-aria="오른쪽으로" data-en-aria="Go right"><span aria-hidden="true">→</span></button>
+      </div>
+
+      <div class="d-actions">
+        <label class="d-toggle">
+          <input type="checkbox" id="wrap-walls">
+          <span data-ko="벽 통과" data-en="Wrap walls">벽 통과</span>
+          <span class="d-state" id="wrap-state" data-ko="꺼짐" data-en="off">꺼짐</span>
+        </label>
+        <button class="btn btn-sm" type="button" id="reset" data-ko="다시 하기" data-en="Restart">다시 하기</button>
+      </div>
+
+      <p class="hint" data-ko="'벽 통과'를 켜면 한쪽 벽으로 나간 뱀이 반대쪽에서 나옵니다. 처음 해 보시는 분께 편합니다." data-en="Turn Wrap walls on and the snake leaving one edge comes back in on the opposite side — easier for a first try."></p>
+      <p class="sr" id="live" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 2) 사용법 5줄 -->
+  <section class="panel soft" aria-labelledby="h-how">
+    <h2 id="h-how" class="panel-title" data-ko="사용법" data-en="How to use it">사용법</h2>
+    <ol class="howto">
+      <li data-ko="말판을 손가락으로 쓸어 뱀이 갈 쪽을 알려 줍니다." data-en="Swipe the board to tell the snake which way to go."></li>
+      <li data-ko="아래 방향 단추 네 개를 눌러도 되고, 키보드 방향키를 써도 됩니다." data-en="You can also tap the four direction buttons, or use the arrow keys."></li>
+      <li data-ko="주황 먹이를 먹으면 몸이 한 칸 길어지고 속도가 조금 오릅니다." data-en="Eating the orange food makes the snake one square longer and a little quicker."></li>
+      <li data-ko="처음이라면 '벽 통과'를 켜 두세요. 벽에 부딪혀 끝나지 않습니다." data-en="On a first try, turn Wrap walls on so hitting an edge doesn't end the game."></li>
+      <li data-ko="몸을 물거나(벽 통과가 꺼졌을 때는 벽도) 부딪히면 끝납니다. '다시 하기'로 새로 시작합니다." data-en="Biting itself — or an edge when wrapping is off — ends the game; tap Restart to begin again."></li>
+    </ol>
+  </section>
+
+  <!-- 3) 출처와 라이선스 -->
+  <section class="panel" aria-labelledby="h-lic">
+    <h2 id="h-lic" class="panel-title" data-ko="출처와 라이선스" data-en="Sources and licence">출처와 라이선스</h2>
+    <table class="lic-table">
+      <thead>
+        <tr>
+          <th data-ko="무엇" data-en="What">무엇</th>
+          <th data-ko="출처" data-en="Source">출처</th>
+          <th data-ko="라이선스" data-en="Licence">라이선스</th>
+          <th data-ko="상업적 사용" data-en="Commercial use">상업적 사용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ko="이 쪽의 코드 전부" data-en="All the code on this page">이 쪽의 코드 전부</td>
+          <td data-ko="후하씨가 직접 만듦" data-en="Made by huhassi">후하씨가 직접 만듦</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="뱀·먹이 그림과 미리보기 그림" data-en="Snake and food graphics, preview image">뱀·먹이 그림과 미리보기 그림</td>
+          <td data-ko="후하씨가 직접 그린 캔버스·SVG" data-en="Canvas and SVG drawn by huhassi">후하씨가 직접 그린 캔버스·SVG</td>
+          <td>MIT</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+        <tr>
+          <td data-ko="글꼴 Pretendard" data-en="Pretendard typeface">글꼴 Pretendard</td>
+          <td>orioncactus/pretendard</td>
+          <td>SIL OFL 1.1</td>
+          <td data-ko="가능" data-en="Allowed">가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4) 코드 가져가기 -->
+  <section class="panel soft" aria-labelledby="h-take">
+    <h2 id="h-take" class="panel-title" data-ko="코드 가져가기" data-en="Take the code">코드 가져가기</h2>
+    <p class="hint" data-ko="내려받아 index.html 을 열면 그대로 돌아갑니다. 고쳐 쓰셔도 되고, 팔아도 됩니다." data-en="Download it, open index.html, and it runs. Change it, sell it, whatever you like."></p>
+    <div class="takeit">
+      <a class="btn" href="https://github.com/dltmdgy7979-netizen/huhassi/tree/main/public/demos/snake" rel="noopener" data-ko="GitHub 에서 보기" data-en="See it on GitHub">GitHub 에서 보기</a>
+      <a class="btn btn-solid" href="../../api/zip/snake.zip" data-ko="ZIP 으로 내려받기" data-en="Download the ZIP">ZIP 으로 내려받기</a>
+    </div>
+  </section>
+
+  <!-- 5) 만들어 주세요 -->
+  <section class="askline">
+    <h2 data-ko="비슷한 걸 만들어 드릴까요" data-en="Want one like this">비슷한 걸 만들어 드릴까요</h2>
+    <p data-ko="필요한 모양을 적어 주시면, 시간이 되고 관심이 가는 일이면 무료로 만들어 둡니다." data-en="Tell me what you need. If I have the time and it interests me, I'll build it for free."></p>
+    <a class="btn btn-solid" href="../../request.html" data-ko="신청 폼 열기" data-en="Open the form">신청 폼 열기</a>
+  </section>
+
+  <a class="backlink" href="../../index.html" data-ko="← 전체 목록으로" data-en="← Back to everything">← 전체 목록으로</a>
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <span data-ko="후하씨 · 취미로 만듭니다" data-en="huhassi · made as a hobby">후하씨 · 취미로 만듭니다</span>
+    <a href="../../license.html" data-ko="MIT 라이선스" data-en="MIT licence">MIT 라이선스</a>
+  </div>
+</footer>
+
+<script>
+/* 스네이크 — 후하씨가 직접 만듦. SPDX-License-Identifier: MIT */
+(function () {
+  "use strict";
+
+  var N = 17;                      /* 말판 한 변의 칸 수 */
+  var KEY = "huhassi-snake-best";
+  var WRAPKEY = "huhassi-snake-wrap";
+  var START_MS = 180, MIN_MS = 78;
+
+  var wrap = document.getElementById("gamewrap");
+  var cv = document.getElementById("field");
+  var ctx = cv.getContext("2d");
+  var elScore = document.getElementById("score");
+  var elBest = document.getElementById("best");
+  var elLen = document.getElementById("len");
+  var elLive = document.getElementById("live");
+  var over = document.getElementById("over");
+  var overTitle = document.getElementById("over-title");
+  var overText = document.getElementById("over-text");
+  var btnAgain = document.getElementById("again");
+  var btnReset = document.getElementById("reset");
+  var cbWrap = document.getElementById("wrap-walls");
+  var elWrapState = document.getElementById("wrap-state");
+
+  var snake = [], dir = { x: 1, y: 0 }, queued = [], food = { x: 0, y: 0 };
+  var score = 0, best = 0, dead = false, started = false;
+  var stepMs = START_MS, acc = 0, last = 0;
+  var wrapWalls = false;
+
+  function t(ko, en) {
+    return (window.huhassi && window.huhassi.t) ? window.huhassi.t(ko, en) : ko;
+  }
+  function readNum(k) {
+    try { return Math.max(0, parseInt(localStorage.getItem(k), 10) || 0); } catch (e) { return 0; }
+  }
+  function save(k, v) { try { localStorage.setItem(k, String(v)); } catch (e) {} }
+  function say(m) { elLive.textContent = m; }
+
+  function at(list, x, y) {
+    for (var i = 0; i < list.length; i++) if (list[i].x === x && list[i].y === y) return true;
+    return false;
+  }
+
+  function placeFood() {
+    var free = [];
+    for (var y = 0; y < N; y++) {
+      for (var x = 0; x < N; x++) if (!at(snake, x, y)) free.push({ x: x, y: y });
+    }
+    if (!free.length) return false;
+    food = free[Math.floor(Math.random() * free.length)];
+    return true;
+  }
+
+  function turn(name) {
+    var d = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[name];
+    if (!d || dead) return;
+    /* 마지막으로 받아 둔 쪽을 기준으로 뒤돌기를 막는다 */
+    var ref = queued.length ? queued[queued.length - 1] : dir;
+    if (ref.x === -d.x && ref.y === -d.y) return;
+    if (ref.x === d.x && ref.y === d.y) return;
+    if (queued.length < 2) queued.push(d);
+    started = true;
+  }
+
+  function finish(why) {
+    dead = true;
+    overTitle.textContent = t("끝났습니다", "Game over");
+    overText.textContent = why;
+    over.hidden = false;
+    btnAgain.focus();
+    say(t("끝났습니다. " + why + " 점수 " + score + "점, 길이 " + snake.length + "칸, 최고 점수 " + best + "점.",
+          "Game over. " + why + " Score " + score + ", length " + snake.length + ", best " + best + "."));
+  }
+
+  function step() {
+    if (dead) return;
+    if (queued.length) dir = queued.shift();
+
+    var head = snake[0];
+    var nx = head.x + dir.x, ny = head.y + dir.y;
+
+    if (wrapWalls) {
+      nx = (nx + N) % N;
+      ny = (ny + N) % N;
+    } else if (nx < 0 || ny < 0 || nx >= N || ny >= N) {
+      finish(t("뱀이 벽에 부딪혔습니다.", "The snake hit a wall."));
+      return;
+    }
+
+    var ate = (nx === food.x && ny === food.y);
+    /* 꼬리는 이번 걸음에 비켜 주니 부딪힘에서 뺀다 (먹었을 때는 꼬리가 남는다) */
+    var body = ate ? snake : snake.slice(0, snake.length - 1);
+    if (at(body, nx, ny)) {
+      finish(t("뱀이 자기 몸을 물었습니다.", "The snake bit itself."));
+      return;
+    }
+
+    snake.unshift({ x: nx, y: ny });
+    if (ate) {
+      score += 10;
+      if (score > best) { best = score; save(KEY, best); }
+      stepMs = Math.max(MIN_MS, START_MS - (snake.length - 3) * 3);
+      if (!placeFood()) {
+        finish(t("말판을 가득 채웠습니다!", "You filled the whole board!"));
+        return;
+      }
+    } else {
+      snake.pop();
+    }
+    syncNums();
+  }
+
+  function syncNums() {
+    elScore.textContent = String(score);
+    elBest.textContent = String(best);
+    elLen.textContent = String(snake.length);
+  }
+
+  /* ---- 그리기 ---- */
+  function paint() {
+    var rect = cv.getBoundingClientRect();
+    var css = Math.max(120, rect.width || 360);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var px = Math.round(css * dpr);
+    if (cv.width !== px || cv.height !== px) { cv.width = px; cv.height = px; }
+    ctx.setTransform(px / css, 0, 0, px / css, 0, 0);
+
+    var s = css / N;
+    ctx.clearRect(0, 0, css, css);
+    ctx.fillStyle = "#FFF5EE";
+    ctx.fillRect(0, 0, css, css);
+
+    /* 바둑판 — 벽 통과가 꺼졌을 때는 가장자리를 한 겹 진하게 그려 벽임을 알립니다 */
+    ctx.fillStyle = "#FFFFFF";
+    for (var y = 0; y < N; y++) {
+      for (var x = 0; x < N; x++) if ((x + y) % 2 === 0) ctx.fillRect(x * s, y * s, s, s);
+    }
+    if (!wrapWalls) {
+      ctx.strokeStyle = "#D8D2CC";
+      ctx.lineWidth = Math.max(2, s * 0.22);
+      ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, css - ctx.lineWidth, css - ctx.lineWidth);
+    } else {
+      ctx.strokeStyle = "#FFCBA8";
+      ctx.lineWidth = Math.max(2, s * 0.22);
+      ctx.setLineDash([s * 0.7, s * 0.5]);
+      ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, css - ctx.lineWidth, css - ctx.lineWidth);
+      ctx.setLineDash([]);
+    }
+
+    /* 먹이 — 둥근 모양이라 네모난 뱀과 모양으로도 구별됩니다 */
+    var fx = food.x * s + s / 2, fy = food.y * s + s / 2;
+    ctx.fillStyle = "#FF6A13";
+    ctx.beginPath();
+    ctx.arc(fx, fy, s * 0.31, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    /* 뱀 — 머리는 진하게, 몸은 옅게 */
+    for (var i = snake.length - 1; i >= 0; i--) {
+      var p = snake[i];
+      var head = (i === 0);
+      ctx.fillStyle = head ? "#D14E00" : (i % 2 ? "#FF9A60" : "#FFB488");
+      var pad = head ? s * 0.06 : s * 0.12;
+      var r = Math.min(6, s * 0.26);
+      roundRect(ctx, p.x * s + pad, p.y * s + pad, s - pad * 2, s - pad * 2, r);
+      ctx.fill();
+      if (head) {
+        /* 눈 둘 — 가는 쪽을 알 수 있게 */
+        ctx.fillStyle = "#FFFFFF";
+        var cxp = p.x * s + s / 2, cyp = p.y * s + s / 2;
+        var ox = dir.y !== 0 ? s * 0.18 : s * 0.13 * dir.x;
+        var oy = dir.x !== 0 ? s * 0.18 : s * 0.13 * dir.y;
+        var e = Math.max(1.4, s * 0.08);
+        ctx.beginPath();
+        if (dir.y !== 0) {
+          ctx.arc(cxp - ox, cyp + oy, e, 0, Math.PI * 2);
+          ctx.arc(cxp + ox, cyp + oy, e, 0, Math.PI * 2);
+        } else {
+          ctx.arc(cxp + ox, cyp - oy, e, 0, Math.PI * 2);
+          ctx.arc(cxp + ox, cyp + oy, e, 0, Math.PI * 2);
+        }
+        ctx.fill();
+      }
+    }
+
+    if (!started && !dead) {
+      ctx.fillStyle = "rgba(255,255,255,.86)";
+      ctx.fillRect(0, css / 2 - s * 0.9, css, s * 1.8);
+      ctx.fillStyle = "#D14E00";
+      ctx.font = "700 " + Math.max(12, Math.round(css / 21)) + "px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(t("쓸거나 방향키를 누르면 움직입니다", "Swipe or press an arrow key to start"), css / 2, css / 2);
+    }
+  }
+
+  function roundRect(c, x, y, w, h, r) {
+    var rr = Math.min(r, w / 2, h / 2);
+    c.beginPath();
+    c.moveTo(x + rr, y);
+    c.arcTo(x + w, y, x + w, y + h, rr);
+    c.arcTo(x + w, y + h, x, y + h, rr);
+    c.arcTo(x, y + h, x, y, rr);
+    c.arcTo(x, y, x + w, y, rr);
+    c.closePath();
+  }
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (!last) last = now;
+    var dt = Math.min(now - last, 250);
+    last = now;
+    if (!dead && started) {
+      acc += dt;
+      while (acc >= stepMs) { acc -= stepMs; step(); if (dead) break; }
+    }
+    paint();
+  }
+
+  function reset() {
+    var mid = Math.floor(N / 2);
+    snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }];
+    dir = { x: 1, y: 0 };
+    queued = [];
+    score = 0; dead = false; started = false;
+    stepMs = START_MS; acc = 0; last = 0;
+    over.hidden = true;
+    placeFood();
+    syncNums();
+    paint();
+    say(t("새 놀이를 준비했습니다. 쓸거나 방향키를 누르면 움직입니다.",
+          "A new game is ready. Swipe or press an arrow key to start."));
+  }
+
+  function setWrap(on, quiet) {
+    wrapWalls = !!on;
+    cbWrap.checked = wrapWalls;
+    elWrapState.textContent = wrapWalls ? t("켜짐", "on") : t("꺼짐", "off");
+    elWrapState.setAttribute("data-ko", wrapWalls ? "켜짐" : "꺼짐");
+    elWrapState.setAttribute("data-en", wrapWalls ? "on" : "off");
+    save(WRAPKEY, wrapWalls ? 1 : 0);
+    if (!quiet) {
+      say(wrapWalls
+        ? t("벽 통과를 켰습니다. 벽으로 나가면 반대쪽에서 나옵니다.", "Wrap walls is on: leaving one edge brings you back on the other side.")
+        : t("벽 통과를 껐습니다. 벽에 부딪히면 끝납니다.", "Wrap walls is off: hitting an edge ends the game."));
+    }
+    paint();
+  }
+
+  /* 단추 */
+  wrap.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-dir]") : null;
+    if (b) { turn(b.getAttribute("data-dir")); cv.focus(); }
+  });
+  btnReset.addEventListener("click", function () { reset(); cv.focus(); });
+  btnAgain.addEventListener("click", function () { reset(); cv.focus(); });
+  cbWrap.addEventListener("change", function () { setWrap(cbWrap.checked, false); });
+
+  /* 키보드 — 이 데모 칸 안에 초점이 있을 때만 */
+  var KEYS = {
+    ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right",
+    w: "up", a: "left", s: "down", d: "right"
+  };
+  wrap.addEventListener("keydown", function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var name = KEYS[e.key] || KEYS[(e.key || "").toLowerCase()];
+    if (!name) return;
+    if (e.target === cbWrap) return;
+    e.preventDefault();
+    turn(name);
+  });
+
+  /* 손가락 쓸기 */
+  var sx = 0, sy = 0, tracking = false;
+  cv.addEventListener("touchstart", function (e) {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+  }, { passive: true });
+  cv.addEventListener("touchmove", function (e) { if (tracking) e.preventDefault(); }, { passive: false });
+  cv.addEventListener("touchend", function (e) {
+    if (!tracking) return;
+    tracking = false;
+    var tp = e.changedTouches && e.changedTouches[0];
+    if (!tp) return;
+    var dx = tp.clientX - sx, dy = tp.clientY - sy;
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+    turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+  }, { passive: true });
+
+  window.addEventListener("resize", paint);
+  document.addEventListener("huhassi:lang", function () {
+    elWrapState.textContent = wrapWalls ? t("켜짐", "on") : t("꺼짐", "off");
+    if (!over.hidden) overTitle.textContent = t("끝났습니다", "Game over");
+    paint();
+  });
+
+  best = readNum(KEY);
+  setWrap(readNum(WRAPKEY) === 1, true);   /* 처음에는 꺼짐 */
+  reset();
+  elLive.textContent = "";
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
