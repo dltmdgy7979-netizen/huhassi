@@ -34,29 +34,29 @@
   <rect x="282" y="183" width="76" height="4" rx="2" fill="#6E6A66" opacity="0.5"/>
 
   <!-- 이번 주 반찬: 제목줄 -->
-  <rect x="170" y="228" width="54" height="5" rx="2.5" fill="#D14E00"/>
-  <rect x="232" y="230" width="238" height="1.6" fill="#E9E5E1"/>
+  <rect x="170" y="222" width="54" height="5" rx="2.5" fill="#D14E00"/>
+  <rect x="232" y="224" width="238" height="1.6" fill="#E9E5E1"/>
 
   <!-- 반찬 네 줄: 이름 + 가격 -->
   <g>
-    <rect x="170" y="244" width="92" height="5.5" rx="2.75" fill="#1A1A1A"/>
-    <rect x="170" y="254" width="128" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="430" y="245" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
-    <rect x="170" y="266" width="332" height="1" fill="#E9E5E1" opacity="0.9"/>
+    <rect x="170" y="238" width="92" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="248" width="128" height="4" rx="2" fill="#E9E5E1"/>
+    <rect x="430" y="239" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="260" width="332" height="1" fill="#E9E5E1" opacity="0.9"/>
   </g>
   <g>
-    <rect x="170" y="272" width="104" height="5.5" rx="2.75" fill="#1A1A1A"/>
-    <rect x="170" y="282" width="112" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="430" y="273" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="266" width="104" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="276" width="112" height="4" rx="2" fill="#E9E5E1"/>
+    <rect x="430" y="267" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
   </g>
   <g>
-    <rect x="170" y="300" width="118" height="5.5" rx="2.75" fill="#1A1A1A"/>
-    <rect x="170" y="310" width="96" height="4" rx="2" fill="#E9E5E1"/>
-    <rect x="430" y="301" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="294" width="118" height="5.5" rx="2.75" fill="#1A1A1A"/>
+    <rect x="170" y="304" width="96" height="4" rx="2" fill="#E9E5E1"/>
+    <rect x="430" y="295" width="40" height="5.5" rx="2.75" fill="#1A1A1A"/>
   </g>
 
   <!-- 휴무 꼬리표 -->
-  <rect x="170" y="324" width="44" height="14" rx="7" fill="#FFEBDD"/>
-  <rect x="179" y="329.5" width="26" height="4" rx="2" fill="#D14E00"/>
-  <rect x="222" y="329" width="96" height="4.5" rx="2.25" fill="#E9E5E1"/>
+  <rect x="170" y="316" width="44" height="14" rx="7" fill="#FFEBDD"/>
+  <rect x="179" y="321.5" width="26" height="4" rx="2" fill="#D14E00"/>
+  <rect x="222" y="321" width="96" height="4.5" rx="2.25" fill="#E9E5E1"/>
 </svg>

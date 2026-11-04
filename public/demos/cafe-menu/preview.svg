@@ -62,11 +62,11 @@
   </g>
 
   <!-- 안내 칸 -->
-  <rect x="180" y="290" width="284" height="22" rx="5" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="1.4"/>
-  <rect x="188" y="296" width="200" height="3.4" rx="1.7" fill="#E9E5E1"/>
-  <rect x="188" y="304" width="156" height="3.4" rx="1.7" fill="#E9E5E1"/>
+  <rect x="180" y="286" width="284" height="22" rx="5" fill="#FFF5EE" stroke="#E9E5E1" stroke-width="1.4"/>
+  <rect x="188" y="292" width="200" height="3.4" rx="1.7" fill="#E9E5E1"/>
+  <rect x="188" y="300" width="156" height="3.4" rx="1.7" fill="#E9E5E1"/>
 
   <!-- 영업시간 꼬리 -->
-  <rect x="180" y="320" width="284" height="2" fill="#1A1A1A"/>
-  <rect x="262" y="328" width="120" height="4" rx="2" fill="#E9E5E1"/>
+  <rect x="180" y="314" width="284" height="2" fill="#1A1A1A"/>
+  <rect x="262" y="322" width="120" height="4" rx="2" fill="#E9E5E1"/>
 </svg>
