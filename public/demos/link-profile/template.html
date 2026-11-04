@@ -8,104 +8,119 @@
      링크 프로필 (Link Profile) — 후하씨 huhassi
      SPDX-License-Identifier: MIT
 
-     ▶ 여기만 바꾸세요
-       색: 아래 :root 의 --point 한 줄.
-           그 한 줄만 바꾸면 바탕·단추·글자 색이 함께 따라옵니다.
-           (예: #FF6A13 주황 / #2F6FED 파랑 / #1F9D74 초록 / #7A5AF8 보라)
-       글: 본문의 1) 이름 2) 한 줄 소개 3) 링크 단추 여섯 개 4) 맨 아래 안내.
-     ▶ 링크 단추는 <a> 한 덩어리를 복사하거나 지워서 개수를 늘리고 줄이면 됩니다.
-       단추 높이는 최소 48px 로 잡혀 있어 손가락으로 누르기 좋습니다.
-     ▶ 적혀 있는 이름·주소·연락처는 모두 예시용 가짜입니다.
+     이 파일 하나가 전부입니다. 바깥에서 불러오는 것이 없습니다.
+     고치는 방법은 같은 폴더의 README.md 에 번호대로 적어 두었습니다.
+
+     색·글꼴·둥글기 → 아래 <style> 맨 위 '여기만 바꾸세요' 칸
+     글(이름·소개·링크) → 그 아래 <script> 안의 '여기만 바꾸세요' 칸
+       이 틀만은 HTML 을 건드리지 않습니다. 링크 한 줄을 복사해 늘리고,
+       필요 없는 줄은 지우면 됩니다.
+
+     ▶ 적혀 있는 이름·링크·메일 주소는 모두 지어낸 예시입니다.
      =========================================================== -->
 
-<title>오늘의 모음 — 링크</title>
-<meta name="description" content="링크 모음 한 장. 프로필에 걸어 두는 주소입니다.">
+<!-- 【탭 제목】 여기도 이름으로 바꿔 주세요 -->
+<title>서윤재 — 링크 모음</title>
+<meta name="description" content="동네 가게 이야기를 주마다 한 통씩 적어 보내는 서윤재의 링크 모음.">
 
 <style>
+/* ███████████████  여기만 바꾸세요 ① 색과 모양  ███████████████
+   아래 여섯 줄만 고치면 바탕·단추·글자 색이 한꺼번에 따라옵니다.      */
 :root{
-  /* ▼▼▼ 여기만 바꾸세요 ▼▼▼ */
-  --point:#FF6A13;
-  /* ▲▲▲ 여기만 바꾸세요 ▲▲▲ */
-
-  /* 아래 색들은 --point 를 섞어 자동으로 따라옵니다. 손대지 않아도 됩니다. */
-  --point-ink:color-mix(in srgb, var(--point) 76%, #1A1A1A);
-  --point-soft:color-mix(in srgb, var(--point) 13%, #FFFFFF);
-  --point-line:color-mix(in srgb, var(--point) 30%, #FFFFFF);
-  --bg:color-mix(in srgb, var(--point) 7%, #FFFFFF);
-  --ink:#1D1B19;
-  --ink-2:#64605C;
-  --radius:18px;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --point:   #FF6A13;   /* 포인트 색 하나. 바탕·단추 색이 여기서 만들어집니다
+                           (예: #FF6A13 주황 / #2F6FED 파랑 / #1F9D74 초록 / #7A5AF8 보라) */
+  --ink:     #1D1B19;   /* 글자 색 */
+  --ink-2:   #5E5A56;   /* 흐린 글자 색 (소개·부제) */
+  --card:    #FFFFFF;   /* 단추 바탕 색 */
+  --radius:  18px;      /* 모서리 둥글기. 999px 로 하면 알약 모양, 0px 는 각진 모양 */
+  --font:    -apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+                        /* 글꼴. 쓰고 싶은 글꼴 이름을 맨 앞에 "따옴표"로 넣으세요 */
 }
-/* color-mix 를 모르는 오래된 브라우저를 위한 대비 색 */
+/* ███████████  여기까지. 아래 CSS 는 그대로 두세요  ███████████ */
+
+
+/* --point 하나에서 자동으로 만들어지는 색들 */
+:root{
+  --point-ink:    color-mix(in srgb, var(--point) 72%, var(--ink));
+  --point-strong: color-mix(in srgb, var(--point) 70%, var(--ink));
+  --point-soft:   color-mix(in srgb, var(--point) 13%, #FFFFFF);
+  --point-line:   color-mix(in srgb, var(--point) 28%, #FFFFFF);
+  --bg:           color-mix(in srgb, var(--point) 7%,  #FFFFFF);
+}
 @supports not (color:color-mix(in srgb,#000 50%,#fff)){
   :root{
-    --point-ink:#C14800;
-    --point-soft:#FFEEE2;
-    --point-line:#FFD2B5;
-    --bg:#FFF6F0;
+    --point-ink:#C14800; --point-strong:#BB5215;
+    --point-soft:#FFEEE2; --point-line:#FFD2B5; --bg:#FFF6F0;
   }
 }
+
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;min-height:100vh;
   background:var(--bg);color:var(--ink);
-  font-family:var(--sans);font-size:16px;line-height:1.6;
+  font-family:var(--font);font-size:16px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
 }
-:focus-visible{outline:3px solid var(--point);outline-offset:3px;border-radius:12px}
+:focus-visible{outline:3px solid var(--point-strong);outline-offset:3px;border-radius:12px}
 
-.p-wrap{width:min(440px,100% - 32px);margin:0 auto;padding:40px 0 48px;text-align:center}
+.p-wrap{width:min(440px,100% - 28px);margin:0 auto;padding:36px 0 44px;text-align:center}
 
-/* ---- 둥근 프로필 사진 자리 ---- */
+/* ---- 둥근 프로필 자리 (사진이 아니라 글자 머리입니다) ---- */
 .p-avatar{
-  width:104px;height:104px;margin:0 auto 18px;
+  width:98px;height:98px;margin:0 auto 16px;
   border-radius:50%;overflow:hidden;
   border:3px solid #fff;
   box-shadow:0 2px 4px rgba(26,26,26,.06),0 14px 28px -16px rgba(26,26,26,.35);
   background:var(--point-soft);
   display:grid;place-items:center;position:relative}
-.p-avatar::before{ /* 사진 대신 둔 도형 — 실제 사진을 넣으려면 아래 주석을 보세요 */
+.p-avatar::before{
   content:"";position:absolute;inset:0;
   background:
-    radial-gradient(circle at 50% 118%, var(--point) 0 42%, transparent 42.5%),
-    radial-gradient(circle at 50% 36%, var(--point) 0 17%, transparent 17.5%),
+    radial-gradient(circle at 50% 116%, var(--point) 0 44%, transparent 44.5%),
+    radial-gradient(circle at 50% 34%,  var(--point) 0 18%, transparent 18.5%),
     var(--point-soft);
-  opacity:.5}
-.p-avatar span{
-  position:relative;z-index:1;font-size:10.5px;line-height:1.3;color:var(--point-ink);
-  font-weight:700;max-width:72px}
+  opacity:.42}
+.p-avatar b{
+  position:relative;z-index:1;font-size:34px;font-weight:800;
+  color:var(--point-ink);letter-spacing:-.02em}
 .p-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* ---- 이름 · 한 줄 소개 ---- */
 .p-wrap h1{margin:0;font-size:25px;font-weight:800;letter-spacing:-.02em}
-.p-bio{margin:8px auto 28px;max-width:28ch;font-size:14.5px;color:var(--ink-2)}
+.p-bio{margin:7px auto 26px;max-width:30ch;font-size:14.5px;color:var(--ink-2)}
 
 /* ---- 링크 단추 ---- */
-.p-links{display:flex;flex-direction:column;gap:11px;text-align:left}
+.p-links{display:flex;flex-direction:column;gap:10px;text-align:left}
 .p-links a{
   min-height:48px;                      /* 손가락으로 누르기 좋은 최소 높이 */
   display:flex;flex-direction:column;justify-content:center;gap:1px;
-  padding:11px 18px;
-  background:#fff;border:1px solid var(--point-line);border-radius:var(--radius);
+  padding:11px 17px;
+  background:var(--card);border:1px solid var(--point-line);border-radius:var(--radius);
   text-decoration:none;color:var(--ink);
   box-shadow:0 1px 2px rgba(26,26,26,.04);
   transition:transform .14s ease, border-color .14s ease}
-.p-links a:hover{border-color:var(--point);transform:translateY(-2px)}
+.p-links a:hover{border-color:var(--point-strong);transform:translateY(-2px)}
 .p-links a:active{transform:translateY(0)}
 .p-links b{font-size:15.5px;font-weight:700;line-height:1.35}
 .p-links small{font-size:12.5px;color:var(--ink-2);line-height:1.4}
 
-/* 첫 단추는 꽉 찬 색으로 — 가장 보여 주고 싶은 링크를 여기에 */
+/* 가장 보여 주고 싶은 링크 하나 — 꽉 찬 색 */
 .p-links a.p-main{
-  background:var(--point);border-color:var(--point);color:#fff}
-.p-links a.p-main small{color:#fff;opacity:.88}
-.p-links a.p-main:hover{border-color:var(--point)}
+  background:var(--point-strong);border-color:var(--point-strong);color:#fff}
+.p-links a.p-main small{color:#fff;opacity:.9}
+.p-links a.p-main:hover{border-color:var(--point-strong)}
 
 /* ---- 맨 아래 안내 ---- */
-.p-foot{margin:30px 0 0;font-size:11.5px;color:var(--ink-2);line-height:1.6}
+.p-foot{margin:26px 0 0;font-size:11.5px;color:var(--ink-2);line-height:1.6}
 .p-foot a{color:var(--point-ink)}
+
+/* 자바스크립트가 꺼져 있을 때 보이는 안내 */
+.p-noscript{
+  margin:0;padding:14px 16px;background:var(--card);
+  border:1px solid var(--point-line);border-radius:var(--radius);
+  font-size:14px;color:var(--ink);text-align:left}
 
 @media (prefers-reduced-motion:reduce){
   .p-links a{transition:none}
@@ -113,66 +128,112 @@ body{
 }
 @media print{
   body{background:#fff}
-  .p-links a{box-shadow:none;border-color:#999;background:#fff;color:#000}
+  .p-avatar{display:none}
+  .p-links a{box-shadow:none;border:0.6pt solid #666;background:#fff;color:#000;min-height:0;padding:5pt 8pt}
   .p-links a.p-main{background:#fff;color:#000}
   .p-links a.p-main small{color:#333}
-  .p-links a::after{content:" " attr(href);font-size:9pt;color:#555;word-break:break-all}
-  .p-avatar{display:none}
+  .p-links a::after{content:" " attr(href);font-size:8.5pt;color:#555;word-break:break-all}
 }
 </style>
+
+<script>
+/* ███████████████  여기만 바꾸세요 ② 글과 링크  ███████████████
+
+   아래 PROFILE 한 덩어리가 이 쪽의 글 전부입니다.
+   · 큰따옴표 " " 안의 글자만 바꾸세요. 따옴표와 쉼표는 지우지 마세요.
+   · 링크를 늘리려면 { … } 한 줄을 복사해 아래에 붙이고 쉼표를 찍으세요.
+   · 링크를 줄이려면 { … } 한 줄을 통째로 지우세요.
+   · main:true 는 꽉 찬 색으로 보일 링크 하나입니다. 한 줄에만 붙이세요.
+   · 적혀 있는 이름·주소는 모두 지어낸 예시입니다.                       */
+
+var PROFILE = {
+
+  initial: "윤",                  /* 둥근 자리에 보일 한 글자 */
+  name:    "서윤재",
+  bio:     "동네 가게 이야기를 주마다 한 통씩 적어 보냅니다. ○○시 ○○구에 삽니다.",
+
+  links: [
+    { title:"주간 편지 받아 보기", note:"매주 목요일 아침, 짧은 글 한 통", url:"https://example.com/letter", main:true },
+    { title:"지난 편지 모아 보기", note:"2023년부터 보낸 글 아흔두 편",     url:"https://example.com/archive" },
+    { title:"만든 책과 엽서",      note:"동네 기록집 두 권 · 엽서 여섯 장",  url:"https://example.com/shop" },
+    { title:"동네 기록 모임 신청",  note:"매달 셋째 토요일 오후 2시 · 여덟 자리", url:"https://example.com/meetup" },
+    { title:"사진으로 쓴 기록",     note:"가게 간판과 손글씨를 모읍니다",     url:"https://example.com/photos" },
+    { title:"메일로 연락하기",      note:"yunjae@example.com",              url:"mailto:yunjae@example.com" }
+  ],
+
+  /* 맨 아래 작은 글씨. 쓰기 전에 두 번째 줄은 지우세요 */
+  footer: "눌러도 아무 기록을 남기지 않습니다.\n이 쪽의 이름·링크·메일 주소는 모두 지어낸 예시입니다."
+
+};
+</script>
 </head>
 <body>
 
 <main class="p-wrap">
 
-  <!-- 프로필 사진 자리
-       실제 사진을 넣으려면 아래 <div class="p-avatar"> … </div> 전체를
-       <div class="p-avatar"><img src="사진.jpg" alt="프로필 사진"></div>
-       로 바꾸세요. 정사각형 사진이 가장 잘 맞습니다. -->
-  <div class="p-avatar" role="img" aria-label="프로필 사진이 들어갈 자리">
-    <span>사진 자리</span>
-  </div>
-
-  <!-- 1) 이름 -->
-  <h1>오늘의 모음</h1>
-
-  <!-- 2) 한 줄 소개 -->
-  <p class="p-bio">작은 가게와 동네 소식을 주에 한 번씩 적어 보냅니다.</p>
-
-  <!-- 3) 링크 단추 여섯 개 — 덩어리를 복사하거나 지워 개수를 바꾸세요 -->
-  <nav class="p-links">
-    <a class="p-main" href="https://example.com/letter" rel="noopener">
-      <b>주간 소식 받아 보기</b>
-      <small>매주 목요일 아침, 짧은 글 한 통</small>
-    </a>
-    <a href="https://example.com/notes" rel="noopener">
-      <b>지난 글 모아 보기</b>
-      <small>그동안 보낸 글 서른여덟 편</small>
-    </a>
-    <a href="https://example.com/shop" rel="noopener">
-      <b>만든 것 보기</b>
-      <small>작은 책과 엽서 몇 가지</small>
-    </a>
-    <a href="https://example.com/talk" rel="noopener">
-      <b>강연·모임 신청</b>
-      <small>동네 기록 모임 · 매달 셋째 토요일</small>
-    </a>
-    <a href="https://example.com/ask" rel="noopener">
-      <b>궁금한 것 물어보기</b>
-      <small>짧게 적어 주시면 이틀 안에 답합니다</small>
-    </a>
-    <a href="mailto:hello@example.com">
-      <b>메일로 연락하기</b>
-      <small>hello@example.com</small>
-    </a>
-  </nav>
-
-  <!-- 4) 맨 아래 안내 -->
-  <p class="p-foot">
-    이 쪽에 적힌 이름·링크·메일 주소는 모두 예시입니다.<br>
-    링크를 눌러도 아무 곳으로도 보내지 않고, 어떤 기록도 남기지 않습니다.
-  </p>
+  <!-- 글자는 아래 <script> 안에서 채워집니다. 이 자리의 HTML 은 손대지 않아도 됩니다 -->
+  <div class="p-avatar" id="p-avatar" aria-hidden="true"><b></b></div>
+  <h1 id="p-name"></h1>
+  <p class="p-bio" id="p-bio"></p>
+  <nav class="p-links" id="p-links" aria-label="링크 모음"></nav>
+  <noscript>
+    <p class="p-noscript">이 쪽은 브라우저의 자바스크립트로 글자를 채웁니다. 자바스크립트를 켜 주시면 링크가 보입니다.</p>
+  </noscript>
+  <p class="p-foot" id="p-foot"></p>
 
 </main>
+
+<script>
+/* ███████████  여기까지. 아래 코드는 그대로 두세요  ███████████ */
+
+(function (p) {
+  function put(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text || "";
+  }
+  document.title = (p.name || "링크 모음") + " — 링크 모음";
+  var av = document.getElementById("p-avatar");
+  if (av && av.firstElementChild) av.firstElementChild.textContent = (p.initial || "").slice(0, 2);
+  put("p-name", p.name);
+  put("p-bio", p.bio);
+
+  var box = document.getElementById("p-links");
+  var list = Array.isArray(p.links) ? p.links : [];
+  if (box) {
+    for (var i = 0; i < list.length; i++) {
+      var row = list[i] || {};
+      if (!row.url || !row.title) continue;        /* 주소나 제목이 없는 줄은 건너뜁니다 */
+      var a = document.createElement("a");
+      a.href = row.url;
+      if (row.main) a.className = "p-main";
+      if (/^https?:/i.test(row.url)) { a.rel = "noopener"; }
+      var b = document.createElement("b");
+      b.textContent = row.title;
+      a.appendChild(b);
+      if (row.note) {
+        var s = document.createElement("small");
+        s.textContent = row.note;
+        a.appendChild(s);
+      }
+      box.appendChild(a);
+    }
+    if (!box.children.length) {
+      var warn = document.createElement("p");
+      warn.className = "p-noscript";
+      warn.textContent = "링크가 하나도 없습니다. 이 파일 아래쪽 PROFILE 의 links 칸에 제목과 주소를 적어 주세요.";
+      box.appendChild(warn);
+    }
+  }
+
+  var foot = document.getElementById("p-foot");
+  if (foot) {
+    var lines = String(p.footer || "").split("\n");
+    for (var k = 0; k < lines.length; k++) {
+      if (k) foot.appendChild(document.createElement("br"));
+      foot.appendChild(document.createTextNode(lines[k]));
+    }
+  }
+})(window.PROFILE || PROFILE);
+</script>
 </body>
 </html>
