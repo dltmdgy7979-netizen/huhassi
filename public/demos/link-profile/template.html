@@ -11,10 +11,11 @@
      이 파일 하나가 전부입니다. 바깥에서 불러오는 것이 없습니다.
      고치는 방법은 같은 폴더의 README.md 에 번호대로 적어 두었습니다.
 
-     색·글꼴·둥글기 → 아래 <style> 맨 위 '여기만 바꾸세요' 칸
-     글(이름·소개·링크) → 그 아래 <script> 안의 '여기만 바꾸세요' 칸
-       이 틀만은 HTML 을 건드리지 않습니다. 링크 한 줄을 복사해 늘리고,
-       필요 없는 줄은 지우면 됩니다.
+     고칠 곳은 딱 두 군데입니다. 둘 다 이 파일 위쪽에 붙어 있습니다.
+       ① 색과 모양 → 아래 <style> 맨 위 '여기만 바꾸세요 ①' 칸
+       ② 글과 링크 → 그 바로 아래 <script> 안의 '여기만 바꾸세요 ②' 칸
+     이 틀은 HTML 을 건드리지 않습니다. 링크를 늘리려면 PROFILE 의
+     links 에서 한 줄을 복사하고, 줄이려면 한 줄을 지우면 됩니다.
 
      ▶ 적혀 있는 이름·링크·메일 주소는 모두 지어낸 예시입니다.
      =========================================================== -->
@@ -40,17 +41,18 @@
 /* ███████████  여기까지. 아래 CSS 는 그대로 두세요  ███████████ */
 
 
-/* --point 하나에서 자동으로 만들어지는 색들 */
+/* --point 하나에서 자동으로 만들어지는 색들.
+   글자로 쓰는 색은 어둡게 섞어 두었습니다 — 연한 색(노랑 등)을 골라도 글자가 읽힙니다. */
 :root{
-  --point-ink:    color-mix(in srgb, var(--point) 72%, var(--ink));
-  --point-strong: color-mix(in srgb, var(--point) 70%, var(--ink));
+  --point-ink:    color-mix(in srgb, var(--point) 60%, var(--ink));
+  --point-strong: color-mix(in srgb, var(--point) 66%, var(--ink));
   --point-soft:   color-mix(in srgb, var(--point) 13%, #FFFFFF);
   --point-line:   color-mix(in srgb, var(--point) 28%, #FFFFFF);
-  --bg:           color-mix(in srgb, var(--point) 7%,  #FFFFFF);
+  --bg:           color-mix(in srgb, var(--point)  7%, #FFFFFF);
 }
 @supports not (color:color-mix(in srgb,#000 50%,#fff)){
   :root{
-    --point-ink:#C14800; --point-strong:#BB5215;
+    --point-ink:#A54A15; --point-strong:#B24F15;
     --point-soft:#FFEEE2; --point-line:#FFD2B5; --bg:#FFF6F0;
   }
 }

@@ -78,6 +78,15 @@
   .d-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
   .d-actions .btn{min-height:44px}
   .d-rise{margin-top:12px;font-size:13px;color:var(--ink-2);line-height:1.6}
+  /* 375px 폭에서 출처·라이선스 표가 가로로 넘치지 않게 — 머리칸 줄바꿈을 풀어 줍니다
+     (공통 demo.css 는 건드리지 않고 이 쪽에서만 고칩니다) */
+  .lic-table{table-layout:fixed}
+  .lic-table th,.lic-table td{white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
+  @media (max-width:420px){
+    .lic-table th,.lic-table td{padding:8px 6px;font-size:13px}
+    .lic-table th{font-size:11.5px}
+  }
+
   @media (prefers-reduced-motion:reduce){
     .d-tile{transition:none}
     .d-new b,.d-pop b{animation:none}

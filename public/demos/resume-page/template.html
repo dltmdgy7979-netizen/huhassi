@@ -43,14 +43,16 @@
 /* ███████████  여기까지. 아래는 그대로 두세요  ███████████ */
 
 
+/* --point 하나에서 자동으로 만들어지는 색들.
+   글자로 쓰는 색은 어둡게 섞어 두었습니다 — 연한 색(노랑 등)을 골라도 글자가 읽힙니다. */
 :root{
-  --point-ink:    color-mix(in srgb, var(--point) 72%, var(--ink));
-  --point-strong: color-mix(in srgb, var(--point) 70%, var(--ink));
+  --point-ink:    color-mix(in srgb, var(--point) 60%, var(--ink));
+  --point-strong: color-mix(in srgb, var(--point) 66%, var(--ink));
   --point-soft:   color-mix(in srgb, var(--point) 12%, #FFFFFF);
-  --ink-3:        color-mix(in srgb, var(--ink) 50%, #FFFFFF);
+  --ink-3:        color-mix(in srgb, var(--ink)   66%, #FFFFFF);
 }
 @supports not (color:color-mix(in srgb,#000 50%,#fff)){
-  :root{ --point-ink:#C14800; --point-strong:#BB5215; --point-soft:#FFEEE2; --ink-3:#908A84 }
+  :root{ --point-ink:#A54A15; --point-strong:#B24F15; --point-soft:#FFEEE2; --ink-3:#6A6967 }
 }
 
 *,*::before,*::after{box-sizing:border-box}

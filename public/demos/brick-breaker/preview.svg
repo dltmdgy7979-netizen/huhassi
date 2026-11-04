@@ -1,56 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="블록 깨기 — 주황 블록 줄과 공, 아래쪽 막대가 있는 놀이판 Brick Breaker preview">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="블록 깨기 — 점수와 최고 점수, 주황 블록 줄과 공, 아래쪽 막대와 좌우·쏘기 단추가 있는 놀이판 Brick Breaker preview">
   <rect width="640" height="360" fill="#FFFFFF"/>
   <rect x="24" y="24" width="592" height="312" rx="18" fill="#FFF5EE" stroke="#E9E5E1"/>
 
-  <!-- 위쪽 표시줄 -->
-  <text x="48" y="64" font-family="sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">320</text>
-  <text x="48" y="82" font-family="sans-serif" font-size="11" fill="#6E6A66">SCORE</text>
-  <circle cx="568" cy="66" r="7" fill="#FF6A13"/>
-  <circle cx="546" cy="66" r="7" fill="#FF6A13"/>
-  <circle cx="524" cy="66" r="7" fill="#FFD7BC"/>
+  <!-- 위쪽 표시줄: 점수 · 최고 점수 · 단계 -->
+  <text x="48" y="58" font-family="sans-serif" font-size="10.5" fill="#6E6A66">SCORE</text>
+  <text x="48" y="78" font-family="sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">320</text>
+  <text x="118" y="58" font-family="sans-serif" font-size="10.5" fill="#6E6A66">BEST</text>
+  <text x="118" y="78" font-family="sans-serif" font-size="17" font-weight="700" fill="#D14E00">480</text>
+  <text x="188" y="58" font-family="sans-serif" font-size="10.5" fill="#6E6A66">LEVEL</text>
+  <text x="188" y="78" font-family="sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">3</text>
 
-  <!-- 블록 줄 -->
+  <!-- 남은 목숨 -->
+  <circle cx="568" cy="70" r="7" fill="#FF6A13"/>
+  <circle cx="546" cy="70" r="7" fill="#FF6A13"/>
+  <circle cx="524" cy="70" r="7" fill="#FFD7BC"/>
+
+  <!-- 블록 줄 (단계가 오르면 한 줄 늘어난다) -->
   <g>
-    <rect x="52" y="104" width="62" height="20" rx="5" fill="#D14E00"/>
-    <rect x="122" y="104" width="62" height="20" rx="5" fill="#D14E00"/>
-    <rect x="192" y="104" width="62" height="20" rx="5" fill="#D14E00"/>
-    <rect x="332" y="104" width="62" height="20" rx="5" fill="#D14E00"/>
-    <rect x="402" y="104" width="62" height="20" rx="5" fill="#D14E00"/>
-    <rect x="472" y="104" width="62" height="20" rx="5" fill="#D14E00"/>
-
-    <rect x="52" y="132" width="62" height="20" rx="5" fill="#FF6A13"/>
-    <rect x="122" y="132" width="62" height="20" rx="5" fill="#FF6A13"/>
-    <rect x="192" y="132" width="62" height="20" rx="5" fill="#FF6A13"/>
-    <rect x="262" y="132" width="62" height="20" rx="5" fill="#FF6A13"/>
-    <rect x="402" y="132" width="62" height="20" rx="5" fill="#FF6A13"/>
-    <rect x="472" y="132" width="62" height="20" rx="5" fill="#FF6A13"/>
-
-    <rect x="52" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-    <rect x="122" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-    <rect x="192" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-    <rect x="262" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-    <rect x="332" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-    <rect x="402" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-    <rect x="472" y="160" width="62" height="20" rx="5" fill="#FF8B45"/>
-
-    <rect x="52" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
-    <rect x="122" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
-    <rect x="192" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
-    <rect x="262" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
-    <rect x="332" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
-    <rect x="402" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
-    <rect x="472" y="188" width="62" height="20" rx="5" fill="#FFC29A"/>
+    <rect x="52" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="122" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="192" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="262" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="332" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="402" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="472" y="104" width="62" height="18" rx="5" fill="#D14E00"/>
+    <rect x="542" y="104" width="46" height="18" rx="5" fill="#D14E00"/>
+  </g>
+  <g>
+    <rect x="52" y="128" width="62" height="18" rx="5" fill="#FF6A13"/>
+    <rect x="122" y="128" width="62" height="18" rx="5" fill="#FF6A13"/>
+    <rect x="192" y="128" width="62" height="18" rx="5" fill="#FF6A13"/>
+    <rect x="332" y="128" width="62" height="18" rx="5" fill="#FF6A13"/>
+    <rect x="402" y="128" width="62" height="18" rx="5" fill="#FF6A13"/>
+    <rect x="542" y="128" width="46" height="18" rx="5" fill="#FF6A13"/>
+  </g>
+  <g>
+    <rect x="52" y="152" width="62" height="18" rx="5" fill="#FF8B45"/>
+    <rect x="192" y="152" width="62" height="18" rx="5" fill="#FF8B45"/>
+    <rect x="262" y="152" width="62" height="18" rx="5" fill="#FF8B45"/>
+    <rect x="402" y="152" width="62" height="18" rx="5" fill="#FF8B45"/>
+    <rect x="472" y="152" width="62" height="18" rx="5" fill="#FF8B45"/>
+  </g>
+  <g>
+    <rect x="122" y="176" width="62" height="18" rx="5" fill="#FFC29A" stroke="#FF8B45"/>
+    <rect x="262" y="176" width="62" height="18" rx="5" fill="#FFC29A" stroke="#FF8B45"/>
+    <rect x="472" y="176" width="62" height="18" rx="5" fill="#FFC29A" stroke="#FF8B45"/>
   </g>
 
-  <!-- 공이 지나간 길 -->
-  <path d="M296 232 L336 196 L312 170" fill="none" stroke="#FFC29A" stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round"/>
-  <circle cx="296" cy="232" r="11" fill="#D14E00"/>
-  <circle cx="292" cy="228" r="3.4" fill="#FFFFFF" opacity="0.7"/>
+  <!-- 공과 날아온 자취 -->
+  <path d="M250 262 300 222" stroke="#FFC29A" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7"/>
+  <circle cx="306" cy="216" r="9" fill="#D14E00"/>
+  <circle cx="303" cy="213" r="3" fill="#FFFFFF" opacity="0.65"/>
 
   <!-- 막대 -->
-  <rect x="246" y="280" width="148" height="20" rx="10" fill="#1A1A1A"/>
-  <rect x="254" y="286" width="132" height="5" rx="2.5" fill="#FF6A13"/>
+  <rect x="236" y="282" width="112" height="15" rx="7.5" fill="#1A1A1A"/>
+  <rect x="241" y="286" width="102" height="4" rx="2" fill="#FF6A13"/>
 
-  <!-- 바닥 금 -->
-  <line x1="40" y1="316" x2="600" y2="316" stroke="#E9E5E1" stroke-width="2"/>
+  <!-- 손가락 조작 단추 세 개 (왼쪽 · 쏘기 · 오른쪽) -->
+  <rect x="52" y="302" width="86" height="22" rx="7" fill="#FFFFFF" stroke="#D8D2CC"/>
+  <path d="M100 307l-8 6 8 6" stroke="#6E6A66" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="277" y="302" width="86" height="22" rx="7" fill="#FFEBDD" stroke="#FF6A13"/>
+  <circle cx="320" cy="313" r="5.5" fill="#D14E00"/>
+  <rect x="502" y="302" width="86" height="22" rx="7" fill="#FFFFFF" stroke="#D8D2CC"/>
+  <path d="M540 307l8 6-8 6" stroke="#6E6A66" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

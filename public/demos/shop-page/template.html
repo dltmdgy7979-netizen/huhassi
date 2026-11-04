@@ -40,14 +40,15 @@
 /* ███████████  여기까지. 아래는 그대로 두세요  ███████████ */
 
 
-/* --point 하나에서 자동으로 만들어지는 색들 */
+/* --point 하나에서 자동으로 만들어지는 색들.
+   글자로 쓰는 색은 어둡게 섞어 두었습니다 — 연한 색(노랑 등)을 골라도 글자가 읽힙니다. */
 :root{
-  --point-ink:    color-mix(in srgb, var(--point) 72%, var(--ink));   /* 글자용 진한 포인트 */
-  --point-strong: color-mix(in srgb, var(--point) 70%, var(--ink));   /* 흰 글자를 올리는 단추 */
+  --point-ink:    color-mix(in srgb, var(--point) 60%, var(--ink));   /* 글자용 진한 포인트 */
+  --point-strong: color-mix(in srgb, var(--point) 66%, var(--ink));   /* 흰 글자를 올리는 단추 */
   --point-soft:   color-mix(in srgb, var(--point) 12%, #FFFFFF);      /* 아주 연한 포인트 */
 }
 @supports not (color:color-mix(in srgb,#000 50%,#fff)){
-  :root{ --point-ink:#C14800; --point-strong:#BB5215; --point-soft:#FFEEE2 }
+  :root{ --point-ink:#A54A15; --point-strong:#B24F15; --point-soft:#FFEEE2 }
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -85,8 +86,8 @@ a{color:var(--point-ink)}
   display:flex;flex-wrap:wrap;justify-content:center;gap:7px;
   margin:18px 0 24px;padding:0;list-style:none}
 .s-jump a{
-  display:inline-flex;align-items:center;min-height:38px;
-  padding:7px 14px;border:1px solid var(--line);border-radius:999px;
+  display:inline-flex;align-items:center;min-height:44px;   /* 손가락으로 누르기 좋은 최소 높이 */
+  padding:8px 15px;border:1px solid var(--line);border-radius:999px;
   font-size:13.5px;text-decoration:none;color:var(--ink);background:var(--bg)}
 .s-jump a:hover{border-color:var(--point);color:var(--point-ink)}
 

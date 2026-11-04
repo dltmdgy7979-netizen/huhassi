@@ -162,7 +162,10 @@
       </div>
       <div class="d-pane">
         <h3 data-ko="보이는 모습" data-en="What it looks like">보이는 모습</h3>
-        <div class="d-out" id="md-out" aria-live="polite"
+        <!-- 글자를 칠 때마다 전체를 다시 읽어 주면 화면 낭독기가 쉬지 않고 떠들게 되므로,
+             이 칸은 aria-live 를 걸지 않고 둘러보기용 영역(region)으로만 둡니다.
+             바뀐 것을 알리는 일은 아래 #md-say 한 줄이 맡습니다. -->
+        <div class="d-out" id="md-out" role="region" tabindex="0"
              data-ko-aria="꾸며진 모습" data-en-aria="Rendered result"></div>
       </div>
     </div>
