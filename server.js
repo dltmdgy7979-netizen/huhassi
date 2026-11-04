@@ -88,6 +88,11 @@ async function handleRequestForm(req, res) {
     consent_at: new Date().toISOString()
   };
   if (row.contact.length < 3 || row.body.length < 5) return json(res, 400, { error: "too_short" });
+  const reachable =
+    /^https?:\/\/\S+\.\S+/i.test(row.contact) ||
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(row.contact) ||
+    /^@[A-Za-z0-9._]{2,}$/.test(row.contact);
+  if (!reachable) return json(res, 400, { error: "bad_contact" });
 
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.error("[huhassi] SUPABASE_URL / SUPABASE_KEY 가 없어 신청을 저장하지 못했습니다.");
@@ -142,7 +147,15 @@ async function collect(dir, base, out, state) {
   return out;
 }
 
-async function handleZip(res, slug) {
+/* ZIP 안에서는 폴더가 한 단계 얕아집니다(<slug>/index.html + <slug>/assets/).
+   사이트에서 쓰던 ../../ 경로를 그대로 두면 받아서 열었을 때 CSS 가 전부 404 납니다. */
+function rewriteForZip(html, siteBase) {
+  return html
+    .replace(/\.\.\/\.\.\/assets\//g, "assets/")
+    .replace(/(href|src)="\.\.\/\.\.\/([^"]*)"/g, (m, attr, rest) => `${attr}="${siteBase}/${rest}"`);
+}
+
+async function handleZip(res, slug, siteBase) {
   if (!/^[a-z0-9-]{1,40}$/.test(slug)) return send(res, 400, "Bad name");
   const candidates = [path.join(ROOT, "demos", slug), path.join(ROOT, "mcp", slug)];
   let dir = null;
@@ -152,6 +165,11 @@ async function handleZip(res, slug) {
   if (!dir) return send(res, 404, "Not found");
 
   const entries = await collect(dir, slug, []);
+  for (const e of entries) {
+    if (e.name.endsWith(".html")) {
+      e.data = Buffer.from(rewriteForZip(e.data.toString("utf8"), siteBase), "utf8");
+    }
+  }
   if (entries.__state && entries.__state.skipped.length) {
     console.log("[huhassi] zip " + slug + " 에서 제외: " + entries.__state.skipped.join(", "));
   }
@@ -184,7 +202,10 @@ const server = http.createServer(async (req, res) => {
 
   const zipMatch = urlPath.match(/^\/api\/zip\/([a-z0-9-]+)\.zip$/);
   if (zipMatch) {
-    try { return await handleZip(res, zipMatch[1]); }
+    const proto = (req.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
+    const host = (req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim();
+    const siteBase = host ? `${proto}://${host}` : "";
+    try { return await handleZip(res, zipMatch[1], siteBase); }
     catch (e) { console.error(e); return send(res, 500, "Server error"); }
   }
 

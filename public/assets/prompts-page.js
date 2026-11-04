@@ -10,9 +10,10 @@
   var bar = document.getElementById("pgroups");
   var fail = document.getElementById("loadfail");
   var countEl = document.getElementById("pcount");
+  var q = document.getElementById("pq");
   if (!list) return;
 
-  var DATA = [], state = { g: "all" }, open = {};
+  var DATA = [], state = { g: "all", q: "" }, open = {};
   var pad = window.huhassi.pad;
   function L() { return window.huhassi.lang(); }
   function t(ko, en) { return window.huhassi.t(ko, en); }
@@ -140,13 +141,27 @@
     return li;
   }
 
+  function matches(p, lang) {
+    var term = state.q.trim().toLowerCase();
+    if (!term) return true;
+    var d = p[lang] || p.ko;
+    var hay = [d.title, d.desc, d.when, (d.tips || []).join(" "), p.group, window.huhassi.pad(p.n)]
+      .join(" ").toLowerCase();
+    return hay.indexOf(term) !== -1;
+  }
+
   function draw() {
     var lang = L();
     list.innerHTML = "";
-    var shown = DATA.filter(function (p) { return state.g === "all" || p.group === state.g; });
+    var shown = DATA.filter(function (p) {
+      return (state.g === "all" || p.group === state.g) && matches(p, lang);
+    });
     shown.forEach(function (p) { list.appendChild(item(p, lang)); });
     if (countEl) {
-      countEl.textContent = t(shown.length + "개", shown.length + " prompts");
+      countEl.textContent = shown.length
+        ? t(shown.length + "개", shown.length + " prompts")
+        : t("‘" + state.q + "’ 로 찾은 프롬프트가 없습니다. 다른 낱말로 찾아보세요.",
+            "No prompt matches \u201c" + state.q + "\u201d. Try another word.");
     }
     if (location.hash && /^#p\d+$/.test(location.hash)) {
       var target = document.getElementById(location.hash.slice(1));
@@ -159,6 +174,7 @@
     }
   }
 
+  if (q) q.addEventListener("input", function () { state.q = q.value; draw(); });
   bar.addEventListener("click", function (e) {
     var b = e.target.closest("button");
     if (!b) return;

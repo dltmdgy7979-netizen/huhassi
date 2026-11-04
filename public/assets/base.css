@@ -66,7 +66,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 
 /* ---- 글자 ---- */
-h1,h2,h3{margin:0;letter-spacing:-.03em;line-height:1.15}
+h1,h2,h3{margin:0;letter-spacing:-.03em;line-height:1.15;word-break:keep-all}
 h1{font-size:clamp(30px,8vw,56px);font-variation-settings:"wght" 860}
 h2{font-size:clamp(21px,4.4vw,28px);font-variation-settings:"wght" 760}
 h3{font-size:17px;font-variation-settings:"wght" 700}

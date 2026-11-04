@@ -60,6 +60,7 @@ input[type=color]{width:46px;height:38px;padding:2px;border:1px solid var(--line
 .lic-table tr:last-child td,.lic-table tr:last-child th{border-bottom:none}
 .lic-table code{font-family:var(--mono);font-size:12.5px}
 
+code{overflow-wrap:anywhere;word-break:break-word}
 pre.code{background:#FAF8F6;border:1px solid var(--line);border-radius:var(--radius-s);
   padding:14px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;margin:0}
 .copybar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}

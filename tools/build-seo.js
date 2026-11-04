@@ -50,8 +50,9 @@ for (const file of walk(ROOT)) {
   const depth = r.split("/").length - 1;
   const up = depth ? "../".repeat(depth) : "";
   const block = [
-    `<link rel="canonical" href="${esc(url)}">`,
-    `<link rel="icon" href="${up}favicon.svg" type="image/svg+xml">`,
+    // 색인하지 않는 쪽(404·폼·템플릿)에는 canonical 을 걸지 않는다
+    noindex(r) ? "" : `<link rel="canonical" href="${esc(url)}">`,
+    `<link rel="icon" href="${r === "404.html" ? "/" : up}favicon.svg" type="image/svg+xml">`,
     `<meta property="og:type" content="website">`,
     `<meta property="og:site_name" content="후하씨 huhassi">`,
     `<meta property="og:locale" content="ko_KR">`,
@@ -62,7 +63,7 @@ for (const file of walk(ROOT)) {
     `<meta property="og:image:width" content="1200">`,
     `<meta property="og:image:height" content="630">`,
     `<meta name="twitter:card" content="summary_large_image">`
-  ].filter(Boolean).map((l) => "<" === l[0] ? l : l);
+  ].filter(Boolean);
 
   if (noindex(r) && !/<meta\s+name="robots"/i.test(html)) {
     block.unshift(`<meta name="robots" content="noindex">`);

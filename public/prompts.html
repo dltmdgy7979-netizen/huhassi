@@ -47,7 +47,15 @@
     </p>
   </div>
 
-  <div class="pfilters" id="pgroups" role="group" data-ko-aria="주제로 거르기" data-en-aria="Filter by subject"></div>
+  <div class="pbar">
+    <div class="chipwrap">
+      <div class="pfilters" id="pgroups" role="group" data-ko-aria="주제로 거르기" data-en-aria="Filter by subject"></div>
+    </div>
+    <label class="psearch">
+      <span class="sr" data-ko="프롬프트 검색" data-en="Search prompts">프롬프트 검색</span>
+      <input id="pq" type="search" autocomplete="off" data-ko-ph="무엇에 쓸 건지 적어 보세요" data-en-ph="What do you need it for?">
+    </label>
+  </div>
   <p class="pcount" id="pcount" aria-live="polite"></p>
   <ol class="plist" id="plist"></ol>
   <p id="loadfail" class="hint" hidden data-ko="목록을 불러오지 못했습니다. 새로고침해 보세요." data-en="The list did not load. Try refreshing."></p>

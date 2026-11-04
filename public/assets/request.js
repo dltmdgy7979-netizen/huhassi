@@ -38,6 +38,14 @@
     msg.textContent = window.huhassi.t(ko, en);
   }
 
+  function looksReachable(v) {
+    var t = v.trim();
+    if (/^https?:\/\/\S+\.\S+/i.test(t)) return true;                 // 링크
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t)) return true;           // 메일 주소
+    if (/^@[A-Za-z0-9._]{2,}$/.test(t)) return true;                      // @아이디
+    return false;
+  }
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var consent = document.getElementById("consent");
@@ -52,6 +60,15 @@
     };
     if (data.contact.length < 3) {
       show("bad", "답장 받을 곳을 적어 주세요.", "Please tell me where to reply.");
+      form.contact.focus();
+      return;
+    }
+    // 메일 주소나 링크처럼 '연락이 닿을 수 있는 모양'인지만 한 번 본다.
+    // 오타난 주소로 보내 놓고 답을 영영 못 받는 일을 줄이려는 것.
+    if (!looksReachable(data.contact)) {
+      show("bad",
+        "답장 받을 곳이 메일 주소나 링크처럼 보이지 않습니다. 다시 한번 봐 주세요.",
+        "That doesn't look like an email address or a link. Could you check it?");
       form.contact.focus();
       return;
     }
@@ -87,6 +104,10 @@
         show("bad",
           "조금 전에 여러 번 보내셨습니다. 10분 뒤에 다시 시도해 주세요.",
           "That's a few in a row. Please try again in ten minutes.");
+      } else if (res.j && res.j.error === "bad_contact") {
+        show("bad",
+          "답장 받을 곳이 메일 주소나 링크처럼 보이지 않습니다. 다시 한번 봐 주세요.",
+          "That doesn't look like an email address or a link. Could you check it?");
       } else if (res.j && res.j.error === "no_consent") {
         show("bad",
           "동의 네모를 체크해 주세요.",
