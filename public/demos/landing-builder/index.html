@@ -665,7 +665,7 @@ section{ margin-top:var(--sec-gap); }
    히어로
    ============================================================ */
 .hero{ position:relative; margin-top:0; overflow:hidden; }
-.hero.has-photo{ padding-top:30px; }
+.hero.has-photo{ padding-top:20px; }
 .hero.has-photo::before{
   content:""; position:absolute; inset:0 0 auto; height:420px;
   background:
@@ -681,13 +681,13 @@ section{ margin-top:var(--sec-gap); }
 }
 .hero.no-photo .t-hero{ font-size:clamp(38px,11.2vw,62px); letter-spacing:-.04em; }
 .hero.no-photo .tagline{ font-size:clamp(16.5px,4.4vw,19.5px); max-width:26ch; }
-.hero.no-photo .hero-actions{ margin-top:32px; }
-.hero-logo{ width:58px; height:58px; border-radius:15px; object-fit:cover; box-shadow:var(--shadow-s); margin-bottom:18px; }
+.hero.no-photo .hero-actions{ margin-top:22px; }
+.hero-logo{ width:54px; height:54px; border-radius:14px; object-fit:cover; box-shadow:var(--shadow-s); margin-bottom:12px; }
 .status{
   display:inline-flex; align-items:center; gap:8px;
   padding:7px 14px 7px 12px; border-radius:999px;
   font-size:13.5px; font-weight:650; letter-spacing:-.015em;
-  background:var(--off-soft); color:var(--off); margin-bottom:18px;
+  background:var(--off-soft); color:var(--off); margin-bottom:12px;
 }
 .status .dot{ width:7px; height:7px; border-radius:50%; background:currentColor; flex:none; }
 .status.is-open{ background:var(--ok-soft); color:var(--ok); }
@@ -696,12 +696,14 @@ section{ margin-top:var(--sec-gap); }
 @keyframes pulse{ 70%{ box-shadow:0 0 0 7px rgba(31,122,77,0); } 100%{ box-shadow:0 0 0 0 rgba(31,122,77,0); } }
 
 .hero h1{ margin:0; }
-.hero .tagline{ margin:14px 0 0; font-size:clamp(15.5px,4.1vw,18px); color:var(--ink-2); line-height:1.65; max-width:30ch; }
-.hero-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
+.hero .tagline{ margin:10px 0 0; font-size:clamp(15.5px,4.1vw,18px); color:var(--ink-2); line-height:1.65; max-width:30ch; }
+/* 버튼이 하나뿐이면 가로로 꽉 채운다. 반만 차 있으면 허전해 보인다 */
+.hero-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.hero-actions .btn:only-child{ flex:1 1 100%; }
 
 .hero-photo{
-  margin-top:34px; border-radius:var(--radius); overflow:hidden;
-  box-shadow:var(--shadow-m); aspect-ratio:4/3; background:var(--primary-soft);
+  margin-top:22px; border-radius:var(--radius); overflow:hidden;
+  box-shadow:var(--shadow-m); aspect-ratio:16/10; background:var(--primary-soft);
 }
 .hero-photo img{ width:100%; height:100%; object-fit:cover; }
 
