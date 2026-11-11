@@ -183,7 +183,13 @@ input::placeholder,textarea::placeholder{ color:#B6ADA5; }
 .pick .thumb{ width:52px; height:52px; border-radius:9px; object-fit:cover; background:var(--b-bg); flex:none; }
 .pick .pt{ flex:1 1 auto; min-width:0; font-size:12.5px; color:var(--b-ink3); }
 .pick .pt b{ display:block; font-size:13.5px; color:var(--b-ink2); font-weight:650; }
-.pick input[type=file]{ display:none; }
+/* 파일 고르기 칸은 display:none 으로 지우지 않는다.
+   일부 휴대폰 브라우저가 display:none 인 칸은 사진첩을 열어 주지 않기 때문. */
+.filein{
+  position:absolute; left:0; top:0; z-index:-1;
+  width:1px; height:1px; opacity:0; padding:0; margin:0; border:0;
+}
+label.tbtn{ cursor:pointer; }
 .gthumbs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .gthumbs .gt{ position:relative; width:74px; height:74px; }
 .gthumbs .gt img{ width:100%; height:100%; object-fit:cover; border-radius:9px; }
@@ -232,9 +238,9 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
   <div class="brand"><i></i>내 가게 홈페이지 <small>음식점 틀</small></div>
   <div class="sp"></div>
   <span class="saved hide" id="saved">임시 저장됨</span>
-  <button class="tbtn icon desk-only" id="btn-load" title="기존 파일 불러오기" aria-label="기존 파일 불러오기">
+  <label class="tbtn icon desk-only" for="fi-load" title="기존 파일 불러오기" aria-label="기존 파일 불러오기">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>
-  </button>
+  </label>
   <button class="tbtn icon desk-only" id="btn-reset" title="처음부터 다시" aria-label="처음부터 다시">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
   </button>
@@ -274,9 +280,9 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <div class="pick">
             <img class="thumb" id="th-hero" alt="">
             <div class="pt"><b id="nm-hero">아직 없음</b>가로 800px · WebP 로 자동 줄입니다</div>
-            <button class="tbtn" data-pickfor="hero">고르기</button>
+            <label class="tbtn" for="fi-hero">고르기</label>
             <button class="mini del" data-clearfor="hero" title="지우기">✕</button>
-            <input type="file" accept="image/*" id="fi-hero">
+            <input type="file" accept="image/*" id="fi-hero" class="filein">
           </div>
         </div>
 
@@ -284,9 +290,9 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <div class="pick">
             <img class="thumb" id="th-logo" alt="">
             <div class="pt"><b id="nm-logo">아직 없음</b>없으면 기본 모양이 들어갑니다</div>
-            <button class="tbtn" data-pickfor="logo">고르기</button>
+            <label class="tbtn" for="fi-logo">고르기</label>
             <button class="mini del" data-clearfor="logo" title="지우기">✕</button>
-            <input type="file" accept="image/*" id="fi-logo">
+            <input type="file" accept="image/*" id="fi-logo" class="filein">
           </div>
         </div>
 
@@ -344,9 +350,9 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <div class="pick">
             <img class="thumb" id="th-map" alt="">
             <div class="pt"><b id="nm-map">아직 없음</b>직접 그린 약도도 괜찮습니다</div>
-            <button class="tbtn" data-pickfor="mapImage">고르기</button>
+            <label class="tbtn" for="fi-mapImage">고르기</label>
             <button class="mini del" data-clearfor="mapImage" title="지우기">✕</button>
-            <input type="file" accept="image/*" id="fi-mapImage">
+            <input type="file" accept="image/*" id="fi-mapImage" class="filein">
           </div>
         </div>
         <div class="f"><span>그 밖에 알려줄 것 <span class="opt">주차, 단체석 등</span></span>
@@ -439,8 +445,8 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
       <div class="fs-body">
         <div class="pick">
           <div class="pt"><b>사진 고르기</b>여러 장 한 번에 고를 수 있습니다 · 4장 이상이면 옆으로 넘기는 모양이 됩니다</div>
-          <button class="tbtn" id="btn-gallery">고르기</button>
-          <input type="file" accept="image/*" multiple id="fi-gallery">
+          <label class="tbtn" for="fi-gallery">고르기</label>
+          <input type="file" accept="image/*" multiple id="fi-gallery" class="filein">
         </div>
         <div class="gthumbs" id="gthumbs"></div>
         <span class="hint">실제 가게·음식 사진만 넣어 주세요.</span>
@@ -487,7 +493,7 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
 
     <div style="margin-top:20px;display:flex;gap:9px;flex-wrap:wrap">
       <button class="tbtn" id="btn-sample">예시로 채워보기</button>
-      <button class="tbtn" id="btn-load-2">기존 파일 불러오기</button>
+      <label class="tbtn" for="fi-load">기존 파일 불러오기</label>
       <button class="tbtn" id="btn-reset-2">처음부터 다시</button>
     </div>
 
@@ -501,11 +507,11 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
 </div>
 
 <div class="mobile-bar">
-  <button class="tbtn" id="btn-load-3">불러오기</button>
+  <label class="tbtn" for="fi-load">불러오기</label>
   <button class="tbtn go" id="btn-get-2">내 홈페이지 받기</button>
 </div>
 
-<input type="file" accept=".html,text/html" id="fi-load" style="display:none">
+<input type="file" accept=".html,text/html" id="fi-load" class="filein">
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <div class="modal" id="modal">
@@ -626,7 +632,6 @@ function wireOne(slot){
   var fi = $("#fi-" + slot);
   var map = { hero:"#th-hero", logo:"#th-logo", mapImage:"#th-map" };
   var nmap = { hero:"#nm-hero", logo:"#nm-logo", mapImage:"#nm-map" };
-  $$('[data-pickfor="' + slot + '"]').forEach(function(b){ b.onclick = function(){ fi.click(); }; });
   $$('[data-clearfor="' + slot + '"]').forEach(function(b){ b.onclick = function(){
     IMG[slot] = ""; $(map[slot]).removeAttribute("src"); $(nmap[slot]).textContent = "아직 없음"; changed();
   }; });
@@ -644,7 +649,6 @@ function wireOne(slot){
 }
 ["hero","logo","mapImage"].forEach(wireOne);
 
-$("#btn-gallery").onclick = function(){ $("#fi-gallery").click(); };
 $("#fi-gallery").onchange = function(){
   var files = Array.prototype.slice.call(this.files || []);
   var self = this;
@@ -681,6 +685,7 @@ function drawGallery(){
 /* ============================================================
    2. 반복 행
    ============================================================ */
+var ROWUID = 0;
 var ROWDEF = {
   menu: {
     box:"#rows-menu", label:"메뉴", photo:true,
@@ -737,12 +742,13 @@ function addRow(kind, data, silent){
 
   var photo = "";
   if (def.photo){
+    var uid = "rowfile-" + (++ROWUID);
     photo = '<div class="pick" style="margin-top:9px">'
           + '<img class="thumb" data-th alt="">'
           + '<div class="pt"><b data-nm>사진 없음</b>선택</div>'
-          + '<button type="button" class="tbtn" data-rowpick>고르기</button>'
+          + '<label class="tbtn" for="' + uid + '">고르기</label>'
           + '<button type="button" class="mini del" data-rowclear title="지우기">✕</button>'
-          + '<input type="file" accept="image/*" data-rowfile></div>';
+          + '<input type="file" accept="image/*" class="filein" id="' + uid + '" data-rowfile></div>';
   }
   rw.innerHTML = top + def.html + photo;
   box.appendChild(rw);
@@ -773,7 +779,6 @@ function addRow(kind, data, silent){
   });
   if (def.photo){
     var fi = rw.querySelector("[data-rowfile]");
-    rw.querySelector("[data-rowpick]").onclick = function(){ fi.click(); };
     rw.querySelector("[data-rowclear]").onclick = function(){
       rw._photo = ""; rw.querySelector("[data-th]").removeAttribute("src");
       rw.querySelector("[data-nm]").textContent = "사진 없음"; changed();
@@ -1166,9 +1171,6 @@ function download(){
 }
 $("#btn-get").onclick = download;
 $("#btn-get-2").onclick = download;
-
-function doLoad(){ $("#fi-load").click(); }
-["#btn-load","#btn-load-2","#btn-load-3"].forEach(function(s){ var b = $(s); if (b) b.onclick = doLoad; });
 
 $("#fi-load").onchange = function(){
   var f = this.files && this.files[0], self = this;
