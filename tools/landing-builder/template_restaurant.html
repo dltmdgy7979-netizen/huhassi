@@ -48,9 +48,9 @@
   --pad:22px;
   /* 제목 글꼴. 점주가 '명조'를 고르면 자바스크립트가 명조로 바꾼다 */
   --font-title:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
-  --sec-gap:88px;
+  --sec-gap:72px;
 }
-@media (min-width:768px){ :root{ --sec-gap:112px; --pad:32px; } }
+@media (min-width:768px){ :root{ --sec-gap:92px; --pad:32px; } }
 
 /* 섹션이 적을 때는 간격을 줄인다 (내용이 적을수록 구멍처럼 보이므로) */
 body.lean{ --sec-gap:48px; }
@@ -105,7 +105,14 @@ body[data-title-font="serif"] .t-sec{ font-weight:600; letter-spacing:-.022em; }
 /* ============================================================
    섹션 공통 + 페이드인
    ============================================================ */
-section{ margin-top:var(--sec-gap); }
+section{ margin-top:var(--sec-gap); scroll-margin-top:66px; }
+
+/* 색이 다른 띠 — 같은 배경이 끝까지 이어지면 밋밋해 보인다 */
+section.band{
+  padding:calc(var(--sec-gap) * .68) 0;
+  background:var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
 .sec-head{ margin-bottom:18px; }
 .sec-head .eyebrow{
   display:block; font-size:12px; font-weight:700; letter-spacing:.14em;
@@ -207,9 +214,43 @@ section{ margin-top:var(--sec-gap); }
 .btn-sm{ min-height:40px; padding:0 14px; font-size:13.5px; border-radius:11px; }
 .btn svg{ width:17px; height:17px; flex:none; }
 
+/* 위쪽 차례 막대 — 스크롤하면 나타난다 */
+.topnav{
+  position:fixed; top:0; left:0; right:0; z-index:35;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid var(--line);
+  transform:translateY(-101%); transition:transform .28s cubic-bezier(.2,.8,.3,1);
+}
+.topnav.show{ transform:none; }
+.topnav .nav-in{
+  max-width:var(--maxw); margin:0 auto; padding:13px var(--pad);
+  display:flex; gap:20px; overflow-x:auto; scrollbar-width:none;
+}
+.topnav .nav-in::-webkit-scrollbar{ display:none; }
+.topnav a{
+  font-size:14px; font-weight:650; letter-spacing:-.02em;
+  color:var(--ink-2); text-decoration:none; white-space:nowrap;
+}
+.topnav a:hover{ color:var(--primary); }
+
 /* ============================================================
    메뉴 / 가격표
    ============================================================ */
+/* 대표 메뉴에 사진이 있으면 큰 카드로 먼저 보여준다 */
+.m-cards{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+@media (max-width:430px){ .m-cards{ grid-template-columns:1fr; } }
+.m-card{
+  border-radius:var(--radius); overflow:hidden; background:var(--card);
+  border:1px solid var(--line); box-shadow:var(--shadow-s);
+}
+.m-card img{ width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--primary-soft); display:block; }
+.m-card .c-body{ padding:13px 15px 15px; }
+.m-card .c-name{ font-size:16.5px; font-weight:700; letter-spacing:-.024em; }
+.m-card .c-price{ margin-top:5px; font-size:17px; font-weight:750; color:var(--primary); letter-spacing:-.02em; }
+.m-card .c-note{ margin-top:6px; font-size:13px; color:var(--ink-3); line-height:1.55; }
+
 /* 가게 한마디 — 사진이 없어도 한 화면을 채우는 장치 */
 .quote{ text-align:center; }
 .quote .mark{
@@ -686,6 +727,7 @@ var I = {
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>',
   sms:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>',
   link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>'
 };
 
@@ -695,6 +737,14 @@ function kakaoMapLink(){
   var u = safeUrl(p.kakaoMapUrl);
   if (u) return u;
   if (has(p.address)) return "https://map.kakao.com/link/search/" + encodeURIComponent(p.address);
+  return "";
+}
+/* 한국 가게 검색은 네이버 지도를 더 많이 쓴다. 붙여넣은 링크가 없으면 주소로 검색시킨다 */
+function naverMapLink(){
+  var p = SITE.place || {};
+  var u = safeUrl(p.naverMapUrl);
+  if (u) return u;
+  if (has(p.address)) return "https://map.naver.com/p/search/" + encodeURIComponent(p.address);
   return "";
 }
 
@@ -714,11 +764,18 @@ function heroBlock(){
   var nameHtml = '<h1 class="t-hero">' + esc(s.name || "") + '</h1>'
     + (has(s.tagline) ? '<p class="tagline">' + nl(s.tagline) + '</p>' : '');
 
-  /* 주 CTA: 길찾기 / 보조: 전화 (방문형) */
+  /* 예약 링크가 있으면 그게 주 CTA, 없으면 길찾기 (방문형) */
   var acts = [];
   var km = kakaoMapLink();
-  if (km) acts.push('<a class="btn btn-primary" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
-  if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
+  var bk = safeUrl(c.booking);
+  if (bk){
+    acts.push('<a class="btn btn-primary" href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + '예약하기</a>');
+    if (km) acts.push('<a class="btn btn-ghost" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
+    else if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
+  } else {
+    if (km) acts.push('<a class="btn btn-primary" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
+    if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
+  }
   var actsHtml = acts.length ? '<div class="hero-actions">' + acts.join("") + '</div>' : "";
 
   var noticeHtml = "";
@@ -760,7 +817,7 @@ function quoteBlock(){
   var q = (SITE.shop || {}).quote;
   if (!has(q)) return "";
   var by = (SITE.shop || {}).quoteBy;
-  return '<section class="reveal quote"><div class="wrap">'
+  return '<section id="sec-quote" class="reveal quote band"><div class="wrap">'
     + '<span class="mark">\u201C</span>'
     + '<p class="q">' + nl(q) + '</p>'
     + (has(by) ? '<div class="by">' + esc(by) + '</div>' : "")
@@ -772,15 +829,30 @@ function menuBlock(){
   var items = (m.items || []).filter(function(x){ return x && has(x.name); });
   if (!items.length) return "";
 
-  /* 사진 있는 항목을 위로 */
-  var withPhoto = items.filter(function(x){ return has(x.photo); });
-  var noPhoto   = items.filter(function(x){ return !has(x.photo); });
+  /* 대표로 찍고 사진까지 있는 항목은 큰 카드로 따로 올린다 (최대 2개) */
+  var cards = items.filter(function(x){ return x.signature && has(x.photo); }).slice(0, 2);
+  var rest  = items.filter(function(x){ return cards.indexOf(x) === -1; });
+  var withPhoto = rest.filter(function(x){ return has(x.photo); });
+  var noPhoto   = rest.filter(function(x){ return !has(x.photo); });
   var sorted = withPhoto.concat(noPhoto);
 
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-menu" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Menu</span>'
-        + '<h2 class="t-sec">'+esc(m.title || "대표 메뉴")+'</h2></div>'
-        + '<div class="menu-list">';
+        + '<h2 class="t-sec">'+esc(m.title || "대표 메뉴")+'</h2></div>';
+
+  if (cards.length){
+    h += '<div class="m-cards">';
+    cards.forEach(function(it){
+      h += '<div class="m-card"><img src="'+esc(it.photo)+'" alt="'+esc(it.name)+'" loading="lazy">'
+         + '<div class="c-body"><div class="c-name">'+esc(it.name)+'</div>'
+         + (has(it.price) ? '<div class="c-price num">'+esc(it.price)+'</div>' : "")
+         + (has(it.note) ? '<div class="c-note">'+esc(it.note)+'</div>' : "")
+         + '</div></div>';
+    });
+    h += '</div>';
+  }
+
+  h += '<div class="menu-list">';
 
   sorted.forEach(function(it){
     h += '<div class="m-item'+(it.signature ? " is-signature" : "")+'">';
@@ -794,6 +866,7 @@ function menuBlock(){
     h += '</div></div>';
   });
   h += '</div>';
+  if (!sorted.length) h = h.replace('<div class="menu-list"></div>', '');
 
   if (has(m.priceNote)) h += '<p class="price-note">'+esc(m.priceNote)+'</p>';
 
@@ -825,7 +898,7 @@ function galleryBlock(){
   var g = (SITE.gallery || []).filter(function(x){ return x && has(x.src); });
   if (!g.length) return "";
   var scroll = g.length >= 4;
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">가게 사진</h2></div>'
         + '<div class="gal'+(scroll ? " scroll" : "")+'">';
   g.forEach(function(x){
@@ -839,7 +912,7 @@ function ownerBlock(){
   var o = SITE.owner || {};
   if (!has(o.name) && !has(o.text) && !has(o.photo)) return "";
 
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-owner" class="reveal band"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">People</span><h2 class="t-sec">만드는 사람</h2></div>'
         + '<div class="owner">';
   if (has(o.photo)) h += '<img src="' + esc(o.photo) + '" alt="' + esc(o.name || "사장님") + '" loading="lazy">';
@@ -868,7 +941,7 @@ function hoursBlock(){
     else groups.push({ key: key, days: [wd], p: p });
   });
 
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-hours" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Hours</span><h2 class="t-sec">영업시간</h2></div>'
         + '<div class="card">';
 
@@ -904,7 +977,7 @@ function placeBlock(){
   var info = (p.info || []).filter(function(x){ return x && has(x.label) && has(x.value); });
   if (!has(p.address) && !info.length && !has(p.mapImage)) return "";
 
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-place" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Location</span><h2 class="t-sec">오시는 길</h2></div>'
         + '<div class="card place-card">';
 
@@ -912,9 +985,9 @@ function placeBlock(){
     h += '<div class="addr">'+esc(p.address)+'</div><div class="chips">';
     h += '<button type="button" class="chip" data-copy="'+esc(p.address)+'" data-msg="주소를 복사했어요">'+I.copy+'주소 복사</button>';
     var km = kakaoMapLink();
-    if (km) h += '<a class="chip" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'카카오맵에서 보기</a>';
-    var nm = safeUrl(p.naverMapUrl);
-    if (nm) h += '<a class="chip" href="'+esc(nm)+'" target="_blank" rel="noopener">'+I.pin+'네이버 지도에서 보기</a>';
+    if (km) h += '<a class="chip" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'카카오맵</a>';
+    var nm = naverMapLink();
+    if (nm) h += '<a class="chip" href="'+esc(nm)+'" target="_blank" rel="noopener">'+I.pin+'네이버 지도</a>';
     h += '</div>';
   }
   if (has(p.mapImage)) h += '<div class="map-img"><img src="'+esc(p.mapImage)+'" alt="약도" loading="lazy"></div>';
@@ -930,7 +1003,7 @@ function placeBlock(){
 function reviewBlock(){
   var r = (SITE.reviews || []).filter(function(x){ return x && has(x.text); });
   if (!r.length) return "";   /* 실제 후기가 없으면 섹션 자체가 나오지 않습니다 */
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-review" class="reveal band"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Reviews</span><h2 class="t-sec">손님 후기</h2></div>';
   r.forEach(function(x){
     h += '<div class="rev"><p>'+nl(x.text)+'</p>';
@@ -946,8 +1019,11 @@ function reviewBlock(){
 
 function contactBlock(){
   var c = SITE.contact || {}, btns = [];
+  var bk0 = safeUrl(c.booking);
+  if (bk0)
+    btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+'예약하기</a>');
   if (has(c.phone))
-    btns.push('<a class="btn btn-primary" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
+    btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
     btns.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'문자 보내기</a>');
   var kk = safeUrl(c.kakaoChannel);
@@ -964,7 +1040,7 @@ function contactBlock(){
 
   if (!btns.length) return "";
 
-  var h = '<section class="reveal"><div class="wrap">'
+  var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
         + '<div class="contact-grid">'+btns.join("")+'</div>'
         + '<div class="share">'
@@ -992,12 +1068,26 @@ function footerBlock(){
 }
 
 function stickyBlock(){
-  var c = SITE.contact || {}, km = kakaoMapLink();
+  var c = SITE.contact || {}, km = kakaoMapLink(), bk = safeUrl(c.booking);
   var parts = [];
-  if (km) parts.push('<a class="btn btn-primary lead" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
+  if (bk) parts.push('<a class="btn btn-primary lead" href="'+esc(bk)+'" target="_blank" rel="noopener">'+I.cal+'예약하기</a>');
+  else if (km) parts.push('<a class="btn btn-primary lead" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
+  else if (bk && km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
+}
+
+/* 위쪽 차례 막대 — 있는 칸만 모아서 만든다 */
+function topnavBlock(){
+  var map = [["sec-menu","메뉴"],["sec-photo","사진"],["sec-owner","소개"],
+             ["sec-hours","영업시간"],["sec-place","오시는 길"],["sec-contact","문의"]];
+  var links = [];
+  map.forEach(function(m){
+    if (document.getElementById(m[0])) links.push('<a href="#'+m[0]+'">'+m[1]+'</a>');
+  });
+  if (links.length < 3) return "";
+  return '<nav class="topnav" id="topnav"><div class="nav-in">'+links.join("")+'</div></nav>';
 }
 
 /* ---------- 그리기 ---------- */
@@ -1012,6 +1102,7 @@ function render(){
 
   document.getElementById("app").innerHTML = html;
   document.body.insertAdjacentHTML("beforeend", stickyBlock());
+  document.body.insertAdjacentHTML("afterbegin", topnavBlock());
 
   /* 보이는 칸이 적으면 간격을 좁힌다 */
   var secCount = document.querySelectorAll("#app section").length;
@@ -1058,10 +1149,13 @@ function revealOn(){
 
 function stickyOn(){
   var el = document.getElementById("sticky");
-  if (!el) return;
+  var nav = document.getElementById("topnav");
+  var hero = document.querySelector("header.hero");
+  var trigger = hero ? Math.max(260, hero.offsetHeight - 70) : 320;
   var onScroll = function(){
-    if (window.scrollY > 320) el.classList.add("show");
-    else el.classList.remove("show");
+    var y = window.scrollY;
+    if (el) el.classList.toggle("show", y > 320);
+    if (nav) nav.classList.toggle("show", y > trigger);
   };
   window.addEventListener("scroll", onScroll, { passive:true });
   onScroll();

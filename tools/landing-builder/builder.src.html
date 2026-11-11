@@ -347,6 +347,10 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
         <label class="f"><span>문자 받을 번호 <span class="opt">선택</span></span>
           <input type="tel" id="f-sms" placeholder="예: 010-0000-0000">
         </label>
+        <label class="f"><span>예약 링크 <span class="opt">선택 · 원할 때만</span></span>
+          <input type="url" id="f-booking" placeholder="네이버 예약, 캐치테이블 등 주소">
+          <span class="hint">넣으면 "예약하기"가 가장 큰 버튼이 되고 길찾기가 그 옆으로 갑니다. 안 넣으면 지금처럼 길찾기가 주 버튼이에요.</span>
+        </label>
         <label class="f"><span>카카오톡 채널 주소 <span class="opt">선택</span></span>
           <input type="url" id="f-kakao" placeholder="https://pf.kakao.com/_xxxxx">
           <span class="hint">넣으면 "카톡으로 문의" 버튼이 생깁니다.</span>
@@ -371,6 +375,7 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
         </label>
         <label class="f"><span>네이버 지도 공유 링크 <span class="opt">선택</span></span>
           <input type="url" id="f-navermap" placeholder="https://naver.me/...">
+          <span class="hint">비워두면 주소로 검색되는 네이버 지도 링크가 자동으로 만들어집니다. 네이버 플레이스에 가게가 등록돼 있으면 그 링크를 넣는 게 정확해요.</span>
         </label>
         <div class="f"><span>약도 사진 <span class="opt">선택</span></span>
           <div class="pick">
@@ -759,7 +764,7 @@ var ROWDEF = {
        + '<input type="text" data-k="name" placeholder="메뉴 이름">'
        + '<input type="text" data-k="price" placeholder="가격 (예: 11,000원)"></div>'
        + '<input type="text" data-k="note" placeholder="한 줄 설명 (선택)" style="margin-top:8px">'
-       + '<label class="chk"><input type="checkbox" data-k="signature"><span><b>대표 메뉴로 표시</b></span></label>'
+       + '<label class="chk"><input type="checkbox" data-k="signature"><span><b>대표 메뉴로 표시</b><i>대표로 찍고 사진까지 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)</i></span></label>'
   },
   origin: {
     box:"#rows-origin", label:"품목",
@@ -958,7 +963,7 @@ function readForm(){
       hero: IMG.hero
     },
     contact: {
-      phone: val("#f-phone"), sms: val("#f-sms"),
+      phone: val("#f-phone"), sms: val("#f-sms"), booking: val("#f-booking"),
       kakaoChannel: val("#f-kakao"), email: val("#f-email")
     },
     place: {
@@ -1024,7 +1029,7 @@ function fillForm(d){
     else { $(a[1]).removeAttribute("src"); $(a[2]).textContent = "아직 없음"; }
   });
 
-  setVal("#f-phone", c.phone); setVal("#f-sms", c.sms);
+  setVal("#f-phone", c.phone); setVal("#f-sms", c.sms); setVal("#f-booking", c.booking);
   setVal("#f-kakao", c.kakaoChannel); setVal("#f-email", c.email);
 
   setVal("#f-address", p.address); setVal("#f-kakaomap", p.kakaoMapUrl); setVal("#f-navermap", p.naverMapUrl);
@@ -1298,7 +1303,7 @@ function EMPTY(){
   return {
     demo:false, theme:{ primary:"#C0452C", titleFont:"serif" },
     shop:{ name:"", tagline:"", quote:"", quoteBy:"", logo:"", hero:"" },
-    contact:{ phone:"", sms:"", kakaoChannel:"", email:"" },
+    contact:{ phone:"", sms:"", booking:"", kakaoChannel:"", email:"" },
     place:{ address:"", kakaoMapUrl:"", naverMapUrl:"", mapImage:"", info:[
       { label:"주차", value:"" }
     ]},
