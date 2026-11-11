@@ -24,6 +24,8 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 
 // 템플릿(샘플 페이지)과 404 는 검색에 올리지 않는다
 // landing(만들기 도구): 아직 만드는 중이라 갤러리에도 검색에도 올리지 않는다
+// landing/: 별도의 서비스처럼 보여야 해서 후하씨 상호·아이콘을 넣지 않는다
+const skipMeta = (r) => r.indexOf("landing/") === 0;
 const noindex = (r) =>
   /(^|\/)template\.html$/.test(r) ||
   r === "404.html" ||
@@ -37,6 +39,7 @@ const pages = [];
 for (const file of walk(ROOT)) {
   const r = rel(file);
   const original = fs.readFileSync(file, "utf8");
+  if (skipMeta(r)) continue;
 
   // ★ 머리말(<head>) 안에서만 손댄다.
   //   예전에는 파일 전체에 정규식을 돌렸는데, 쪽 안의 자바스크립트가
