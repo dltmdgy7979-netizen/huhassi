@@ -23,6 +23,7 @@ SAMPLE = OUT.parent / "sample"
 TEMPLATES = {
     "restaurant": "template_restaurant.html",
     "shop": "template_shop.html",
+    "beauty": "template_beauty.html",
 }
 
 

@@ -292,6 +292,8 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <b>음식점 · 카페</b><i>메뉴와 가격, 영업시간이 중심</i></button>
         <button type="button" class="tpl" data-tpl="shop" aria-pressed="false">
           <b>판매점</b><i>꽃집 · 정육점 · 반찬 · 옷 등. 상품 사진이 중심</i></button>
+        <button type="button" class="tpl" data-tpl="beauty" aria-pressed="false">
+          <b>미용 · 뷰티</b><i>미용실 · 네일 · 속눈썹 · 피부관리. 예약이 중심</i></button>
       </div>
     </div>
 
@@ -540,6 +542,27 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
       </div>
     </details>
 
+    <!-- 9-3. 예약 안내 (예약형만) -->
+    <details class="fs" id="fs-booking">
+      <summary><span class="n">9</span>예약 안내</summary>
+      <div class="fs-body">
+        <span class="hint" style="display:block;margin-top:12px">예약 전에 알아야 할 것을 미리 적어두면 전화 문의가 줄어듭니다.</span>
+        <label class="f"><span>예약 방법 <span class="opt">선택</span></span>
+          <input type="text" id="f-bk-howto" placeholder="예: 네이버 예약 또는 전화로 받습니다. 당일 예약은 전화로.">
+        </label>
+        <label class="f"><span>예약금 <span class="opt">선택</span></span>
+          <input type="text" id="f-bk-deposit" placeholder="예: 없습니다 / 2만원 (시술비에서 차감)">
+        </label>
+        <label class="f"><span>취소 · 변경 규정 <span class="opt">선택</span></span>
+          <input type="text" id="f-bk-cancel" placeholder="예: 2시간 전까지 연락 주시면 변경·취소가 됩니다">
+          <span class="hint">노쇼 규정을 분명히 적어두는 게 서로 편합니다.</span>
+        </label>
+        <label class="f"><span>알아두실 것 <span class="opt">선택</span></span>
+          <textarea id="f-bk-notes" rows="2" placeholder="예: 1인샵이라 늦으시면 시술 시간이 줄어듭니다."></textarea>
+        </label>
+      </div>
+    </details>
+
     <!-- 10. 후기 -->
     <details class="fs">
       <summary><span class="n">10</span>손님 후기</summary>
@@ -643,6 +666,12 @@ window.onerror = function(msg, src, line, col){
 <script type="text/plain" id="tpl-runtime-shop">
 /*RUNTIME_HERE:shop*/
 </script>
+<script type="text/plain" id="tpl-css-beauty">
+/*CSS_HERE:beauty*/
+</script>
+<script type="text/plain" id="tpl-runtime-beauty">
+/*RUNTIME_HERE:beauty*/
+</script>
 
 <script>
 (function(){
@@ -664,15 +693,25 @@ var TPLDEF = {
     name: "음식점 틀", color: "#C0452C", titleFont: "serif", schema: "Restaurant",
     itemsWord: "메뉴", itemsTitle: "대표 메뉴",
     secItems: "메뉴와 가격", secOrigin: "원산지 표기", secTakeout: "포장 · 배달",
-    packing: "포장 가능", showArea: false,
+    packing: "포장 가능", showArea: false, showOrigin: true, showTakeout: true,
+    showDuration: false, showBooking: false,
     addItem: "＋ 메뉴 추가", sigHint: "대표로 찍고 사진까지 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)"
   },
   shop: {
     name: "판매점 틀", color: "#2F6B4F", titleFont: "serif", schema: "Store",
     itemsWord: "상품", itemsTitle: "대표 상품",
     secItems: "상품과 가격", secOrigin: "원산지 · 이력 표시", secTakeout: "예약 주문 · 픽업 · 배달",
-    packing: "예약 주문 · 픽업 가능", showArea: true,
-    addItem: "＋ 상품 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 6개까지)"
+    packing: "예약 주문 · 픽업 가능", showArea: true, showOrigin: true, showTakeout: true,
+    addItem: "＋ 상품 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 6개까지)",
+    showDuration: false, showBooking: false
+  },
+  beauty: {
+    name: "미용 · 뷰티 틀", color: "#9B6F75", titleFont: "sans", schema: "BeautySalon",
+    itemsWord: "시술", itemsTitle: "시술 메뉴와 가격",
+    secItems: "시술 메뉴와 가격", secOrigin: "", secTakeout: "",
+    packing: "", showArea: false, showOrigin: false, showTakeout: false,
+    addItem: "＋ 시술 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)",
+    showDuration: true, showBooking: true
   }
 };
 function TD(){ return TPLDEF[TPL] || TPLDEF.restaurant; }
@@ -820,6 +859,7 @@ var ROWDEF = {
     html:'<div class="row2">'
        + '<input type="text" data-k="name" placeholder="메뉴 이름">'
        + '<input type="text" data-k="price" placeholder="가격 (예: 11,000원)"></div>'
+       + '<input type="text" data-k="duration" placeholder="소요 시간 (예: 1시간 30분)" style="margin-top:8px" data-only="duration">'
        + '<input type="text" data-k="note" placeholder="한 줄 설명 (선택)" style="margin-top:8px">'
        + '<label class="chk"><input type="checkbox" data-k="signature"><span><b>대표 메뉴로 표시</b><i>대표로 찍고 사진까지 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)</i></span></label>'
   },
@@ -1032,6 +1072,11 @@ function readForm(){
       mapImage: IMG.mapImage,
       info: readRows("info").filter(function(x){ return x.label && x.value; })
     },
+    booking: {
+      howto: val("#f-bk-howto"), deposit: val("#f-bk-deposit"),
+      cancel: val("#f-bk-cancel"),
+      notes: ($("#f-bk-notes").value || "").replace(/\r/g, "").trim()
+    },
     owner: {
       name: val("#f-owner-name"), role: val("#f-owner-role"),
       text: ($("#f-owner-text").value || "").replace(/\r/g, "").trim(),
@@ -1077,6 +1122,10 @@ function fillForm(d){
   setChk("#tf-serif", tf === "serif"); setChk("#tf-sans", tf === "sans");
   setVal("#f-color", (d.theme && d.theme.primary) || TD().color);
   markSwatch(val("#f-color"));
+
+  var bkd = d.booking || {};
+  setVal("#f-bk-howto", bkd.howto); setVal("#f-bk-deposit", bkd.deposit);
+  setVal("#f-bk-cancel", bkd.cancel); $("#f-bk-notes").value = bkd.notes || "";
 
   var ow = d.owner || {};
   setVal("#f-owner-name", ow.name); setVal("#f-owner-role", ow.role);
@@ -1275,7 +1324,7 @@ function missing(){
   var anyDay = DAYS.some(function(k){ return !!d.hours.week[k]; });
   if (!anyDay) out.push("영업시간 (하루도 안 넣었어요)");
   var mn = d.menu.items.length;
-  if (mn < 3) out.push("대표 메뉴 (3개 이상 · 지금 " + mn + "개)");
+  if (mn < 3) out.push("대표 " + TD().itemsWord + " (3개 이상 · 지금 " + mn + "개)");
   if (!d.contact.phone && !d.contact.kakaoChannel && !d.contact.email && !d.contact.sms)
     out.push("연락 수단이 하나도 없어요");
   return out;
@@ -1376,6 +1425,7 @@ function EMPTY(){
       sun:null
     }, lastOrder:"", holidayNote:"" },
     owner:{ name:"", role:"", text:"", photo:"" },
+    booking:{ howto:"", deposit:"", cancel:"", notes:"" },
     notice:{ on:false, label:"임시 휴무", reason:"", resumeDate:"" },
     menu:{ title:"대표 메뉴", items:[ {name:"",price:"",note:"",signature:true,photo:""}, {name:"",price:"",note:"",signature:false,photo:""}, {name:"",price:"",note:"",signature:false,photo:""} ],
             priceNote:"표시 금액은 손님이 실제 내는 금액입니다." },
@@ -1448,11 +1498,43 @@ function SAMPLE_SHOP(){
   return d;
 }
 
+function SAMPLE_BEAUTY(){
+  var d = EMPTY();
+  d.theme.primary = "#9B6F75"; d.theme.titleFont = "sans";
+  d.shop.name = "결 헤어";
+  d.shop.tagline = "광주 동구 1인 미용실.\n예약제로 한 분씩만 봅니다.";
+  d.shop.quote = "머리는 그날 하루가 아니라\n한 달을 같이 삽니다.";
+  d.shop.quoteBy = "결 헤어 원장 드림";
+  d.contact.phone = "010-0000-0000";
+  d.place.address = "광주 동구 예시로 12";
+  d.place.info = [ { label:"주차", value:"건물 뒤 2대" } ];
+  DAYS.forEach(function(k){ d.hours.week[k] = null; });
+  ["tue","wed","thu","fri"].forEach(function(k){ d.hours.week[k] = { open:"10:00", close:"20:00", breakStart:"", breakEnd:"" }; });
+  d.hours.week.sat = { open:"10:00", close:"18:00", breakStart:"", breakEnd:"" };
+  d.hours.holidayNote = "월요일과 일요일은 쉽니다.";
+  d.menu.items = [
+    { name:"여성 커트", price:"25,000원", duration:"40분", note:"상담 포함", signature:true, photo:"" },
+    { name:"뿌리 염색", price:"60,000원부터", duration:"1시간 30분", note:"기장이 어깨 아래면 10,000원 추가", signature:true, photo:"" },
+    { name:"일반 펌", price:"90,000원부터", duration:"2시간", note:"기장·모량에 따라 추가요금이 있습니다", signature:false, photo:"" },
+    { name:"클리닉", price:"50,000원", duration:"40분", note:"", signature:false, photo:"" }
+  ];
+  d.menu.priceNote = "표시 금액은 재료비·부가세를 포함한, 손님이 실제 내시는 금액입니다. '부터'로 적힌 시술은 상담 때 최종 금액을 먼저 알려드립니다.";
+  d.booking = {
+    howto: "네이버 예약 또는 전화로 받습니다. 당일 예약은 전화로 주세요.",
+    deposit: "없습니다.",
+    cancel: "예약 시간 2시간 전까지 연락 주시면 변경·취소가 됩니다.",
+    notes: "1인샵이라 늦으시면 시술 시간이 줄어듭니다. 늦을 것 같으면 미리 연락 주세요."
+  };
+  d.notice.label = "예약 마감";
+  return d;
+}
+
 $("#btn-sample").onclick = function(){
   ask("예시로 채울까요?", "지금 넣은 내용이 예시로 바뀝니다. 모양을 보는 용도이니, 받기 전에 꼭 실제 내용으로 고쳐 주세요.", null, "예시로 채우기",
     function(){
       IMG = { hero:"", logo:"", mapImage:"", owner:"" }; GALLERY = [];
-      fillForm(TPL === "shop" ? SAMPLE_SHOP() : SAMPLE()); changed(); applyTpl();
+      var S = { shop: SAMPLE_SHOP, beauty: SAMPLE_BEAUTY };
+      fillForm((S[TPL] || SAMPLE)()); changed(); applyTpl();
       toast("예시입니다. 실제 내용으로 바꿔 주세요");
     });
 };
@@ -1475,6 +1557,16 @@ function applyTpl(){
   var add = $('[data-add="menu"]'); if (add) add.textContent = t.addItem;
   var pk = $("#f-packing"); if (pk) pk.parentNode.querySelector("b").textContent = t.packing;
   var wa = $("#wrap-area"); if (wa) wa.style.display = t.showArea ? "" : "none";
+
+  /* 업종에 해당 없는 칸은 통째로 숨긴다 */
+  $$(".fs > summary").forEach(function(el){
+    var n = el.querySelector(".n");
+    if (!n) return;
+    if (n.textContent === "7") el.parentNode.style.display = t.showOrigin ? "" : "none";
+    if (n.textContent === "8") el.parentNode.style.display = t.showTakeout ? "" : "none";
+  });
+  var fb = $("#fs-booking"); if (fb) fb.style.display = t.showBooking ? "" : "none";
+  $$('[data-only="duration"]').forEach(function(el){ el.style.display = t.showDuration ? "" : "none"; });
 
   $$(".rw", $("#rows-menu")).forEach(function(rw){
     var i = rw.querySelector("[data-k='signature']");
