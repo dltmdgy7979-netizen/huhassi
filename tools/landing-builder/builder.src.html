@@ -408,6 +408,11 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <input type="url" id="f-navermap" placeholder="https://naver.me/...">
           <span class="hint">비워두면 주소로 검색되는 네이버 지도 링크가 자동으로 만들어집니다. 네이버 플레이스에 가게가 등록돼 있으면 그 링크를 넣는 게 정확해요.</span>
         </label>
+        <label class="f"><span>지도 붙여넣기 <span class="opt">선택 · 화면에 진짜 지도가 박힙니다</span></span>
+          <textarea id="f-mapembed" rows="3" placeholder="카카오맵에서 복사한 '지도 퍼가기' 코드를 그대로 붙여넣으세요"></textarea>
+          <span class="hint">PC 카카오맵(map.kakao.com)에서 가게를 찾고 <b>공유 → 지도 퍼가기</b> 를 누르면 코드가 나옵니다. 그걸 통째로 붙여넣으면 됩니다. 구글 지도의 <b>공유 → 지도 퍼가기</b> 코드도 됩니다. 키 발급 같은 건 필요 없어요.</span>
+          <span class="hint" id="map-ok" style="display:none"></span>
+        </label>
         <div class="f"><span>약도 사진 <span class="opt">선택</span></span>
           <div class="pick">
             <img class="thumb" id="th-map" alt="">
@@ -1108,6 +1113,39 @@ function fillHours(h){
 /* ============================================================
    4. 폼 ↔ 데이터
    ============================================================ */
+/* 붙여넣은 지도 코드에서 안전한 값만 꺼낸다. 코드를 그대로 쓰지 않는다. */
+function parseMapEmbed(raw){
+  var t = String(raw || "").trim();
+  if (!t) return null;
+  var g = t.match(/src\s*=\s*["'](https:\/\/www\.google\.com\/maps\/embed\?[^"']+)["']/i);
+  if (g) return { k:"google", src:g[1] };
+  if (/roughmapLoader\.js/i.test(t) || /daum\.roughmap/i.test(t)){
+    var key = t.match(/["']?key["']?\s*:\s*["']([A-Za-z0-9_-]{3,40})["']/);
+    var ts  = t.match(/["']?timestamp["']?\s*:\s*["'](\d{6,20})["']/);
+    if (key && ts) return { k:"kakao", key:key[1], ts:ts[1] };
+  }
+  return null;
+}
+
+/* 꺼내 둔 값을 다시 코드 모양으로 — 파일을 불러왔을 때 칸이 비지 않게 */
+function mapEmbedText(m){
+  if (!m || !m.k) return "";
+  if (m.k === "google") return '<iframe src="' + m.src + '"></iframe>';
+  return 'new daum.roughmap.Lander({"timestamp":"' + m.ts + '","key":"' + m.key + '"}).render();';
+}
+/* 붙여넣은 게 지도로 읽혔는지 바로 알려준다 */
+function mapHint(){
+  var box = $("#map-ok"), ta = $("#f-mapembed");
+  if (!box || !ta) return;
+  var raw = (ta.value || "").trim();
+  if (!raw){ box.style.display = "none"; return; }
+  var m = parseMapEmbed(raw);
+  box.style.display = "";
+  box.innerHTML = m
+    ? '<b style="color:var(--ok,#1F7A4D)">' + (m.k === "google" ? "구글 지도" : "카카오맵") + '을 찾았어요. 미리보기에 지도가 들어갑니다.</b>'
+    : '<b style="color:var(--bad,#B3261E)">지도 코드를 못 찾았어요.</b> 카카오맵 <b>공유 → 지도 퍼가기</b> 에서 나온 코드를 통째로 붙여넣어 주세요.';
+}
+
 function readForm(){
   return {
     demo: false,
@@ -1133,6 +1171,7 @@ function readForm(){
       kakaoMapUrl: val("#f-kakaomap"),
       naverMapUrl: val("#f-navermap"),
       mapImage: IMG.mapImage,
+      map: parseMapEmbed(val("#f-mapembed")),
       info: readRows("info").filter(function(x){ return x.label && x.value; })
     },
     booking: {
@@ -1205,6 +1244,7 @@ function fillForm(d){
   setVal("#f-kakao", c.kakaoChannel); setVal("#f-email", c.email);
 
   setVal("#f-address", p.address); setVal("#f-kakaomap", p.kakaoMapUrl); setVal("#f-navermap", p.naverMapUrl);
+  setVal("#f-mapembed", mapEmbedText(p.map)); mapHint();
 
   fillHours(d.hours);
 
@@ -1405,6 +1445,7 @@ function checkTodo(){
 /* 입력 감지 */
 $("#editor").addEventListener("input", function(e){
   if (e.target.type === "file") return;
+  if (e.target.id === "f-mapembed") mapHint();
   changed();
 });
 $("#editor").addEventListener("change", function(e){
@@ -1477,7 +1518,7 @@ function EMPTY(){
     demo:false, tpl:TPL, theme:{ primary:TD().color, titleFont:TD().titleFont },
     shop:{ name:"", tagline:"", quote:"", quoteBy:"", logo:"", hero:"" },
     contact:{ phone:"", sms:"", booking:"", kakaoChannel:"", email:"" },
-    place:{ address:"", kakaoMapUrl:"", naverMapUrl:"", mapImage:"", info:[
+    place:{ address:"", kakaoMapUrl:"", naverMapUrl:"", mapImage:"", map:null, info:[
       { label:"주차", value:"" }
     ]},
     hours:{ week:{

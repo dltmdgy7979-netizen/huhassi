@@ -406,6 +406,38 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky .btn.lead{ flex:1.5 1 0; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
+/* ============================================================
+   따라다니는 연락 버튼
+   ============================================================ */
+.fab{
+  position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
+  display:flex; flex-direction:column; gap:10px;
+}
+@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+.fab > *{
+  width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
+  border:1px solid var(--line); background:var(--card); color:var(--ink);
+  box-shadow:0 4px 16px rgba(0,0,0,.16); text-decoration:none; cursor:pointer; padding:0;
+  transition:transform .14s ease, opacity .25s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.fab > *:active{ transform:scale(.92); }
+.fab svg{ width:23px; height:23px; }
+.fab .f-kakao{ background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.fab .f-call{ background:var(--primary); border-color:transparent; color:#fff; box-shadow:0 4px 16px var(--primary-shadow); }
+.fab .f-top{ opacity:0; pointer-events:none; }
+.fab .f-top.on{ opacity:1; pointer-events:auto; }
+@media (prefers-reduced-motion:reduce){ .fab > *{ transition:none; } }
+
+/* 박히는 지도 */
+.map-embed{
+  margin-top:16px; border-radius:var(--radius-sm); overflow:hidden;
+  border:1px solid var(--line); background:var(--off-soft);
+}
+.map-embed iframe{ display:block; width:100%; height:250px; border:0; }
+@media (min-width:768px){ .map-embed iframe{ height:320px; } }
+
+
 /* 토스트 */
 .toast{
   position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom)); z-index:60;
@@ -437,7 +469,7 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
     "quote": "머리는 그날 하루가 아니라\n한 달을 같이 삽니다.",
     "quoteBy": "결 헤어 원장 드림"
   },
-  "contact": { "phone": "010-0000-0000", "sms": "", "booking": "", "kakaoChannel": "", "email": "" },
+  "contact": { "phone": "010-0000-0000", "sms": "", "booking": "", "kakaoChannel": "https://pf.kakao.com/_example", "email": "" },
   "place": {
     "address": "광주 동구 예시로 12",
     "kakaoMapUrl": "", "naverMapUrl": "", "mapImage": "",
@@ -973,10 +1005,57 @@ function hoursBlock(){
   return h;
 }
 
+/* ---------- 박히는 지도 ---------- */
+function hasMap(){
+  var m = (SITE.place || {}).map;
+  return !!(m && (m.k === "google" ? has(m.src) : (has(m.key) && has(m.ts))));
+}
+function mapEmbed(){
+  if (!hasMap()) return "";
+  var m = SITE.place.map;
+  if (m.k === "google"){
+    return '<div class="map-embed"><iframe src="' + esc(m.src) + '" title="지도" loading="lazy"'
+         + ' referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>';
+  }
+  var S = "scr" + "ipt";
+  var doc = '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">'
+    + '<style>html,body{margin:0;height:100%;overflow:hidden}'
+    + '.root_daum_roughmap{width:100%!important}'
+    + '.root_daum_roughmap .wrap_map{height:100vh!important}'
+    + '.roughmap_maker_label,.map_border{display:none!important}</style></head><body>'
+    + '<div id="daumRoughmapContainer' + esc(m.ts) + '" class="root_daum_roughmap root_daum_roughmap_landing"></div>'
+    + '<' + S + ' charset="UTF-8" class="daum_roughmap_loader_script"'
+    + ' src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></' + S + '>'
+    + '<' + S + ' charset="UTF-8">new daum.roughmap.Lander({timestamp:"' + esc(m.ts)
+    + '",key:"' + esc(m.key) + '",mapWidth:"640",mapHeight:"360"}).render();</' + S + '>'
+    + '<' + S + ' charset="UTF-8">setTimeout(function(){'
+    + 'var c=document.getElementById("daumRoughmapContainer' + esc(m.ts) + '");'
+    + 'if(c&&!c.querySelector("img,canvas,iframe")){document.body.innerHTML='
+    + '"<div style=\\"font:14px -apple-system,system-ui,sans-serif;color:#8A7F77;'
+    + 'height:100%;display:grid;place-items:center;text-align:center;padding:16px\\">'
+    + '\\uc9c0\\ub3c4\\ub97c \\ubd88\\ub7ec\\uc624\\uc9c0 \\ubabb\\ud588\\uc5b4\\uc694.<br>'
+    + '\\uc544\\ub798 \\uae38\\ucc3e\\uae30 \\ub2e8\\ucd94\\ub97c \\ub20c\\ub7ec \\uc8fc\\uc138\\uc694.</div>";}'
+    + '},4000);</' + S + '>'
+    + '</body></html>';
+  return '<div class="map-embed"><iframe title="지도" loading="lazy" srcdoc="' + esc(doc) + '"></iframe></div>';
+}
+
+/* ---------- 따라다니는 연락 버튼 ---------- */
+function fabBlock(){
+  var c = SITE.contact || {}, kk = safeUrl(c.kakaoChannel), parts = [];
+  if (kk) parts.push('<a class="f-kakao" href="' + esc(kk) + '" target="_blank" rel="noopener"'
+    + ' aria-label="카카오톡 채널로 문의">' + I.chat + '</a>');
+  if (has(c.phone)) parts.push('<a class="f-call" href="' + esc(telUrl(c.phone)) + '" aria-label="전화 걸기">' + I.phone + '</a>');
+  parts.push('<button type="button" class="f-top" id="f-top" aria-label="맨 위로">'
+    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    + '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>');
+  return '<div class="fab">' + parts.join("") + '</div>';
+}
+
 function placeBlock(){
   var p = SITE.place || {};
   var info = (p.info || []).filter(function(x){ return x && has(x.label) && has(x.value); });
-  if (!has(p.address) && !info.length && !has(p.mapImage)) return "";
+  if (!has(p.address) && !info.length && !has(p.mapImage) && !hasMap()) return "";
 
   var h = '<section id="sec-place" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Location</span><h2 class="t-sec">오시는 길</h2></div>'
@@ -991,6 +1070,7 @@ function placeBlock(){
     if (nm) h += '<a class="chip" href="'+esc(nm)+'" target="_blank" rel="noopener">'+I.pin+'네이버 지도</a>';
     h += '</div>';
   }
+  h += mapEmbed();
   if (has(p.mapImage)) h += '<div class="map-img"><img src="'+esc(p.mapImage)+'" alt="약도" loading="lazy"></div>';
   if (info.length){
     h += '<ul class="info-list">';
@@ -1103,6 +1183,13 @@ function render(){
 
   document.getElementById("app").innerHTML = html;
   document.body.insertAdjacentHTML("beforeend", stickyBlock());
+  document.body.insertAdjacentHTML("beforeend", fabBlock());
+  /* f-top-click */
+  var topBtn = document.getElementById("f-top");
+  if (topBtn) topBtn.addEventListener("click", function(){
+    var rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top:0, behavior: rm ? "auto" : "smooth" });
+  });
   document.body.insertAdjacentHTML("afterbegin", topnavBlock());
 
   /* 보이는 칸이 적으면 간격을 좁힌다 */
@@ -1156,6 +1243,8 @@ function stickyOn(){
   var onScroll = function(){
     var y = window.scrollY;
     if (el) el.classList.toggle("show", y > 320);
+    var ft = document.getElementById("f-top");
+    if (ft) ft.classList.toggle("on", y > 700);
     if (nav) nav.classList.toggle("show", y > trigger);
   };
   window.addEventListener("scroll", onScroll, { passive:true });
