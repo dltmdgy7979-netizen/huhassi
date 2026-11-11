@@ -107,6 +107,21 @@ img{ display:block; max-width:100%; }
 }
 @media (min-width:901px){ .mobile-bar{ display:none; } }
 
+/* ---------------- 업종 고르기 ---------------- */
+.tplpick{ display:grid; gap:9px; }
+@media (min-width:520px){ .tplpick{ grid-template-columns:1fr 1fr; } }
+.tplpick .tpl{
+  text-align:left; padding:13px 15px; border-radius:var(--b-r);
+  border:1px solid var(--b-line); background:#fff; cursor:pointer;
+  transition:border-color .16s, box-shadow .16s;
+}
+.tplpick .tpl b{ display:block; font-size:15px; font-weight:700; letter-spacing:-.024em; }
+.tplpick .tpl i{ display:block; font-style:normal; font-size:12.5px; color:var(--b-ink3); margin-top:3px; line-height:1.5; }
+.tplpick .tpl[aria-pressed="true"]{
+  border-color:var(--b-accent); box-shadow:0 0 0 3px rgba(192,69,44,.1);
+}
+.tplpick .tpl[aria-pressed="true"] b{ color:var(--b-accent); }
+
 /* ---------------- 비어 있는 필수 칸 ---------------- */
 .todo{
   background:var(--b-warn-soft); border:1px solid #F0DCB8; border-radius:var(--b-r);
@@ -269,6 +284,16 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
 <div class="shell">
   <!-- ============ 입력 ============ -->
   <div class="editor" id="editor">
+
+    <div class="f" style="margin:0 0 16px">
+      <span>업종 고르기</span>
+      <div class="tplpick" id="tplpick">
+        <button type="button" class="tpl" data-tpl="restaurant" aria-pressed="true">
+          <b>음식점 · 카페</b><i>메뉴와 가격, 영업시간이 중심</i></button>
+        <button type="button" class="tpl" data-tpl="shop" aria-pressed="false">
+          <b>판매점</b><i>꽃집 · 정육점 · 반찬 · 옷 등. 상품 사진이 중심</i></button>
+      </div>
+    </div>
 
     <div class="todo hide" id="todo">
       <h4>아직 비어 있는 중요한 칸</h4>
@@ -463,6 +488,9 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
       <div class="fs-body">
         <label class="chk"><input type="checkbox" id="f-packing"><span><b>포장 가능</b></span></label>
         <label class="chk"><input type="checkbox" id="f-delivery"><span><b>배달 가능</b></span></label>
+        <label class="f" id="wrap-area"><span>배달 가능 지역 <span class="opt">선택</span></span>
+          <input type="text" id="f-area" placeholder="예: 동구 · 남구">
+        </label>
         <div class="f"><span>배달앱 · 스토어 링크 <span class="opt">선택</span></span>
           <div class="rows" id="rows-dlinks"></div>
           <button class="add" data-add="dlinks">＋ 링크 추가</button>
@@ -596,17 +624,24 @@ window.onerror = function(msg, src, line, col){
   var d = document.getElementById("diag");
   if (d){
     d.className = "bad";
+    d.style.display = "";
     d.textContent = "빌더가 멈췄습니다 — " + msg + " (줄 " + line + ":" + col + ")";
   }
   return false;
 };
 </script>
 
-<script type="text/plain" id="tpl-css">
-/*CSS_HERE*/
+<script type="text/plain" id="tpl-css-restaurant">
+/*CSS_HERE:restaurant*/
 </script>
-<script type="text/plain" id="tpl-runtime">
-/*RUNTIME_HERE*/
+<script type="text/plain" id="tpl-runtime-restaurant">
+/*RUNTIME_HERE:restaurant*/
+</script>
+<script type="text/plain" id="tpl-css-shop">
+/*CSS_HERE:shop*/
+</script>
+<script type="text/plain" id="tpl-runtime-shop">
+/*RUNTIME_HERE:shop*/
 </script>
 
 <script>
@@ -617,8 +652,30 @@ window.onerror = function(msg, src, line, col){
    0. 거들기
    ============================================================ */
 var $  = function(s,r){ return (r||document).querySelector(s); };
+/* 여기까지 왔으면 자바스크립트가 도는 것이므로 안내 줄을 바로 숨긴다 */
+(function(){ var d = document.getElementById("diag"); if (d) d.style.display = "none"; })();
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
-var KEY = "huhassi_builder_restaurant_v1";
+var KEY = "huhassi_builder_v2";
+
+/* ===== 틀 정의 ===== */
+var TPL = "restaurant";
+var TPLDEF = {
+  restaurant: {
+    name: "음식점 틀", color: "#C0452C", titleFont: "serif", schema: "Restaurant",
+    itemsWord: "메뉴", itemsTitle: "대표 메뉴",
+    secItems: "메뉴와 가격", secOrigin: "원산지 표기", secTakeout: "포장 · 배달",
+    packing: "포장 가능", showArea: false,
+    addItem: "＋ 메뉴 추가", sigHint: "대표로 찍고 사진까지 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)"
+  },
+  shop: {
+    name: "판매점 틀", color: "#2F6B4F", titleFont: "serif", schema: "Store",
+    itemsWord: "상품", itemsTitle: "대표 상품",
+    secItems: "상품과 가격", secOrigin: "원산지 · 이력 표시", secTakeout: "예약 주문 · 픽업 · 배달",
+    packing: "예약 주문 · 픽업 가능", showArea: true,
+    addItem: "＋ 상품 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 6개까지)"
+  }
+};
+function TD(){ return TPLDEF[TPL] || TPLDEF.restaurant; }
 var DAYS  = ["mon","tue","wed","thu","fri","sat","sun"];
 var DAYKR = { mon:"월", tue:"화", wed:"수", thu:"목", fri:"금", sat:"토", sun:"일" };
 
@@ -872,8 +929,9 @@ function addRow(kind, data, silent){
 }
 function renumber(kind){
   var def = ROWDEF[kind];
+  var word = (kind === "menu") ? TD().itemsWord : def.label;
   $$(".rw", $(def.box)).forEach(function(rw, i){
-    rw.querySelector(".idx").textContent = def.label + " " + (i + 1);
+    rw.querySelector(".idx").textContent = word + " " + (i + 1);
   });
 }
 function readRows(kind){
@@ -950,6 +1008,7 @@ function fillHours(h){
 function readForm(){
   return {
     demo: false,
+    tpl: TPL,
     theme: {
       primary: val("#f-color") || "#C0452C",
       titleFont: chk("#tf-sans") ? "sans" : "serif"
@@ -986,13 +1045,13 @@ function readForm(){
       resumeDate: val("#f-notice-resume")
     },
     menu: {
-      title: "대표 메뉴",
+      title: TD().itemsTitle,
       items: readRows("menu").filter(function(x){ return x.name; }),
       priceNote: val("#f-pricenote")
     },
     origin: readRows("origin").filter(function(x){ return x.item && x.value; }),
     takeout: {
-      packing: chk("#f-packing"), delivery: chk("#f-delivery"),
+      packing: chk("#f-packing"), delivery: chk("#f-delivery"), area: val("#f-area"),
       links: readRows("dlinks").filter(function(x){ return x.label && x.url; })
     },
     gallery: GALLERY.map(function(s){ return { src:s, alt:"" }; }),
@@ -1016,7 +1075,7 @@ function fillForm(d){
   setVal("#f-quoteby", s.quoteBy);
   var tf = (d.theme && d.theme.titleFont) === "sans" ? "sans" : "serif";
   setChk("#tf-serif", tf === "serif"); setChk("#tf-sans", tf === "sans");
-  setVal("#f-color", (d.theme && d.theme.primary) || "#C0452C");
+  setVal("#f-color", (d.theme && d.theme.primary) || TD().color);
   markSwatch(val("#f-color"));
 
   var ow = d.owner || {};
@@ -1042,7 +1101,7 @@ function fillForm(d){
   setVal("#f-notice-resume", n.resumeDate);
 
   setVal("#f-pricenote", m.priceNote);
-  setChk("#f-packing", t.packing); setChk("#f-delivery", t.delivery);
+  setChk("#f-packing", t.packing); setChk("#f-delivery", t.delivery); setVal("#f-area", t.area);
 
   setVal("#f-bizname", L.bizName); setVal("#f-biznumber", L.bizNumber);
   setVal("#f-privacy", L.privacyUrl);
@@ -1084,7 +1143,7 @@ function wonToNumber(t){
 }
 
 function jsonLd(d){
-  var o = { "@context":"https://schema.org", "@type":"Restaurant" };
+  var o = { "@context":"https://schema.org", "@type": TD().schema };
   if (!d.shop.name) return null;
   o.name = d.shop.name;
 
@@ -1113,7 +1172,7 @@ function jsonLd(d){
     if (price) mi.offers = { "@type":"Offer", "price": price, "priceCurrency":"KRW" };
     return mi;
   });
-  if (items.length){
+  if (items.length && TPL === "restaurant"){
     o.hasMenu = { "@type":"Menu", "hasMenuSection":[ { "@type":"MenuSection", "name": d.menu.title || "대표 메뉴", "hasMenuItem": items } ] };
   }
 
@@ -1130,8 +1189,8 @@ function jsonLd(d){
 }
 
 function buildHTML(d){
-  var css = $("#tpl-css").textContent;
-  var rt  = $("#tpl-runtime").textContent;
+  var css = $("#tpl-css-" + TPL).textContent;
+  var rt  = $("#tpl-runtime-" + TPL).textContent;
 
   var name = d.shop.name || "우리 가게";
   var area = (d.place.address || "").split(/\s+/).slice(0, 2).join(" ");
@@ -1301,7 +1360,7 @@ function doReset(){
    ============================================================ */
 function EMPTY(){
   return {
-    demo:false, theme:{ primary:"#C0452C", titleFont:"serif" },
+    demo:false, tpl:TPL, theme:{ primary:TD().color, titleFont:TD().titleFont },
     shop:{ name:"", tagline:"", quote:"", quoteBy:"", logo:"", hero:"" },
     contact:{ phone:"", sms:"", booking:"", kakaoChannel:"", email:"" },
     place:{ address:"", kakaoMapUrl:"", naverMapUrl:"", mapImage:"", info:[
@@ -1321,7 +1380,7 @@ function EMPTY(){
     menu:{ title:"대표 메뉴", items:[ {name:"",price:"",note:"",signature:true,photo:""}, {name:"",price:"",note:"",signature:false,photo:""}, {name:"",price:"",note:"",signature:false,photo:""} ],
             priceNote:"표시 금액은 손님이 실제 내는 금액입니다." },
     origin:[ { item:"쌀", value:"" } ],
-    takeout:{ packing:false, delivery:false, links:[] },
+    takeout:{ packing:false, delivery:false, area:"", links:[] },
     gallery:[], reviews:[], links:[],
     legal:{ bizName:"", bizNumber:"", privacyUrl:"", credit:true }
   };
@@ -1360,14 +1419,89 @@ function SAMPLE(){
   return d;
 }
 
+function SAMPLE_SHOP(){
+  var d = EMPTY();
+  d.theme.primary = "#2F6B4F";
+  d.shop.name = "볕드는꽃집";
+  d.shop.tagline = "광주 동구 작은 꽃집.\n그날 들어온 꽃으로 그날 묶습니다.";
+  d.shop.quote = "꽃은 오래 두고 파는 물건이 아니라서,\n그날 좋은 것만 내놓습니다.";
+  d.shop.quoteBy = "볕드는꽃집 주인 드림";
+  d.contact.phone = "010-0000-0000";
+  d.place.address = "광주 동구 예시로 12";
+  d.place.info = [
+    { label:"주차", value:"가게 앞 2대" },
+    { label:"예약 주문", value:"하루 전까지 전화 주시면 맞춰 준비합니다" }
+  ];
+  DAYS.slice(0, 5).forEach(function(k){ d.hours.week[k] = { open:"10:00", close:"20:00", breakStart:"", breakEnd:"" }; });
+  d.hours.week.sat = { open:"10:00", close:"18:00", breakStart:"", breakEnd:"" };
+  d.hours.holidayNote = "명절 연휴에는 미리 알려드립니다.";
+  d.menu.items = [
+    { name:"오늘의 꽃다발", price:"30,000원부터", note:"그날 들어온 꽃으로 묶습니다", signature:true, photo:"" },
+    { name:"책상 위 작은 꽃", price:"12,000원", note:"한 주 정도 갑니다", signature:true, photo:"" },
+    { name:"개업 화분", price:"매장 문의", note:"크기와 수종에 따라 다릅니다", signature:false, photo:"" },
+    { name:"드라이플라워 다발", price:"18,000원", note:"", signature:false, photo:"" }
+  ];
+  d.menu.priceNote = "표시 금액은 손님이 실제 내는 금액입니다. 포장과 카드는 포함되어 있습니다.";
+  d.origin = [];
+  d.takeout = { packing:true, delivery:true, area:"동구 · 남구", links:[] };
+  d.notice.label = "오늘 물량 마감";
+  return d;
+}
+
 $("#btn-sample").onclick = function(){
   ask("예시로 채울까요?", "지금 넣은 내용이 예시로 바뀝니다. 모양을 보는 용도이니, 받기 전에 꼭 실제 내용으로 고쳐 주세요.", null, "예시로 채우기",
     function(){
       IMG = { hero:"", logo:"", mapImage:"", owner:"" }; GALLERY = [];
-      fillForm(SAMPLE()); changed();
+      fillForm(TPL === "shop" ? SAMPLE_SHOP() : SAMPLE()); changed(); applyTpl();
       toast("예시입니다. 실제 내용으로 바꿔 주세요");
     });
 };
+
+/* ===== 업종 바꾸기 ===== */
+function applyTpl(){
+  var t = TD();
+  $(".brand small").textContent = t.name;
+
+  var titles = { "6": t.secItems, "7": t.secOrigin, "8": t.secTakeout };
+  $$(".fs > summary").forEach(function(el){
+    var n = el.querySelector(".n");
+    if (!n || !titles[n.textContent]) return;
+    /* 번호 칸 바로 뒤의 글자 마디만 바꾼다 */
+    var node = n.nextSibling;
+    while (node && node.nodeType !== 3) node = node.nextSibling;
+    if (node) node.nodeValue = titles[n.textContent];
+  });
+
+  var add = $('[data-add="menu"]'); if (add) add.textContent = t.addItem;
+  var pk = $("#f-packing"); if (pk) pk.parentNode.querySelector("b").textContent = t.packing;
+  var wa = $("#wrap-area"); if (wa) wa.style.display = t.showArea ? "" : "none";
+
+  $$(".rw", $("#rows-menu")).forEach(function(rw){
+    var i = rw.querySelector("[data-k='signature']");
+    if (i){ var em = i.parentNode.querySelector("i"); if (em) em.textContent = t.sigHint; }
+  });
+  renumber("menu");
+
+  $$(".tpl").forEach(function(btn){
+    btn.setAttribute("aria-pressed", String(btn.getAttribute("data-tpl") === TPL));
+  });
+}
+
+$$(".tpl").forEach(function(btn){
+  btn.onclick = function(){
+    var next = btn.getAttribute("data-tpl");
+    if (next === TPL) return;
+    var prev = TPLDEF[TPL];
+    TPL = next;
+    /* 색을 손대지 않았으면 새 업종 기본색으로 */
+    if (val("#f-color").toLowerCase() === prev.color.toLowerCase()){
+      setVal("#f-color", TD().color); markSwatch(TD().color);
+    }
+    applyTpl();
+    changed();
+    toast(TD().name + "로 바꿨어요");
+  };
+});
 
 /* 탭 */
 function tab(which){
@@ -1396,7 +1530,10 @@ try {
   if (raw) start = JSON.parse(raw);
 } catch(e){ start = null; }
 
+if (start && start.tpl && TPLDEF[start.tpl]) TPL = start.tpl;
+applyTpl();
 fillForm(start || EMPTY());
+applyTpl();
 changed();
 if (start) toast("전에 쓰던 내용을 이어서 불러왔어요");
 
@@ -1430,7 +1567,8 @@ setTimeout(function(){
     d.style.display = "none";      /* 다 되면 조용히 사라진다 */
     return;
   }
-  d.className = "";                /* 노란 줄로 남겨 무엇이 안 되는지 알린다 */
+  d.className = "";
+  d.style.display = "";            /* 안 되는 게 있을 때만 다시 보인다 */
   d.textContent = "이 브라우저에서는 " + bad.join(" · ") + " 가 안 됩니다. ("
     + os + " " + who + ") 다른 브라우저로 열어 보세요.";
 }, 2500);
