@@ -281,6 +281,23 @@ section{ margin-top:var(--sec-gap); }
 .gal.scroll img{ width:72%; max-width:300px; aspect-ratio:4/3; flex:none; scroll-snap-align:center; }
 
 /* ============================================================
+   사장님 소개 (책 페이지의 '저자 소개'에 해당)
+   ============================================================ */
+.owner{ display:flex; gap:18px; align-items:flex-start; }
+.owner img{
+  width:88px; height:88px; flex:none; border-radius:50%;
+  object-fit:cover; box-shadow:var(--shadow-s); background:var(--primary-soft);
+}
+.owner .o-body{ flex:1 1 auto; min-width:0; }
+.owner .o-name{ font-family:var(--font-title); font-size:19px; font-weight:700; letter-spacing:-.025em; }
+.owner .o-role{ margin-top:3px; font-size:13px; color:var(--primary); font-weight:650; }
+.owner .o-text{ margin-top:11px; font-size:15.5px; line-height:1.75; color:var(--ink-2); }
+@media (max-width:420px){
+  .owner{ gap:14px; }
+  .owner img{ width:70px; height:70px; }
+}
+
+/* ============================================================
    영업시간
    ============================================================ */
 .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow-s); padding:6px 20px; }
@@ -427,6 +444,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
     ],
     "priceNote": "표시 금액은 손님이 실제 내는 금액입니다."
   },
+
+  "owner": { "name": "", "role": "", "text": "", "photo": "" },
 
   "origin": [
     { "item": "쌀", "value": "국내산" },
@@ -816,6 +835,22 @@ function galleryBlock(){
   return h;
 }
 
+function ownerBlock(){
+  var o = SITE.owner || {};
+  if (!has(o.name) && !has(o.text) && !has(o.photo)) return "";
+
+  var h = '<section class="reveal"><div class="wrap">'
+        + '<div class="sec-head"><span class="eyebrow">People</span><h2 class="t-sec">만드는 사람</h2></div>'
+        + '<div class="owner">';
+  if (has(o.photo)) h += '<img src="' + esc(o.photo) + '" alt="' + esc(o.name || "사장님") + '" loading="lazy">';
+  h += '<div class="o-body">';
+  if (has(o.name)) h += '<div class="o-name">' + esc(o.name) + '</div>';
+  if (has(o.role)) h += '<div class="o-role">' + esc(o.role) + '</div>';
+  if (has(o.text)) h += '<div class="o-text">' + nl(o.text) + '</div>';
+  h += '</div></div></div></section>';
+  return h;
+}
+
 function hoursBlock(){
   if (!hasHours()) return "";
   var hs = SITE.hours || {};
@@ -972,7 +1007,7 @@ function render(){
   if (SITE.demo){
     html += '<div class="demo-ribbon"><b>틀 미리보기</b> · 내용은 모양을 보려고 넣은 예시입니다. 빌더에서 받는 파일에는 이 줄이 없습니다.</div>';
   }
-  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + hoursBlock()
+  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + ownerBlock() + hoursBlock()
         + placeBlock() + reviewBlock() + contactBlock() + footerBlock();
 
   document.getElementById("app").innerHTML = html;

@@ -479,6 +479,34 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
       </div>
     </details>
 
+    <!-- 9-2. 사장님 소개 -->
+    <details class="fs">
+      <summary><span class="n">9</span>사장님 소개</summary>
+      <div class="fs-body">
+        <span class="hint" style="display:block;margin-top:12px">누가 만드는지 보이면 손님이 믿어요. 셋 중 하나만 채워도 칸이 생깁니다.</span>
+        <div class="row2">
+          <label class="f"><span>이름 <span class="opt">선택</span></span>
+            <input type="text" id="f-owner-name" placeholder="예: 김소담">
+          </label>
+          <label class="f"><span>직함 <span class="opt">선택</span></span>
+            <input type="text" id="f-owner-role" placeholder="예: 주방장 · 20년">
+          </label>
+        </div>
+        <label class="f"><span>소개글 <span class="opt">선택</span></span>
+          <textarea id="f-owner-text" rows="3" placeholder="예: 어머니가 하시던 가게를 이어받았습니다.&#10;국물은 아직도 어머니 방식 그대로 냅니다."></textarea>
+        </label>
+        <div class="f"><span>사진 <span class="opt">선택 · 동그랗게 나옵니다</span></span>
+          <div class="pick">
+            <img class="thumb" id="th-owner" alt="">
+            <div class="pt"><b id="nm-owner">아직 없음</b>얼굴이 부담스러우면 손이나 주방 사진도 괜찮아요</div>
+            <label class="tbtn" for="fi-owner">고르기</label>
+            <button class="mini del" data-clearfor="owner" title="지우기">✕</button>
+            <input type="file" accept="image/*" id="fi-owner" class="filein">
+          </div>
+        </div>
+      </div>
+    </details>
+
     <!-- 10. 후기 -->
     <details class="fs">
       <summary><span class="n">10</span>손님 후기</summary>
@@ -634,7 +662,7 @@ function romanize(name){
    1. 사진 — 브라우저에서 WebP, 가로 800px 로 줄입니다
    ============================================================ */
 var MAXW = 800;
-var IMG = { hero:"", logo:"", mapImage:"" };
+var IMG = { hero:"", logo:"", mapImage:"", owner:"" };
 var GALLERY = [];
 
 function shrink(file, cb){
@@ -668,8 +696,8 @@ function shrink(file, cb){
 
 function wireOne(slot){
   var fi = $("#fi-" + slot);
-  var map = { hero:"#th-hero", logo:"#th-logo", mapImage:"#th-map" };
-  var nmap = { hero:"#nm-hero", logo:"#nm-logo", mapImage:"#nm-map" };
+  var map = { hero:"#th-hero", logo:"#th-logo", mapImage:"#th-map", owner:"#th-owner" };
+  var nmap = { hero:"#nm-hero", logo:"#nm-logo", mapImage:"#nm-map", owner:"#nm-owner" };
   $$('[data-clearfor="' + slot + '"]').forEach(function(b){ b.onclick = function(){
     IMG[slot] = ""; $(map[slot]).removeAttribute("src"); $(nmap[slot]).textContent = "아직 없음"; changed();
   }; });
@@ -685,7 +713,7 @@ function wireOne(slot){
     });
   };
 }
-["hero","logo","mapImage"].forEach(wireOne);
+["hero","logo","mapImage","owner"].forEach(wireOne);
 
 $("#fi-gallery").onchange = function(){
   var files = Array.prototype.slice.call(this.files || []);
@@ -940,6 +968,11 @@ function readForm(){
       mapImage: IMG.mapImage,
       info: readRows("info").filter(function(x){ return x.label && x.value; })
     },
+    owner: {
+      name: val("#f-owner-name"), role: val("#f-owner-role"),
+      text: ($("#f-owner-text").value || "").replace(/\r/g, "").trim(),
+      photo: IMG.owner
+    },
     hours: readHours(),
     notice: {
       on: chk("#f-notice-on"),
@@ -981,8 +1014,12 @@ function fillForm(d){
   setVal("#f-color", (d.theme && d.theme.primary) || "#C0452C");
   markSwatch(val("#f-color"));
 
-  IMG.hero = s.hero || ""; IMG.logo = s.logo || ""; IMG.mapImage = p.mapImage || "";
-  [["hero","#th-hero","#nm-hero"],["logo","#th-logo","#nm-logo"],["mapImage","#th-map","#nm-map"]].forEach(function(a){
+  var ow = d.owner || {};
+  setVal("#f-owner-name", ow.name); setVal("#f-owner-role", ow.role);
+  $("#f-owner-text").value = ow.text || "";
+
+  IMG.hero = s.hero || ""; IMG.logo = s.logo || ""; IMG.mapImage = p.mapImage || ""; IMG.owner = ow.photo || "";
+  [["hero","#th-hero","#nm-hero"],["logo","#th-logo","#nm-logo"],["mapImage","#th-map","#nm-map"],["owner","#th-owner","#nm-owner"]].forEach(function(a){
     if (IMG[a[0]]){ $(a[1]).src = IMG[a[0]]; $(a[2]).textContent = "넣었어요"; }
     else { $(a[1]).removeAttribute("src"); $(a[2]).textContent = "아직 없음"; }
   });
@@ -1246,7 +1283,7 @@ function doReset(){
   ask("처음부터 다시 할까요?", "지금 넣은 내용과 사진이 모두 지워집니다. 되돌릴 수 없어요.", null, "지우고 새로 시작",
     function(){
       try { localStorage.removeItem(KEY); } catch(e){}
-      IMG = { hero:"", logo:"", mapImage:"" }; GALLERY = [];
+      IMG = { hero:"", logo:"", mapImage:"", owner:"" }; GALLERY = [];
       fillForm(EMPTY());
       changed();
       toast("새로 시작합니다");
@@ -1274,6 +1311,7 @@ function EMPTY(){
       sat:{ open:"11:00", close:"20:00", breakStart:"", breakEnd:"" },
       sun:null
     }, lastOrder:"", holidayNote:"" },
+    owner:{ name:"", role:"", text:"", photo:"" },
     notice:{ on:false, label:"임시 휴무", reason:"", resumeDate:"" },
     menu:{ title:"대표 메뉴", items:[ {name:"",price:"",note:"",signature:true,photo:""}, {name:"",price:"",note:"",signature:false,photo:""}, {name:"",price:"",note:"",signature:false,photo:""} ],
             priceNote:"표시 금액은 손님이 실제 내는 금액입니다." },
@@ -1311,6 +1349,8 @@ function SAMPLE(){
     { item:"돼지고기", value:"국내산" },
     { item:"김치(배추·고춧가루)", value:"국내산" }
   ];
+  d.owner = { name:"김소담", role:"주방장 · 20년", photo:"",
+    text:"어머니가 하시던 가게를 이어받았습니다.\n국물은 아직도 어머니 방식 그대로 냅니다." };
   d.takeout.packing = true;
   return d;
 }
@@ -1318,7 +1358,7 @@ function SAMPLE(){
 $("#btn-sample").onclick = function(){
   ask("예시로 채울까요?", "지금 넣은 내용이 예시로 바뀝니다. 모양을 보는 용도이니, 받기 전에 꼭 실제 내용으로 고쳐 주세요.", null, "예시로 채우기",
     function(){
-      IMG = { hero:"", logo:"", mapImage:"" }; GALLERY = [];
+      IMG = { hero:"", logo:"", mapImage:"", owner:"" }; GALLERY = [];
       fillForm(SAMPLE()); changed();
       toast("예시입니다. 실제 내용으로 바꿔 주세요");
     });
