@@ -271,7 +271,7 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
   </button>
 </div>
 
-<div id="diag">점검 v4 · <b>자바스크립트가 돌지 않고 있어요.</b> 이 줄이 노란색 그대로면 이 화면에서는 사진 고르기와 미리보기가 안 됩니다.</div>
+<div id="diag"><b>이 화면에서는 빌더가 돌지 않습니다.</b> 앱 안의 미리보기 창이 아니라, 크롬·사파리 같은 브라우저에서 열어 주세요.</div>
 
 <div class="tabs" role="tablist">
   <button role="tab" id="tab-edit" aria-selected="true">입력하기</button>
@@ -560,7 +560,7 @@ window.onerror = function(msg, src, line, col){
   var d = document.getElementById("diag");
   if (d){
     d.className = "bad";
-    d.textContent = "점검 v4 · 멈춘 이유: " + msg + " (줄 " + line + ":" + col + ")";
+    d.textContent = "빌더가 멈췄습니다 — " + msg + " (줄 " + line + ":" + col + ")";
   }
   return false;
 };
@@ -2230,12 +2230,18 @@ setTimeout(function(){
   var canStore = false;
   try { localStorage.setItem("_t","1"); localStorage.removeItem("_t"); canStore = true; } catch(e){}
 
-  d.className = "ok";
-  d.textContent = "점검 v4 · 정상 · " + os + " " + who
-    + " · 사진칸 " + (canFile ? "O" : "X")
-    + " · 미리보기틀 " + (canFrame ? "O" : "X")
-    + " · 미리보기내용 " + (ifrOk === true ? "O" : (ifrOk === false ? "X" : ifrOk))
-    + " · 임시저장 " + (canStore ? "O" : "X");
+  var bad = [];
+  if (!canFile)  bad.push("사진 고르기");
+  if (!canFrame || ifrOk === false) bad.push("미리보기");
+  if (!canStore) bad.push("임시 저장");
+
+  if (!bad.length){
+    d.style.display = "none";      /* 다 되면 조용히 사라진다 */
+    return;
+  }
+  d.className = "";                /* 노란 줄로 남겨 무엇이 안 되는지 알린다 */
+  d.textContent = "이 브라우저에서는 " + bad.join(" · ") + " 가 안 됩니다. ("
+    + os + " " + who + ") 다른 브라우저로 열어 보세요.";
 }, 2500);
 })();
 </script>
