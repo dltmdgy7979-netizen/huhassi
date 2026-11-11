@@ -116,7 +116,7 @@ section{ margin-top:var(--sec-gap); }
    히어로
    ============================================================ */
 .hero{ position:relative; margin-top:0; overflow:hidden; }
-.hero.has-photo{ padding-top:20px; }
+.hero.has-photo{ padding-top:0; }
 .hero.has-photo::before{
   content:""; position:absolute; inset:0 0 auto; height:420px;
   background:
@@ -152,11 +152,20 @@ section{ margin-top:var(--sec-gap); }
 .hero-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
 .hero-actions .btn:only-child{ flex:1 1 100%; }
 
-.hero-photo{
-  margin-top:22px; border-radius:var(--radius); overflow:hidden;
-  box-shadow:var(--shadow-m); aspect-ratio:16/10; background:var(--primary-soft);
+/* 사진이 있으면 첫 화면을 사진이 통째로 채우고, 그 위에 상호와 영업 상태를 얹는다 */
+.hero-cover{ position:relative; height:clamp(300px, 52vh, 440px); overflow:hidden; background:var(--primary-soft); }
+.hero-cover > img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero-veil{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.76) 0%, rgba(0,0,0,.44) 40%, rgba(0,0,0,.06) 100%);
 }
-.hero-photo img{ width:100%; height:100%; object-fit:cover; }
+.hero-over{ position:absolute; left:0; right:0; bottom:0; padding-bottom:20px; }
+.hero-over .t-hero{ color:#fff; text-shadow:0 1px 16px rgba(0,0,0,.4); }
+.hero-over .tagline{ color:rgba(255,255,255,.92); margin-top:8px; text-shadow:0 1px 10px rgba(0,0,0,.4); }
+.hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
+.hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
+.hero-below{ padding-top:18px; }
+.hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
 .notice{
@@ -643,45 +652,57 @@ function heroBlock(){
   var s = SITE.shop || {}, c = SITE.contact || {};
   var st = statusNow();
   var hasPhoto = has(s.hero);
-  var inner = "";
 
-  /* 로고는 넣었을 때만. 빈 자리표시를 두면 오히려 허전해 보입니다 */
-  if (has(s.logo)) inner += '<img class="hero-logo" src="'+esc(s.logo)+'" alt="'+esc(s.name)+' 로고">';
-
+  var statusHtml = "";
   if (st){
-    inner += '<div class="status '+st.cls+'"><span class="dot"></span><span>'+esc(st.text)
-       + (has(st.sub) ? ' <span style="font-weight:500;opacity:.85">· '+esc(st.sub)+'</span>' : '')
-       + '</span></div>';
+    statusHtml = '<div class="status ' + st.cls + '"><span class="dot"></span><span>' + esc(st.text)
+      + (has(st.sub) ? ' <span style="font-weight:500;opacity:.85">· ' + esc(st.sub) + '</span>' : '')
+      + '</span></div>';
   }
 
-  inner += '<h1 class="t-hero">'+esc(s.name || "")+'</h1>';
-  if (has(s.tagline)) inner += '<p class="tagline">'+nl(s.tagline)+'</p>';
+  var nameHtml = '<h1 class="t-hero">' + esc(s.name || "") + '</h1>'
+    + (has(s.tagline) ? '<p class="tagline">' + nl(s.tagline) + '</p>' : '');
 
   /* 주 CTA: 길찾기 / 보조: 전화 (방문형) */
   var acts = [];
   var km = kakaoMapLink();
-  if (km) acts.push('<a class="btn btn-primary" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
-  if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화하기</a>');
-  if (acts.length) inner += '<div class="hero-actions">'+acts.join("")+'</div>';
+  if (km) acts.push('<a class="btn btn-primary" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
+  if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
+  var actsHtml = acts.length ? '<div class="hero-actions">' + acts.join("") + '</div>' : "";
 
+  var noticeHtml = "";
   var n = activeNotice();
   if (n){
-    inner += '<div class="notice"><div class="nt">'+esc(n.label || "안내")+'</div><div class="nb">';
     var bits = [];
     if (has(n.reason)) bits.push(nl(n.reason));
     if (has(n.resumeDate)){
       var d = String(n.resumeDate).split("-");
-      if (d.length === 3) bits.push(parseInt(d[1],10)+"월 "+parseInt(d[2],10)+"일부터 다시 엽니다.");
+      if (d.length === 3) bits.push(parseInt(d[1],10) + "월 " + parseInt(d[2],10) + "일부터 다시 엽니다.");
     }
-    inner += bits.join("<br>") + '</div></div>';
+    noticeHtml = '<div class="notice"><div class="nt">' + esc(n.label || "안내") + '</div>'
+      + '<div class="nb">' + bits.join("<br>") + '</div></div>';
   }
 
   if (hasPhoto){
-    inner += '<div class="hero-photo"><img src="'+esc(s.hero)+'" alt="'+esc(s.name||"")+' 대표 사진" loading="eager"></div>';
-    return '<header class="hero has-photo"><div class="wrap">' + inner + '</div></header>';
+    /* 사진이 첫 화면을 꽉 채우고, 상호·영업 상태를 그 위에 얹는다 */
+    return '<header class="hero has-photo">'
+      + '<div class="hero-cover">'
+      +   '<img src="' + esc(s.hero) + '" alt="' + esc(s.name || "") + ' 대표 사진" loading="eager">'
+      +   '<div class="hero-veil"></div>'
+      +   '<div class="hero-over"><div class="wrap">'
+      +     (has(s.logo) ? '<img class="hero-logo on-photo" src="' + esc(s.logo) + '" alt="">' : "")
+      +     statusHtml + nameHtml
+      +   '</div></div>'
+      + '</div>'
+      + '<div class="wrap hero-below">' + actsHtml + noticeHtml + '</div>'
+      + '</header>';
   }
-  /* 사진이 없으면 빈 칸을 두지 않고, 색 있는 패널과 큰 글자로 첫 화면을 채웁니다 */
-  return '<header class="hero no-photo"><div class="hero-panel"><div class="wrap">' + inner + '</div></div></header>';
+
+  /* 사진이 없으면 빈 칸을 두지 않고, 색 있는 패널과 큰 글자로 채운다 */
+  return '<header class="hero no-photo"><div class="hero-panel"><div class="wrap">'
+    + (has(s.logo) ? '<img class="hero-logo" src="' + esc(s.logo) + '" alt="' + esc(s.name) + ' 로고">' : "")
+    + statusHtml + nameHtml + actsHtml + noticeHtml
+    + '</div></div></header>';
 }
 
 function menuBlock(){
