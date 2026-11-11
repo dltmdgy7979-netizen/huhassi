@@ -49,8 +49,8 @@
 @media (min-width:768px){ :root{ --sec-gap:112px; --pad:32px; } }
 
 /* 섹션이 적을 때는 간격을 줄인다 (내용이 적을수록 구멍처럼 보이므로) */
-body.lean{ --sec-gap:60px; }
-@media (min-width:768px){ body.lean{ --sec-gap:76px; } }
+body.lean{ --sec-gap:48px; }
+@media (min-width:768px){ body.lean{ --sec-gap:64px; } }
 
 /* 어두운 화면 */
 @media (prefers-color-scheme:dark){
@@ -72,7 +72,7 @@ body{
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   font-size:16px; line-height:1.7; letter-spacing:-.011em;
   -webkit-font-smoothing:antialiased;
-  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));
 }
 @media (min-width:768px){ body{ padding-bottom:0; } }
 img{ max-width:100%; display:block; }
@@ -94,7 +94,7 @@ button{ font:inherit; color:inherit; }
    섹션 공통 + 페이드인
    ============================================================ */
 section{ margin-top:var(--sec-gap); }
-.sec-head{ margin-bottom:26px; }
+.sec-head{ margin-bottom:18px; }
 .sec-head .eyebrow{
   display:block; font-size:12px; font-weight:700; letter-spacing:.14em;
   color:var(--primary); text-transform:uppercase; margin-bottom:9px;
@@ -128,7 +128,7 @@ section{ margin-top:var(--sec-gap); }
 .hero.no-photo .hero-panel{
   background:linear-gradient(168deg, var(--primary-soft) 0%, var(--bg) 94%);
   border-bottom:1px solid var(--line);
-  padding:46px 0 54px;
+  padding:40px 0 40px;
 }
 .hero.no-photo .t-hero{ font-size:clamp(38px,11.2vw,62px); letter-spacing:-.04em; }
 .hero.no-photo .tagline{ font-size:clamp(16.5px,4.4vw,19.5px); max-width:26ch; }
@@ -249,7 +249,7 @@ section{ margin-top:var(--sec-gap); }
 .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow-s); padding:6px 20px; }
 .hrow{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); font-size:15px; }
 .hrow:last-child{ border-bottom:none; }
-.hrow .d{ font-weight:650; width:3.2em; flex:none; }
+.hrow .d{ font-weight:650; min-width:3.2em; flex:none; white-space:nowrap; }
 .hrow .v{ color:var(--ink-2); text-align:right; }
 .hrow .v .sub{ display:block; font-size:12.5px; color:var(--ink-3); margin-top:2px; }
 .hrow.today{ color:var(--primary-deep); }
@@ -287,7 +287,7 @@ section{ margin-top:var(--sec-gap); }
 /* ============================================================
    푸터
    ============================================================ */
-footer{ margin-top:var(--sec-gap); padding:34px 0 46px; border-top:1px solid var(--line); }
+footer{ margin-top:var(--sec-gap); padding:26px 0 22px; border-top:1px solid var(--line); }
 footer .f-name{ font-size:15px; font-weight:700; letter-spacing:-.02em; }
 footer .f-meta{ margin-top:8px; font-size:12.5px; color:var(--ink-3); line-height:1.75; }
 footer .f-meta a{ color:var(--ink-3); text-decoration:underline; text-underline-offset:2px; }
@@ -754,28 +754,45 @@ function hoursBlock(){
   if (!hasHours()) return "";
   var hs = SITE.hours || {};
   var today = kstNow().wd;
+
+  /* 월~일 차례로 보면서, 시간이 똑같이 이어지는 요일은 한 줄로 묶습니다.
+     ("월 11-21 / 화 11-21 / ..." 다섯 줄 대신 "월–금 11-21" 한 줄) */
+  var order = [1,2,3,4,5,6,0];
+  var groups = [];
+  order.forEach(function(wd){
+    var p = plan(wd);
+    var key = p ? [p.open, p.close, p.breakStart || "", p.breakEnd || ""].join("|") : "OFF";
+    var last = groups[groups.length - 1];
+    if (last && last.key === key) last.days.push(wd);
+    else groups.push({ key: key, days: [wd], p: p });
+  });
+
   var h = '<section class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Hours</span><h2 class="t-sec">영업시간</h2></div>'
         + '<div class="card">';
 
-  for (var i=1; i<=7; i++){
-    var wd = i % 7, p = plan(wd);
-    var cls = "hrow" + (wd === today ? " today" : "") + (p ? "" : " off");
-    h += '<div class="'+cls+'"><span class="d">'+DAYKR[wd]+'</span><span class="v num">';
-    if (!p) h += '정기휴무';
+  groups.forEach(function(g){
+    var label = g.days.length === 1
+      ? DAYKR[g.days[0]]
+      : DAYKR[g.days[0]] + "–" + DAYKR[g.days[g.days.length - 1]];
+    var isToday = g.days.indexOf(today) !== -1;
+    var cls = "hrow" + (isToday ? " today" : "") + (g.p ? "" : " off");
+
+    h += '<div class="' + cls + '"><span class="d">' + label + '</span><span class="v num">';
+    if (!g.p) h += '정기휴무';
     else {
-      h += esc(p.open) + ' – ' + esc(p.close);
-      if (has(p.breakStart) && has(p.breakEnd))
-        h += '<span class="sub">브레이크타임 '+esc(p.breakStart)+' – '+esc(p.breakEnd)+'</span>';
+      h += esc(g.p.open) + ' – ' + esc(g.p.close);
+      if (has(g.p.breakStart) && has(g.p.breakEnd))
+        h += '<span class="sub">브레이크타임 ' + esc(g.p.breakStart) + ' – ' + esc(g.p.breakEnd) + '</span>';
     }
     h += '</span></div>';
-  }
+  });
   h += '</div>';
 
   var notes = [];
   if (has(hs.lastOrder)) notes.push("라스트오더 " + hs.lastOrder);
   if (has(hs.holidayNote)) notes.push(hs.holidayNote);
-  if (notes.length) h += '<p class="hnote">'+esc(notes.join(" · "))+'</p>';
+  if (notes.length) h += '<p class="hnote">' + esc(notes.join(" · ")) + '</p>';
 
   h += '</div></section>';
   return h;
