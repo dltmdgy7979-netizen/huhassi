@@ -557,6 +557,23 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
 }
 @media (min-width:768px){ :root{ --sec-gap:112px; --pad:32px; } }
 
+/* 섹션이 적을 때는 간격을 줄인다 (내용이 적을수록 구멍처럼 보이므로) */
+body.lean{ --sec-gap:60px; }
+@media (min-width:768px){ body.lean{ --sec-gap:76px; } }
+
+/* 어두운 화면 */
+@media (prefers-color-scheme:dark){
+  :root{
+    --ink:#F3EEE9; --ink-2:#BCB3AB; --ink-3:#8A8079;
+    --line:#332D29; --bg:#141110; --card:#1C1917;
+    --ok:#4FBF88; --ok-soft:#15291F;
+    --warn:#D9A24E; --warn-soft:#2A2013;
+    --off:#99908A; --off-soft:#231F1C;
+    --shadow-s:0 1px 2px rgba(0,0,0,.34), 0 2px 8px rgba(0,0,0,.22);
+    --shadow-m:0 2px 6px rgba(0,0,0,.38), 0 12px 32px rgba(0,0,0,.3);
+  }
+}
+
 *,*::before,*::after{ box-sizing:border-box; }
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
 body{
@@ -607,14 +624,24 @@ section{ margin-top:var(--sec-gap); }
 /* ============================================================
    히어로
    ============================================================ */
-.hero{ position:relative; margin-top:0; padding-top:30px; overflow:hidden; }
-.hero::before{
+.hero{ position:relative; margin-top:0; overflow:hidden; }
+.hero.has-photo{ padding-top:30px; }
+.hero.has-photo::before{
   content:""; position:absolute; inset:0 0 auto; height:420px;
   background:
-    radial-gradient(120% 90% at 88% 0%, var(--primary-soft) 0%, rgba(251,237,232,0) 62%),
-    linear-gradient(180deg, #FFFDFB 0%, var(--bg) 100%);
+    radial-gradient(120% 90% at 88% 0%, var(--primary-soft) 0%, transparent 62%),
+    linear-gradient(180deg, var(--card) 0%, var(--bg) 100%);
   z-index:-1;
 }
+/* 사진이 없을 때: 빈 사진칸을 두지 않고, 색 있는 패널과 큰 글자로 첫 화면을 세운다 */
+.hero.no-photo .hero-panel{
+  background:linear-gradient(168deg, var(--primary-soft) 0%, var(--bg) 94%);
+  border-bottom:1px solid var(--line);
+  padding:46px 0 54px;
+}
+.hero.no-photo .t-hero{ font-size:clamp(38px,11.2vw,62px); letter-spacing:-.04em; }
+.hero.no-photo .tagline{ font-size:clamp(16.5px,4.4vw,19.5px); max-width:26ch; }
+.hero.no-photo .hero-actions{ margin-top:32px; }
 .hero-logo{ width:58px; height:58px; border-radius:15px; object-fit:cover; box-shadow:var(--shadow-s); margin-bottom:18px; }
 .status{
   display:inline-flex; align-items:center; gap:8px;
@@ -640,7 +667,7 @@ section{ margin-top:var(--sec-gap); }
 
 /* 긴급 공지 */
 .notice{
-  margin-top:26px; background:#FFF8F6; border:1px solid #F3D5CC;
+  margin-top:26px; background:var(--primary-soft); border:1px solid var(--line);
   border-left:4px solid var(--primary); border-radius:var(--radius-sm);
   padding:16px 18px;
 }
@@ -675,7 +702,7 @@ section{ margin-top:var(--sec-gap); }
   padding:17px 0; border-bottom:1px solid var(--line);
 }
 .m-item:first-child{ border-top:1px solid var(--line); }
-.m-item.is-signature{ background:linear-gradient(90deg, rgba(251,237,232,.72), rgba(251,237,232,0) 70%); }
+.m-item.is-signature{ background:linear-gradient(90deg, var(--primary-soft), transparent 72%); }
 .m-thumb{ width:76px; height:76px; border-radius:var(--radius-sm); object-fit:cover; flex:none; background:var(--primary-soft); }
 .m-main{ flex:1 1 auto; min-width:0; }
 .m-top{ display:flex; align-items:baseline; gap:10px; }
@@ -743,9 +770,11 @@ section{ margin-top:var(--sec-gap); }
 /* ============================================================
    오시는 길
    ============================================================ */
+.place-card{ padding:20px; }
 .addr{ font-size:17px; font-weight:650; letter-spacing:-.022em; line-height:1.55; }
+.place-card .chips{ margin-top:14px; }
 .map-img{ margin-top:18px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--line); }
-.info-list{ margin:20px 0 0; padding:0; list-style:none; }
+.info-list{ margin:18px 0 0; padding:0; list-style:none; }
 .info-list li{ display:flex; gap:11px; padding:9px 0; font-size:14.5px; color:var(--ink-2); border-top:1px solid var(--line); }
 .info-list li b{ color:var(--ink); font-weight:650; flex:none; min-width:4.6em; }
 
@@ -779,7 +808,7 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky{
   position:fixed; left:0; right:0; bottom:0; z-index:40;
   padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));
-  background:rgba(250,247,243,.88); backdrop-filter:blur(14px) saturate(1.2);
+  background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(14px) saturate(1.2);
   border-top:1px solid var(--line);
   display:flex; gap:9px; max-width:var(--maxw); margin:0 auto;
   transform:translateY(110%); transition:transform .32s cubic-bezier(.2,.8,.3,1);
@@ -886,15 +915,19 @@ function mix(rgb, to, t){
     return ("0" + Math.max(0, Math.min(255, x)).toString(16)).slice(-2);
   }).join("");
 }
+function isDark(){
+  return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
 function applyTheme(){
   var hex = (SITE.theme && SITE.theme.primary) || "";
   var rgb = hex2rgb(hex);
   if (!rgb) return;
-  var r = document.documentElement.style;
+  var r = document.documentElement.style, dark = isDark();
   r.setProperty("--primary", hex);
-  r.setProperty("--primary-deep", mix(rgb, [0,0,0], 0.24));
-  r.setProperty("--primary-soft", mix(rgb, [255,255,255], 0.90));
-  r.setProperty("--primary-shadow", "rgba(" + rgb.join(",") + ",.25)");
+  /* 어두운 화면에서는 진한 색을 오히려 밝게, 연한 색을 어둡게 만들어야 읽힙니다 */
+  r.setProperty("--primary-deep", dark ? mix(rgb, [255,255,255], 0.34) : mix(rgb, [0,0,0], 0.24));
+  r.setProperty("--primary-soft", dark ? mix(rgb, [20,17,16], 0.84)    : mix(rgb, [255,255,255], 0.90));
+  r.setProperty("--primary-shadow", "rgba(" + rgb.join(",") + (dark ? ",.34)" : ",.25)"));
 }
 
 /* ---------- 한국 시간 ---------- */
@@ -1020,42 +1053,46 @@ function kakaoMapLink(){
 function heroBlock(){
   var s = SITE.shop || {}, c = SITE.contact || {};
   var st = statusNow();
-  var h = '<header class="hero"><div class="wrap">';
+  var hasPhoto = has(s.hero);
+  var inner = "";
 
-  if (has(s.logo)) h += '<img class="hero-logo" src="'+esc(s.logo)+'" alt="'+esc(s.name)+' 로고">';
-  else h += '<img class="hero-logo" src="'+ph("logo")+'" alt="">';
+  /* 로고는 넣었을 때만. 빈 자리표시를 두면 오히려 허전해 보입니다 */
+  if (has(s.logo)) inner += '<img class="hero-logo" src="'+esc(s.logo)+'" alt="'+esc(s.name)+' 로고">';
 
   if (st){
-    h += '<div class="status '+st.cls+'"><span class="dot"></span><span>'+esc(st.text)
+    inner += '<div class="status '+st.cls+'"><span class="dot"></span><span>'+esc(st.text)
        + (has(st.sub) ? ' <span style="font-weight:500;opacity:.85">· '+esc(st.sub)+'</span>' : '')
        + '</span></div>';
   }
 
-  h += '<h1 class="t-hero">'+esc(s.name || "")+'</h1>';
-  if (has(s.tagline)) h += '<p class="tagline">'+nl(s.tagline)+'</p>';
+  inner += '<h1 class="t-hero">'+esc(s.name || "")+'</h1>';
+  if (has(s.tagline)) inner += '<p class="tagline">'+nl(s.tagline)+'</p>';
 
   /* 주 CTA: 길찾기 / 보조: 전화 (방문형) */
   var acts = [];
   var km = kakaoMapLink();
   if (km) acts.push('<a class="btn btn-primary" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화하기</a>');
-  if (acts.length) h += '<div class="hero-actions">'+acts.join("")+'</div>';
+  if (acts.length) inner += '<div class="hero-actions">'+acts.join("")+'</div>';
 
   var n = activeNotice();
   if (n){
-    h += '<div class="notice"><div class="nt">'+esc(n.label || "안내")+'</div><div class="nb">';
+    inner += '<div class="notice"><div class="nt">'+esc(n.label || "안내")+'</div><div class="nb">';
     var bits = [];
     if (has(n.reason)) bits.push(nl(n.reason));
     if (has(n.resumeDate)){
       var d = String(n.resumeDate).split("-");
       if (d.length === 3) bits.push(parseInt(d[1],10)+"월 "+parseInt(d[2],10)+"일부터 다시 엽니다.");
     }
-    h += bits.join("<br>") + '</div></div>';
+    inner += bits.join("<br>") + '</div></div>';
   }
 
-  h += '<div class="hero-photo"><img src="'+(has(s.hero) ? esc(s.hero) : ph("food"))+'" alt="'+esc(s.name||"")+' 대표 사진" loading="eager"></div>';
-  h += '</div></header>';
-  return h;
+  if (hasPhoto){
+    inner += '<div class="hero-photo"><img src="'+esc(s.hero)+'" alt="'+esc(s.name||"")+' 대표 사진" loading="eager"></div>';
+    return '<header class="hero has-photo"><div class="wrap">' + inner + '</div></header>';
+  }
+  /* 사진이 없으면 빈 칸을 두지 않고, 색 있는 패널과 큰 글자로 첫 화면을 채웁니다 */
+  return '<header class="hero no-photo"><div class="hero-panel"><div class="wrap">' + inner + '</div></div></header>';
 }
 
 function menuBlock(){
@@ -1163,7 +1200,8 @@ function placeBlock(){
   if (!has(p.address) && !info.length && !has(p.mapImage)) return "";
 
   var h = '<section class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Location</span><h2 class="t-sec">오시는 길</h2></div>';
+        + '<div class="sec-head"><span class="eyebrow">Location</span><h2 class="t-sec">오시는 길</h2></div>'
+        + '<div class="card place-card">';
 
   if (has(p.address)){
     h += '<div class="addr">'+esc(p.address)+'</div><div class="chips">';
@@ -1180,7 +1218,7 @@ function placeBlock(){
     info.forEach(function(x){ h += '<li><b>'+esc(x.label)+'</b><span>'+esc(x.value)+'</span></li>'; });
     h += '</ul>';
   }
-  h += '</div></section>';
+  h += '</div></div></section>';
   return h;
 }
 
@@ -1270,6 +1308,10 @@ function render(){
   document.getElementById("app").innerHTML = html;
   document.body.insertAdjacentHTML("beforeend", stickyBlock());
 
+  /* 보이는 칸이 적으면 간격을 좁힌다 */
+  var secCount = document.querySelectorAll("#app section").length;
+  document.body.classList.toggle("lean", secCount <= 4);
+
   if (has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
 
   bind();
@@ -1333,6 +1375,14 @@ function tick(){
 
 render();
 tick();
+
+/* 밝은↔어두운 화면이 바뀌면 색을 다시 계산 */
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  var onScheme = function(){ applyTheme(); };
+  if (mq.addEventListener) mq.addEventListener("change", onScheme);
+  else if (mq.addListener) mq.addListener(onScheme);
+}
 })();
 </script>
 
@@ -1785,6 +1835,60 @@ $("#f-color").oninput = function(){ markSwatch(this.value); changed(); };
    ============================================================ */
 var CLOSE = "<" + "/script>";
 
+/* 검색엔진이 읽는 가게 정보. 입력하지 않은 칸은 넣지 않습니다(지어내지 않기). */
+var LD_DAY = { mon:"Monday", tue:"Tuesday", wed:"Wednesday", thu:"Thursday", fri:"Friday", sat:"Saturday", sun:"Sunday" };
+
+function wonToNumber(t){
+  var m = String(t || "").replace(/[, ]/g, "").match(/(\d+)\s*원?/);
+  return m ? m[1] : null;
+}
+
+function jsonLd(d){
+  var o = { "@context":"https://schema.org", "@type":"Restaurant" };
+  if (!d.shop.name) return null;
+  o.name = d.shop.name;
+
+  var desc = (d.shop.tagline || "").replace(/\n+/g, " ").trim();
+  if (desc) o.description = desc;
+
+  if (d.place.address){
+    o.address = { "@type":"PostalAddress", "streetAddress": d.place.address, "addressCountry":"KR" };
+  }
+  if (d.contact.phone) o.telephone = d.contact.phone;
+  if (d.contact.email) o.email = d.contact.email;
+
+  var spec = [];
+  DAYS.forEach(function(k){
+    var h = d.hours.week[k];
+    if (h && h.open && h.close){
+      spec.push({ "@type":"OpeningHoursSpecification", "dayOfWeek":LD_DAY[k], "opens":h.open, "closes":h.close });
+    }
+  });
+  if (spec.length) o.openingHoursSpecification = spec;
+
+  var items = (d.menu.items || []).filter(function(x){ return x.name; }).map(function(x){
+    var mi = { "@type":"MenuItem", "name": x.name };
+    if (x.note) mi.description = x.note;
+    var price = wonToNumber(x.price);
+    if (price) mi.offers = { "@type":"Offer", "price": price, "priceCurrency":"KRW" };
+    return mi;
+  });
+  if (items.length){
+    o.hasMenu = { "@type":"Menu", "hasMenuSection":[ { "@type":"MenuSection", "name": d.menu.title || "대표 메뉴", "hasMenuItem": items } ] };
+  }
+
+  var same = (d.links || []).concat(d.takeout.links || [])
+    .map(function(l){ return l.url; })
+    .filter(function(u){ return /^https?:\/\//i.test(u || ""); });
+  if (d.contact.kakaoChannel && /^https?:\/\//i.test(d.contact.kakaoChannel)) same.push(d.contact.kakaoChannel);
+  if (same.length) o.sameAs = same;
+
+  if (d.takeout.packing) o.takeaway = true;
+  if (d.takeout.delivery) o.hasDeliveryMethod = "http://purl.org/goodrelations/v1#DeliveryModeOwnFleet";
+
+  return o;
+}
+
 function buildHTML(d){
   var css = $("#tpl-css").textContent;
   var rt  = $("#tpl-runtime").textContent;
@@ -1795,6 +1899,11 @@ function buildHTML(d){
   var desc  = (d.shop.tagline || "").replace(/\n+/g, " ").slice(0, 110)
             || (name + (area ? " · " + area : ""));
 
+  var ldObj = jsonLd(d);
+  var ld = ldObj
+    ? '<script type="application/ld+json">\n' + jsonSafe(ldObj) + '\n' + CLOSE + '\n'
+    : "";
+
   return '<!DOCTYPE html>\n<html lang="ko">\n<head>\n'
     + '<meta charset="utf-8">\n'
     + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
@@ -1803,7 +1912,10 @@ function buildHTML(d){
     + '<meta property="og:type" content="website">\n'
     + '<meta property="og:title" content="' + esc(title) + '">\n'
     + '<meta property="og:description" content="' + esc(desc) + '">\n'
-    + '<meta name="theme-color" content="#FAF7F3">\n'
+    + '<meta name="theme-color" content="#FAF7F3" media="(prefers-color-scheme: light)">\n'
+    + '<meta name="theme-color" content="#141110" media="(prefers-color-scheme: dark)">\n'
+    + ld
+    + '<meta name="color-scheme" content="light dark">\n'
     + '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n'
     + '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">\n'
     + '<style>\n' + css + '\n</style>\n'

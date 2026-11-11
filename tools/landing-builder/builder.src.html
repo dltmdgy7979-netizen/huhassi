@@ -981,6 +981,60 @@ $("#f-color").oninput = function(){ markSwatch(this.value); changed(); };
    ============================================================ */
 var CLOSE = "<" + "/script>";
 
+/* 검색엔진이 읽는 가게 정보. 입력하지 않은 칸은 넣지 않습니다(지어내지 않기). */
+var LD_DAY = { mon:"Monday", tue:"Tuesday", wed:"Wednesday", thu:"Thursday", fri:"Friday", sat:"Saturday", sun:"Sunday" };
+
+function wonToNumber(t){
+  var m = String(t || "").replace(/[, ]/g, "").match(/(\d+)\s*원?/);
+  return m ? m[1] : null;
+}
+
+function jsonLd(d){
+  var o = { "@context":"https://schema.org", "@type":"Restaurant" };
+  if (!d.shop.name) return null;
+  o.name = d.shop.name;
+
+  var desc = (d.shop.tagline || "").replace(/\n+/g, " ").trim();
+  if (desc) o.description = desc;
+
+  if (d.place.address){
+    o.address = { "@type":"PostalAddress", "streetAddress": d.place.address, "addressCountry":"KR" };
+  }
+  if (d.contact.phone) o.telephone = d.contact.phone;
+  if (d.contact.email) o.email = d.contact.email;
+
+  var spec = [];
+  DAYS.forEach(function(k){
+    var h = d.hours.week[k];
+    if (h && h.open && h.close){
+      spec.push({ "@type":"OpeningHoursSpecification", "dayOfWeek":LD_DAY[k], "opens":h.open, "closes":h.close });
+    }
+  });
+  if (spec.length) o.openingHoursSpecification = spec;
+
+  var items = (d.menu.items || []).filter(function(x){ return x.name; }).map(function(x){
+    var mi = { "@type":"MenuItem", "name": x.name };
+    if (x.note) mi.description = x.note;
+    var price = wonToNumber(x.price);
+    if (price) mi.offers = { "@type":"Offer", "price": price, "priceCurrency":"KRW" };
+    return mi;
+  });
+  if (items.length){
+    o.hasMenu = { "@type":"Menu", "hasMenuSection":[ { "@type":"MenuSection", "name": d.menu.title || "대표 메뉴", "hasMenuItem": items } ] };
+  }
+
+  var same = (d.links || []).concat(d.takeout.links || [])
+    .map(function(l){ return l.url; })
+    .filter(function(u){ return /^https?:\/\//i.test(u || ""); });
+  if (d.contact.kakaoChannel && /^https?:\/\//i.test(d.contact.kakaoChannel)) same.push(d.contact.kakaoChannel);
+  if (same.length) o.sameAs = same;
+
+  if (d.takeout.packing) o.takeaway = true;
+  if (d.takeout.delivery) o.hasDeliveryMethod = "http://purl.org/goodrelations/v1#DeliveryModeOwnFleet";
+
+  return o;
+}
+
 function buildHTML(d){
   var css = $("#tpl-css").textContent;
   var rt  = $("#tpl-runtime").textContent;
@@ -991,6 +1045,11 @@ function buildHTML(d){
   var desc  = (d.shop.tagline || "").replace(/\n+/g, " ").slice(0, 110)
             || (name + (area ? " · " + area : ""));
 
+  var ldObj = jsonLd(d);
+  var ld = ldObj
+    ? '<script type="application/ld+json">\n' + jsonSafe(ldObj) + '\n' + CLOSE + '\n'
+    : "";
+
   return '<!DOCTYPE html>\n<html lang="ko">\n<head>\n'
     + '<meta charset="utf-8">\n'
     + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
@@ -999,7 +1058,10 @@ function buildHTML(d){
     + '<meta property="og:type" content="website">\n'
     + '<meta property="og:title" content="' + esc(title) + '">\n'
     + '<meta property="og:description" content="' + esc(desc) + '">\n'
-    + '<meta name="theme-color" content="#FAF7F3">\n'
+    + '<meta name="theme-color" content="#FAF7F3" media="(prefers-color-scheme: light)">\n'
+    + '<meta name="theme-color" content="#141110" media="(prefers-color-scheme: dark)">\n'
+    + ld
+    + '<meta name="color-scheme" content="light dark">\n'
     + '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n'
     + '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">\n'
     + '<style>\n' + css + '\n</style>\n'

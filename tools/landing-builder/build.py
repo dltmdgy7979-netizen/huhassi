@@ -13,7 +13,7 @@ import re, sys, pathlib
 
 HERE = pathlib.Path(__file__).parent
 SRC = HERE / "builder.src.html"
-OUT = HERE / "builder.html"
+OUT = HERE.parent.parent / "public" / "demos" / "landing-builder" / "index.html"
 TEMPLATE = HERE / "template_restaurant.html"
 
 
@@ -48,9 +48,14 @@ def main():
             sys.exit(f"[실패] builder.src.html 에 {mark} 자리가 없습니다")
         src = src.replace(mark, body)
 
+    # 아직 갤러리에 올리기 전이라 검색에 잡히지 않게 한다
+    if 'name="robots"' not in src:
+        src = src.replace("<title>", '<meta name="robots" content="noindex, nofollow">\n<title>', 1)
+
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(src, encoding="utf-8")
     kb = len(src.encode("utf-8")) / 1024
-    print(f"[됨] builder.html  ({kb:.0f}KB)")
+    print(f"[됨] {OUT.relative_to(HERE.parent.parent)}  ({kb:.0f}KB)")
     print(f"     틀 CSS {len(css)/1024:.0f}KB · 동작 코드 {len(runtime)/1024:.0f}KB")
 
 
