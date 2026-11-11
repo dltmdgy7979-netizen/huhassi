@@ -28,7 +28,8 @@ const noindex = (r) =>
   /(^|\/)template\.html$/.test(r) ||
   r === "404.html" ||
   r === "request.html" ||
-  r === "demos/landing-builder/index.html";
+  r === "demos/landing-builder/index.html" ||
+  r.indexOf("demos/landing-builder/sample/") === 0;
 
 let changed = 0;
 const pages = [];
