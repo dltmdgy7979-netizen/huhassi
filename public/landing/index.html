@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>내 가게 홈페이지 만들기</title>
+<meta name="description" content="가입 없이, 무료로. 가게 이름과 사진만 넣으면 홈페이지 파일 하나가 만들어집니다.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAF7F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141110" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+/* ============================================================
+   이름을 바꾸려면 HTML 안의 "내 가게 홈페이지" 를 찾아 바꾸면 됩니다.
+   색을 바꾸려면 아래 --accent 한 줄만 바꾸면 됩니다.
+   ============================================================ */
+:root{
+  --accent:#A3620E;
+  --accent-deep:#7D4A0A;
+  --accent-soft:#F7EFE3;
+  --ink:#1B1714; --ink-2:#4A423C; --ink-3:#8A7F77;
+  --line:#E8E0D8; --bg:#FAF7F3; --card:#FFFFFF;
+  --radius:18px; --radius-sm:12px;
+  --shadow-s:0 1px 2px rgba(27,23,20,.05), 0 2px 8px rgba(27,23,20,.04);
+  --shadow-m:0 2px 6px rgba(27,23,20,.06), 0 12px 32px rgba(27,23,20,.07);
+  --maxw:720px; --pad:22px; --gap:72px;
+  --font-title:"Noto Serif KR","Pretendard Variable",Pretendard,serif;
+}
+@media (min-width:768px){ :root{ --gap:92px; --pad:32px; } }
+@media (prefers-color-scheme:dark){
+  :root{
+    --accent:#D7903A; --accent-deep:#EFB469; --accent-soft:#2A2114;
+    --ink:#F3EEE9; --ink-2:#BCB3AB; --ink-3:#8A8079;
+    --line:#332D29; --bg:#141110; --card:#1C1917;
+    --shadow-s:0 1px 2px rgba(0,0,0,.34), 0 2px 8px rgba(0,0,0,.22);
+    --shadow-m:0 2px 6px rgba(0,0,0,.38), 0 12px 32px rgba(0,0,0,.3);
+  }
+}
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo",sans-serif;
+  font-size:16px; line-height:1.75; letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased;
+  word-break:keep-all; overflow-wrap:break-word;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));
+}
+@media (min-width:768px){ body{ padding-bottom:0; } }
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+section{ margin-top:var(--gap); }
+section.band{
+  padding:calc(var(--gap) * .68) 0; background:var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.t-hero{ font-family:var(--font-title); font-size:clamp(34px,9.6vw,54px); line-height:1.22; letter-spacing:-.035em; font-weight:700; margin:0; }
+.t-sec{ font-family:var(--font-title); font-size:clamp(21px,5vw,28px); line-height:1.32; letter-spacing:-.025em; font-weight:600; margin:0; }
+.eyebrow{ display:block; font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--accent); text-transform:uppercase; margin-bottom:9px; }
+.sec-head{ margin-bottom:20px; }
+.lead{ margin:14px 0 0; font-size:clamp(16px,4.3vw,18.5px); color:var(--ink-2); line-height:1.75; max-width:30ch; }
+
+/* 머리말 */
+.top{ padding:18px 0 0; }
+.brandline{ display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:-.03em; font-size:15.5px; }
+.brandline i{ width:22px; height:22px; border-radius:7px; background:var(--accent); display:block; flex:none; }
+
+/* 첫 화면 */
+.hero{ padding:34px 0 0; }
+.hero-panel{
+  background:linear-gradient(168deg, var(--accent-soft) 0%, var(--bg) 94%);
+  border-bottom:1px solid var(--line); padding:38px 0 42px; margin-top:22px;
+}
+.tag{
+  display:inline-flex; align-items:center; gap:7px; padding:7px 13px; border-radius:999px;
+  background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow-s);
+  font-size:13px; font-weight:650; color:var(--ink-2); margin-bottom:16px;
+}
+.tag .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+.acts{ display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:50px; padding:0 22px; border-radius:13px; border:1px solid transparent;
+  font-size:16px; font-weight:700; letter-spacing:-.018em; text-decoration:none; cursor:pointer;
+  transition:transform .12s ease, background .2s ease, border-color .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:active{ transform:scale(.975); }
+.btn-primary{ background:var(--accent); color:#fff; box-shadow:0 2px 10px rgba(163,98,14,.26); }
+.btn-primary:hover{ background:var(--accent-deep); }
+.btn-ghost{ background:var(--card); color:var(--ink); border-color:var(--line); box-shadow:var(--shadow-s); }
+.btn-ghost:hover{ border-color:#D6CCC2; }
+.btn svg{ width:18px; height:18px; flex:none; }
+.note{ margin-top:14px; font-size:13px; color:var(--ink-3); }
+
+/* 3단계 */
+.steps{ list-style:none; margin:0; padding:0; counter-reset:s; }
+.steps li{ display:flex; gap:15px; padding:16px 0; border-top:1px solid var(--line); }
+.steps li:first-child{ border-top:0; padding-top:0; }
+.steps .n{
+  counter-increment:s; flex:none; width:30px; height:30px; border-radius:50%;
+  background:var(--accent); color:#fff; font-size:13.5px; font-weight:750;
+  display:grid; place-items:center; margin-top:2px;
+}
+.steps .n::before{ content:counter(s); }
+.steps b{ display:block; font-size:16.5px; font-weight:700; letter-spacing:-.022em; }
+.steps span{ display:block; margin-top:4px; font-size:14px; color:var(--ink-3); line-height:1.65; }
+
+/* 업종 */
+.kinds{ display:grid; gap:10px; }
+@media (min-width:560px){ .kinds{ grid-template-columns:1fr 1fr; } }
+.kind{
+  display:block; text-decoration:none; background:var(--card);
+  border:1px solid var(--line); border-radius:var(--radius); padding:16px 17px;
+  box-shadow:var(--shadow-s); transition:border-color .18s, transform .12s;
+}
+.kind:hover{ border-color:var(--accent); }
+.kind:active{ transform:scale(.99); }
+.kind .k-top{ display:flex; align-items:center; gap:9px; }
+.kind .swatch{ width:14px; height:14px; border-radius:5px; flex:none; }
+.kind b{ font-size:16px; font-weight:700; letter-spacing:-.024em; }
+.kind i{ font-style:normal; display:block; margin-top:6px; font-size:13.5px; color:var(--ink-3); line-height:1.6; }
+.kind .see{ display:inline-block; margin-top:10px; font-size:13px; font-weight:650; color:var(--accent); }
+
+/* 들어가는 것 */
+.feats{ list-style:none; margin:0; padding:0; }
+.feats li{ padding:15px 0; border-top:1px solid var(--line); }
+.feats li:first-child{ border-top:0; padding-top:0; }
+.feats b{ display:block; font-size:16px; font-weight:700; letter-spacing:-.022em; }
+.feats span{ display:block; margin-top:4px; font-size:14.5px; color:var(--ink-2); line-height:1.7; }
+
+/* 솔직한 안내 */
+.honest{ background:var(--accent-soft); border:1px solid var(--line); border-radius:var(--radius); padding:20px; }
+.honest h3{ margin:0 0 10px; font-size:16px; font-weight:750; letter-spacing:-.024em; }
+.honest p{ margin:0 0 10px; font-size:14.5px; color:var(--ink-2); line-height:1.75; }
+.honest p:last-child{ margin-bottom:0; }
+
+footer{ margin-top:var(--gap); padding:26px 0 30px; border-top:1px solid var(--line); }
+footer .f1{ font-size:14.5px; font-weight:650; }
+footer .f2{ margin-top:7px; font-size:12.5px; color:var(--ink-3); line-height:1.75; }
+footer a{ color:var(--ink-3); }
+
+/* 하단 고정 */
+.sticky{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(14px) saturate(1.2);
+  border-top:1px solid var(--line);
+  max-width:var(--maxw); margin:0 auto;
+  transform:translateY(110%); transition:transform .3s cubic-bezier(.2,.8,.3,1);
+}
+.sticky.show{ transform:none; }
+.sticky .btn{ width:100%; }
+@media (min-width:768px){ .sticky{ display:none; } }
+
+.reveal{ opacity:0; transform:translateY(16px); transition:opacity .65s cubic-bezier(.2,.7,.3,1), transform .65s cubic-bezier(.2,.7,.3,1); }
+.reveal.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){ .reveal{ opacity:1; transform:none; transition:none; } }
+</style>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="후하씨 huhassi">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/landing/index.html">
+<meta property="og:title" content="내 가게 홈페이지 만들기">
+<meta property="og:description" content="가입 없이, 무료로. 가게 이름과 사진만 넣으면 홈페이지 파일 하나가 만들어집니다.">
+<meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <div class="brandline"><i></i>내 가게 홈페이지</div>
+</div></div>
+
+<header class="hero">
+  <div class="hero-panel"><div class="wrap">
+    <div class="tag"><span class="dot"></span>가입 없음 · 무료 · 10분</div>
+    <h1 class="t-hero">우리 가게 홈페이지,<br>직접 만드세요.</h1>
+    <p class="lead">업종을 고르고, 가게 이름과 사진을 넣으면 끝입니다.
+      파일 하나가 내려오고, 그걸 올리면 손님이 볼 수 있는 홈페이지가 됩니다.</p>
+    <div class="acts">
+      <a class="btn btn-primary" href="make/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        만들기 시작
+      </a>
+      <a class="btn btn-ghost" href="sample/restaurant.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        결과물 먼저 보기
+      </a>
+    </div>
+    <div class="note">만드는 동안 쓴 내용은 이 기기에만 저장됩니다. 서버로 보내지 않습니다.</div>
+  </div></div>
+</header>
+
+<section class="reveal"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">How it works</span><h2 class="t-sec">세 걸음이면 됩니다</h2></div>
+  <ol class="steps">
+    <li><span class="n"></span><div><b>업종을 고릅니다</b>
+      <span>음식점·판매점·미용·학원·방문수리 다섯 가지. 고른 업종에 맞는 칸만 나옵니다.</span></div></li>
+    <li><span class="n"></span><div><b>넣고 싶은 것만 넣습니다</b>
+      <span>비워둔 칸은 화면에 아예 나오지 않습니다. 옆에서 바뀌는 모습이 바로 보입니다.</span></div></li>
+    <li><span class="n"></span><div><b>파일을 받습니다</b>
+      <span>HTML 파일 하나가 내려옵니다. 사진도 그 안에 들어 있어 따로 챙길 게 없습니다.</span></div></li>
+  </ol>
+</div></section>
+
+<section class="reveal band"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">Templates</span><h2 class="t-sec">업종에 맞는 다섯 가지</h2></div>
+  <div class="kinds">
+    <a class="kind" href="sample/restaurant.html">
+      <div class="k-top"><span class="swatch" style="background:#C0452C"></span><b>음식점 · 카페</b></div>
+      <i>메뉴와 가격, 영업시간, 원산지. 지금 열었는지가 저절로 표시됩니다.</i>
+      <span class="see">예시 보기 →</span></a>
+    <a class="kind" href="sample/shop.html">
+      <div class="k-top"><span class="swatch" style="background:#2F6B4F"></span><b>판매점</b></div>
+      <i>꽃집·정육점·반찬·옷. 상품 사진이 큰 카드로 나옵니다.</i>
+      <span class="see">예시 보기 →</span></a>
+    <a class="kind" href="sample/beauty.html">
+      <div class="k-top"><span class="swatch" style="background:#9B6F75"></span><b>미용 · 뷰티</b></div>
+      <i>시술 가격과 걸리는 시간, 예약 방법과 취소 규정까지.</i>
+      <span class="see">예시 보기 →</span></a>
+    <a class="kind" href="sample/academy.html">
+      <div class="k-top"><span class="swatch" style="background:#36506E"></span><b>학원 · 교습소</b></div>
+      <i>과정과 대상, 교습비와 반환 기준. 게시 의무가 있는 항목을 빠뜨리지 않습니다.</i>
+      <span class="see">예시 보기 →</span></a>
+    <a class="kind" href="sample/repair.html">
+      <div class="k-top"><span class="swatch" style="background:#1F6E8C"></span><b>방문 수리 · 설치</b></div>
+      <i>에어컨·보일러·누수·열쇠. 매장 지도 대신 서비스 지역이 들어갑니다.</i>
+      <span class="see">예시 보기 →</span></a>
+  </div>
+</div></section>
+
+<section class="reveal"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">Inside</span><h2 class="t-sec">가만히 둬도 도는 것들</h2></div>
+  <ul class="feats">
+    <li><b>지금 영업 중인지 저절로 바뀝니다</b>
+      <span>영업시간만 넣어두면 "지금 영업 중 · 21:00까지", "브레이크타임 · 17:00 다시 엽니다" 처럼 한국 시간에 맞춰 알아서 표시됩니다.</span></li>
+    <li><b>임시 휴무가 저절로 풀립니다</b>
+      <span>다시 여는 날을 적어두면 그날이 지나는 순간 안내가 사라집니다. 파일을 다시 올리지 않아도 됩니다.</span></li>
+    <li><b>지도와 전화가 바로 연결됩니다</b>
+      <span>주소만 넣으면 카카오맵과 네이버 지도 버튼이 같이 생깁니다. 전화번호는 누르면 바로 걸립니다.</span></li>
+    <li><b>밤에는 어두운 화면으로 바뀝니다</b>
+      <span>손님 휴대폰 설정을 따라갑니다. 늦은 시간에 보는 손님이 많은 업종일수록 차이가 큽니다.</span></li>
+    <li><b>검색엔진이 읽을 정보가 들어갑니다</b>
+      <span>상호·주소·전화·영업시간·메뉴가 기계가 읽는 형식으로 같이 들어갑니다.</span></li>
+  </ul>
+</div></section>
+
+<section class="reveal band"><div class="wrap">
+  <div class="honest">
+    <h3>미리 말씀드릴 것</h3>
+    <p><b>올리는 건 직접 하셔야 합니다.</b> 지금은 파일을 받아서 무료 호스팅에 올리는 방식입니다.
+      어렵지 않지만 몇 단계가 있고, 따라 하실 수 있게 안내를 준비하고 있습니다.</p>
+    <p><b>사진이 결과를 가릅니다.</b> 가게 사진 서너 장만 있어도 느낌이 완전히 달라집니다.
+      없어도 만들어지지만, 휴대폰으로라도 몇 장 찍어두시길 권합니다.</p>
+    <p><b>없는 것을 지어내지 않습니다.</b> 후기나 수상 같은 건 직접 넣으신 것만 나옵니다.
+      비워두면 그 칸 자체가 화면에서 사라집니다.</p>
+  </div>
+</div></section>
+
+<section class="reveal"><div class="wrap" style="text-align:center">
+  <h2 class="t-sec">지금 해보셔도 됩니다</h2>
+  <p class="lead" style="margin:12px auto 0">가입도, 결제도 없습니다. 마음에 안 들면 그냥 닫으시면 됩니다.</p>
+  <div class="acts" style="justify-content:center">
+    <a class="btn btn-primary" href="make/">만들기 시작</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="f1">내 가게 홈페이지</div>
+  <div class="f2">
+    소상공인을 위한 무료 홈페이지 만들기 도구입니다.<br>
+    <a href="/">후하씨</a>에서 만들고 있습니다.
+  </div>
+</div></footer>
+
+<div class="sticky" id="sticky"><a class="btn btn-primary" href="make/">만들기 시작</a></div>
+
+<script>
+(function(){
+  "use strict";
+  var els = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { rootMargin:"0px 0px -8% 0px", threshold:.08 });
+    for (var i=0;i<els.length;i++) io.observe(els[i]);
+  } else {
+    for (var j=0;j<els.length;j++) els[j].classList.add("in");
+  }
+  var st = document.getElementById("sticky");
+  var onScroll = function(){ st.classList.toggle("show", window.scrollY > 420); };
+  window.addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

@@ -23,13 +23,13 @@ const pick = (html, re) => { const m = html.match(re); return m ? m[1].trim() : 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 // 템플릿(샘플 페이지)과 404 는 검색에 올리지 않는다
-// demos/landing-builder: 아직 만드는 중이라 갤러리에도 검색에도 올리지 않는다
+// landing(만들기 도구): 아직 만드는 중이라 갤러리에도 검색에도 올리지 않는다
 const noindex = (r) =>
   /(^|\/)template\.html$/.test(r) ||
   r === "404.html" ||
   r === "request.html" ||
-  r === "demos/landing-builder/index.html" ||
-  r.indexOf("demos/landing-builder/sample/") === 0;
+  r.indexOf("landing/") === 0 ||
+  r === "demos/landing-builder/index.html";
 
 let changed = 0;
 const pages = [];

@@ -6,8 +6,8 @@
 
 <!-- ===== BUILDER:HEAD_START (빌더가 이 블록을 통째로 바꿔 씁니다) ===== -->
 <meta name="robots" content="noindex, nofollow">
-<title>소담식당 · 광주 동구</title>
-<meta name="description" content="광주 동구 작은 한식당. 매일 아침 끓이는 국과 제철 반찬.">
+<title>시원공조 · 광주 전 지역</title>
+<meta name="description" content="광주 전 지역 에어컨·보일러 출장 수리. 전화 주시면 그날 안에 답드립니다.">
 <meta name="theme-color" content="#FAF7F3">
 <!-- ===== BUILDER:HEAD_END ===== -->
 
@@ -21,10 +21,10 @@
    디자인 토큰
    ============================================================ */
 :root{
-  --primary:#C0452C;          /* 업종 색 방향: 음식 색에서 가져온 따뜻한 1색 */
-  --primary-deep:#9A3620;
-  --primary-soft:#FBEDE8;
-  --primary-shadow:rgba(192,69,44,.25);
+  --primary:#1F6E8C;          /* 업종 색 방향: 깨끗하고 믿음직한 1색 (냉방 블루) */
+  --primary-deep:#18566D;
+  --primary-soft:#E6F0F4;
+  --primary-shadow:rgba(31,110,140,.25);
   --ink:#1B1714;
   --ink-2:#4A423C;
   --ink-3:#8A7F77;
@@ -149,6 +149,12 @@ section.band{
 .hero.no-photo .t-hero{ font-size:clamp(38px,11.2vw,62px); letter-spacing:-.04em; }
 .hero.no-photo .tagline{ font-size:clamp(16.5px,4.4vw,19.5px); max-width:26ch; }
 .hero.no-photo .hero-actions{ margin-top:22px; }
+.hero-area{
+  display:inline-flex; align-items:center; gap:6px; margin-top:12px;
+  font-size:14.5px; font-weight:650; color:var(--primary-deep); letter-spacing:-.018em;
+}
+.hero-area svg{ width:16px; height:16px; flex:none; }
+.hero-over .hero-area{ color:#fff; opacity:.95; }
 .hero-logo{ width:54px; height:54px; border-radius:14px; object-fit:cover; box-shadow:var(--shadow-s); margin-bottom:12px; }
 .status{
   display:inline-flex; align-items:center; gap:8px;
@@ -242,7 +248,7 @@ section.band{
   border-radius:var(--radius); overflow:hidden; background:var(--card);
   border:1px solid var(--line); box-shadow:var(--shadow-s);
 }
-.m-card img{ width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--primary-soft); display:block; }
+.m-card img{ width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--primary-soft); display:block; }
 .m-card .c-body{ padding:13px 15px 15px; }
 .m-card .c-name{ font-size:16.5px; font-weight:700; letter-spacing:-.024em; }
 .m-card .c-price{ margin-top:5px; font-size:17px; font-weight:750; color:var(--primary); letter-spacing:-.02em; }
@@ -273,6 +279,7 @@ section.band{
 .m-main{ flex:1 1 auto; min-width:0; }
 .m-top{ display:flex; align-items:baseline; gap:10px; }
 .m-name{ font-size:16.5px; font-weight:680; letter-spacing:-.022em; flex:1 1 auto; }
+.m-target{ font-size:12.5px; font-weight:650; color:var(--primary); margin-left:3px; white-space:nowrap; }
 .m-price{ font-size:16.5px; font-weight:700; letter-spacing:-.02em; white-space:nowrap; }
 .m-note{ margin-top:4px; font-size:13.5px; color:var(--ink-3); line-height:1.55; }
 .badge{
@@ -354,6 +361,19 @@ section.band{
    오시는 길
    ============================================================ */
 .place-card{ padding:20px; }
+
+/* 진행 순서 */
+.steps{ list-style:none; margin:0; padding:0; counter-reset:step; }
+.steps li{ display:flex; gap:14px; padding:14px 0; border-top:1px solid var(--line); }
+.steps li:first-child{ border-top:0; padding-top:0; }
+.steps .s-num{
+  counter-increment:step; flex:none;
+  width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff;
+  font-size:13px; font-weight:750; display:grid; place-items:center; margin-top:1px;
+}
+.steps .s-num::before{ content:counter(step); }
+.steps .s-name{ font-size:16px; font-weight:680; letter-spacing:-.022em; }
+.steps .s-note{ margin-top:4px; font-size:13.5px; color:var(--ink-3); line-height:1.6; }
 .addr{ font-size:17px; font-weight:650; letter-spacing:-.022em; line-height:1.55; }
 .place-card .chips{ margin-top:14px; }
 .map-img{ margin-top:18px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--line); }
@@ -416,13 +436,13 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 
 .sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 </style>
-<link rel="icon" href="../../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="후하씨 huhassi">
 <meta property="og:locale" content="ko_KR">
-<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/landing-builder/sample/restaurant.html">
-<meta property="og:title" content="소담식당 · 광주 동구">
-<meta property="og:description" content="광주 동구 작은 한식당. 매일 아침 끓이는 국과 제철 반찬.">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/landing/sample/repair.html">
+<meta property="og:title" content="시원공조 · 광주 전 지역">
+<meta property="og:description" content="광주 전 지역 에어컨·보일러 출장 수리. 전화 주시면 그날 안에 답드립니다.">
 <meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -437,89 +457,63 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 <script type="application/json" id="site-data">
 {
   "demo": true,
-  "theme": { "primary": "#C0452C" },
-
+  "theme": { "primary": "#1F6E8C", "titleFont": "sans" },
   "shop": {
-    "name": "소담식당",
-    "tagline": "광주 동구 작은 한식당.\n매일 아침 끓이는 국과 제철 반찬.",
-    "logo": "",
-    "hero": "",
-    "quote": "매일 아침 네 시에 국을 올립니다.\n그게 전부입니다.",
-    "quoteBy": "소담식당 주인 드림"
+    "name": "시원공조",
+    "tagline": "광주 전 지역 에어컨·보일러 출장 수리.\n전화 주시면 그날 안에 답드립니다.",
+    "logo": "", "hero": "",
+    "quote": "고치면 될 것을 바꾸라고 하지 않습니다.\n바꿔야 할 것은 바꿔야 한다고 말씀드립니다.",
+    "quoteBy": "시원공조"
   },
-
-  "contact": {
-    "phone": "010-0000-0000",
-    "sms": "",
-    "kakaoChannel": "",
-    "email": ""
-  },
-
+  "contact": { "phone": "010-0000-0000", "sms": "010-0000-0000", "booking": "", "kakaoChannel": "", "email": "" },
   "place": {
-    "address": "광주 동구 예시로 12",
-    "kakaoMapUrl": "",
-    "naverMapUrl": "",
-    "mapImage": "",
+    "address": "광주 전 지역 · 담양 · 화순 · 나주 일부",
+    "kakaoMapUrl": "", "naverMapUrl": "", "mapImage": "",
     "info": [
-      { "label": "주차", "value": "가게 앞 2대 · 인근 공영주차장 도보 3분" },
-      { "label": "단체석", "value": "최대 12명 (하루 전 예약)" }
+      { "label": "당일 방문", "value": "오전에 연락 주시면 대체로 그날 갑니다" },
+      { "label": "먼 지역", "value": "나주·화순은 출장비가 1만원 더 붙습니다" }
     ]
   },
-
   "hours": {
     "week": {
-      "mon": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
-      "tue": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
-      "wed": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
-      "thu": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
-      "fri": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
-      "sat": { "open": "11:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
+      "mon": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
+      "tue": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
+      "wed": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
+      "thu": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
+      "fri": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
+      "sat": { "open": "08:00", "close": "17:00", "breakStart": "", "breakEnd": "" },
       "sun": null
     },
-    "lastOrder": "20:30",
-    "holidayNote": "공휴일은 정상 영업합니다."
+    "lastOrder": "", "holidayNote": "일요일은 급한 건만 전화로 받습니다."
   },
-
-  "notice": { "on": false, "label": "임시 휴무", "reason": "", "resumeDate": "" },
-
+  "notice": { "on": false, "label": "오늘 접수 마감", "reason": "", "resumeDate": "" },
   "menu": {
-    "title": "대표 메뉴",
+    "title": "하는 일",
     "items": [
-      { "name": "소담 백반", "price": "11,000원", "signature": true, "note": "국 + 반찬 7가지 · 밥 추가 무료", "photo": "" },
-      { "name": "들깨 수제비", "price": "10,000원", "signature": true, "note": "주문 후 반죽을 떼서 끓입니다", "photo": "" },
-      { "name": "제철 나물 비빔밥", "price": "10,000원", "signature": false, "note": "", "photo": "" },
-      { "name": "묵은지 등갈비찜 (2인)", "price": "32,000원", "signature": false, "note": "", "photo": "" },
-      { "name": "계란말이", "price": "8,000원", "signature": false, "note": "", "photo": "" }
+      { "name": "에어컨 수리", "target": "", "duration": "", "price": "진단 후 안내", "signature": true, "note": "냉방 약함 · 물 떨어짐 · 소음 · 전원 안 들어옴", "photo": "" },
+      { "name": "에어컨 설치 · 이전", "target": "", "duration": "", "price": "100,000원부터", "signature": true, "note": "배관 길이와 실외기 위치에 따라 달라집니다", "photo": "" },
+      { "name": "에어컨 분해 청소", "target": "", "duration": "", "price": "80,000원부터", "signature": false, "note": "벽걸이 기준. 스탠드·천장형은 따로 안내드립니다", "photo": "" },
+      { "name": "보일러 점검 · 수리", "target": "", "duration": "", "price": "진단 후 안내", "signature": false, "note": "온수 안 나옴 · 난방 안 됨 · 소음 · 누수", "photo": "" }
     ],
-    "priceNote": "표시 금액은 손님이 실제 내는 금액입니다."
+    "priceNote": "적어둔 금액은 가장 흔한 경우의 시작 가격입니다. 현장 상태에 따라 달라질 수 있어, 작업 전에 최종 금액을 먼저 알려드리고 동의하신 뒤에 시작합니다."
   },
-
   "owner": { "name": "", "role": "", "text": "", "photo": "" },
-
-  "origin": [
-    { "item": "쌀", "value": "국내산" },
-    { "item": "돼지고기", "value": "국내산" },
-    { "item": "김치(배추·고춧가루)", "value": "국내산" }
-  ],
-
-  "takeout": {
-    "packing": true,
-    "delivery": false,
-    "links": []
+  "booking": {
+    "howto": "30,000원. 수리를 맡기시면 작업비에 포함되어 따로 받지 않습니다.",
+    "deposit": "부품비와 작업비는 따로 계산됩니다. 부품은 들어간 것만 실비로 받습니다.",
+    "cancel": "저녁 7시 이후와 일요일은 20,000원이 더 붙습니다. 미리 말씀드립니다.",
+    "notes": "작업한 부분은 3개월 동안 같은 증상이면 무상으로 다시 봐드립니다."
   },
-
-  "gallery": [],
-
-  "reviews": [],
-
-  "links": [],
-
-  "legal": {
-    "bizName": "",
-    "bizNumber": "",
-    "privacyUrl": "",
-    "credit": true
-  }
+  "steps": [
+    { "name": "전화 또는 사진으로 증상 알려주기", "note": "증상 사진을 보내주시면 견적이 훨씬 빨라집니다" },
+    { "name": "예상 비용 안내", "note": "전화로 대략의 범위를 먼저 말씀드립니다" },
+    { "name": "방문 · 진단", "note": "현장에서 최종 금액을 알려드리고 동의를 받습니다" },
+    { "name": "작업 · 확인 후 결제", "note": "다 된 것을 함께 확인한 뒤에 계산합니다" }
+  ],
+  "origin": [],
+  "takeout": { "packing": false, "delivery": false, "area": "", "links": [] },
+  "gallery": [], "reviews": [], "links": [],
+  "legal": { "bizName": "", "bizNumber": "", "privacyUrl": "", "credit": true }
 }
 </script>
 
@@ -769,21 +763,20 @@ function heroBlock(){
       + '</span></div>';
   }
 
+  var areaTxt = (SITE.place || {}).address;
   var nameHtml = '<h1 class="t-hero">' + esc(s.name || "") + '</h1>'
+    + (has(areaTxt) ? '<div class="hero-area">' + I.pin + '<span>' + esc(areaTxt) + '</span></div>' : "")
     + (has(s.tagline) ? '<p class="tagline">' + nl(s.tagline) + '</p>' : '');
 
-  /* 예약 링크가 있으면 그게 주 CTA, 없으면 길찾기 (방문형) */
+  /* 예약형: 예약하기가 주 CTA. 예약 링크가 없으면 전화가 주 CTA가 된다 */
   var acts = [];
   var km = kakaoMapLink();
   var bk = safeUrl(c.booking);
-  if (bk){
-    acts.push('<a class="btn btn-primary" href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + '예약하기</a>');
-    if (km) acts.push('<a class="btn btn-ghost" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
-    else if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
-  } else {
-    if (km) acts.push('<a class="btn btn-primary" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
-    if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
-  }
+  var kk = safeUrl(c.kakaoChannel);
+  /* 출장형: 전화가 가장 크게. 보조는 '사진 보내서 견적' (증상 사진이 견적을 빠르게 한다) */
+  if (has(c.phone)) acts.push('<a class="btn btn-primary" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화 걸기</a>');
+  if (has(c.sms)) acts.push('<a class="btn btn-ghost" href="sms:' + esc(String(c.sms).replace(/[^0-9+]/g,"")) + '">' + I.sms + '사진 보내 견적</a>');
+  else if (kk) acts.push('<a class="btn btn-ghost" href="' + esc(kk.replace(/\/+$/,"") + "/chat") + '" target="_blank" rel="noopener">' + I.chat + '카톡으로 견적</a>');
   var actsHtml = acts.length ? '<div class="hero-actions">' + acts.join("") + '</div>' : "";
 
   var noticeHtml = "";
@@ -845,8 +838,8 @@ function menuBlock(){
   var sorted = withPhoto.concat(noPhoto);
 
   var h = '<section id="sec-menu" class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Menu</span>'
-        + '<h2 class="t-sec">'+esc(m.title || "대표 메뉴")+'</h2></div>';
+        + '<div class="sec-head"><span class="eyebrow">Services</span>'
+        + '<h2 class="t-sec">'+esc(m.title || "하는 일")+'</h2></div>';
 
   if (cards.length){
     h += '<div class="m-cards">';
@@ -854,7 +847,9 @@ function menuBlock(){
       h += '<div class="m-card"><img src="'+esc(it.photo)+'" alt="'+esc(it.name)+'" loading="lazy">'
          + '<div class="c-body"><div class="c-name">'+esc(it.name)+'</div>'
          + (has(it.price) ? '<div class="c-price num">'+esc(it.price)+'</div>' : "")
-         + (has(it.note) ? '<div class="c-note">'+esc(it.note)+'</div>' : "")
+         + ((has(it.duration) || has(it.note)) ? '<div class="c-note">'
+             + [has(it.duration) ? '약 '+esc(it.duration) : '', has(it.note) ? esc(it.note) : '']
+                 .filter(Boolean).join(' · ') + '</div>' : "")
          + '</div></div>';
     });
     h += '</div>';
@@ -867,10 +862,15 @@ function menuBlock(){
     if (has(it.photo)) h += '<img class="m-thumb" src="'+esc(it.photo)+'" alt="'+esc(it.name)+'" loading="lazy">';
     h += '<div class="m-main"><div class="m-top"><div class="m-name">'
        + (it.signature ? '<span class="badge">대표</span>' : '')
-       + esc(it.name) + '</div>';
+       + esc(it.name)
+       + (has(it.target) ? ' <span class="m-target">' + esc(it.target) + '</span>' : '')
+       + '</div>';
     if (has(it.price)) h += '<div class="m-price num">'+esc(it.price)+'</div>';
     h += '</div>';
-    if (has(it.note)) h += '<div class="m-note">'+esc(it.note)+'</div>';
+    var sub = [];
+    if (has(it.duration)) sub.push(esc(it.duration));
+    if (has(it.note)) sub.push(esc(it.note));
+    if (sub.length) h += '<div class="m-note">'+sub.join(' · ')+'</div>';
     h += '</div></div>';
   });
   h += '</div>';
@@ -907,7 +907,7 @@ function galleryBlock(){
   if (!g.length) return "";
   var scroll = g.length >= 4;
   var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">가게 사진</h2></div>'
+        + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">작업 사례</h2></div>'
         + '<div class="gal'+(scroll ? " scroll" : "")+'">';
   g.forEach(function(x){
     h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || "가게 사진")+'" loading="lazy">';
@@ -921,7 +921,7 @@ function ownerBlock(){
   if (!has(o.name) && !has(o.text) && !has(o.photo)) return "";
 
   var h = '<section id="sec-owner" class="reveal band"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">People</span><h2 class="t-sec">만드는 사람</h2></div>'
+        + '<div class="sec-head"><span class="eyebrow">People</span><h2 class="t-sec">찾아가는 사람</h2></div>'
         + '<div class="owner">';
   if (has(o.photo)) h += '<img src="' + esc(o.photo) + '" alt="' + esc(o.name || "사장님") + '" loading="lazy">';
   h += '<div class="o-body">';
@@ -929,6 +929,33 @@ function ownerBlock(){
   if (has(o.role)) h += '<div class="o-role">' + esc(o.role) + '</div>';
   if (has(o.text)) h += '<div class="o-text">' + nl(o.text) + '</div>';
   h += '</div></div></div></section>';
+  return h;
+}
+
+function bookingBlock(){
+  var b = SITE.booking || {}, c = SITE.contact || {};
+  var rows = [];
+  if (has(b.howto))   rows.push(["출장비", b.howto]);
+  if (has(b.deposit)) rows.push(["부품비 · 작업비", b.deposit]);
+  if (has(b.cancel))  rows.push(["야간 · 휴일", b.cancel]);
+  if (has(b.notes))   rows.push(["무상 A/S", b.notes]);
+  var bk = safeUrl(c.booking);
+  if (!rows.length && !bk) return "";
+
+  var h = '<section id="sec-booking" class="reveal band"><div class="wrap">'
+        + '<div class="sec-head"><span class="eyebrow">Pricing</span><h2 class="t-sec">비용 안내</h2></div>'
+        + '<div class="card place-card">';
+  if (rows.length){
+    h += '<ul class="info-list" style="margin-top:0">';
+    rows.forEach(function(r, i){
+      h += '<li' + (i === 0 ? ' style="border-top:0;padding-top:0"' : '') + '>'
+         + '<b>' + esc(r[0]) + '</b><span>' + nl(r[1]) + '</span></li>';
+    });
+    h += '</ul>';
+  }
+  if (bk) h += '<a class="btn btn-primary" style="width:100%;margin-top:' + (rows.length ? '16px' : '0') + '" '
+             + 'href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + '상담 신청</a>';
+  h += '</div></div></section>';
   return h;
 }
 
@@ -950,7 +977,7 @@ function hoursBlock(){
   });
 
   var h = '<section id="sec-hours" class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Hours</span><h2 class="t-sec">영업시간</h2></div>'
+        + '<div class="sec-head"><span class="eyebrow">Hours</span><h2 class="t-sec">접수 시간</h2></div>'
         + '<div class="card">';
 
   groups.forEach(function(g){
@@ -981,30 +1008,39 @@ function hoursBlock(){
 }
 
 function placeBlock(){
+  /* 출장형은 매장 지도를 만들지 않는다. 대신 '어디까지 가는지'를 보여준다 */
   var p = SITE.place || {};
   var info = (p.info || []).filter(function(x){ return x && has(x.label) && has(x.value); });
-  if (!has(p.address) && !info.length && !has(p.mapImage)) return "";
+  if (!has(p.address) && !info.length) return "";
 
   var h = '<section id="sec-place" class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Location</span><h2 class="t-sec">오시는 길</h2></div>'
+        + '<div class="sec-head"><span class="eyebrow">Area</span><h2 class="t-sec">서비스 지역</h2></div>'
         + '<div class="card place-card">';
-
-  if (has(p.address)){
-    h += '<div class="addr">'+esc(p.address)+'</div><div class="chips">';
-    h += '<button type="button" class="chip" data-copy="'+esc(p.address)+'" data-msg="주소를 복사했어요">'+I.copy+'주소 복사</button>';
-    var km = kakaoMapLink();
-    if (km) h += '<a class="chip" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'카카오맵</a>';
-    var nm = naverMapLink();
-    if (nm) h += '<a class="chip" href="'+esc(nm)+'" target="_blank" rel="noopener">'+I.pin+'네이버 지도</a>';
-    h += '</div>';
-  }
-  if (has(p.mapImage)) h += '<div class="map-img"><img src="'+esc(p.mapImage)+'" alt="약도" loading="lazy"></div>';
+  if (has(p.address)) h += '<div class="addr">' + nl(p.address) + '</div>';
   if (info.length){
-    h += '<ul class="info-list">';
-    info.forEach(function(x){ h += '<li><b>'+esc(x.label)+'</b><span>'+esc(x.value)+'</span></li>'; });
+    h += '<ul class="info-list"' + (has(p.address) ? '' : ' style="margin-top:0"') + '>';
+    info.forEach(function(x, i){
+      h += '<li' + (!has(p.address) && i === 0 ? ' style="border-top:0;padding-top:0"' : '') + '>'
+         + '<b>' + esc(x.label) + '</b><span>' + nl(x.value) + '</span></li>';
+    });
     h += '</ul>';
   }
   h += '</div></div></section>';
+  return h;
+}
+
+/* 진행 순서 — 출장 수리는 "어떻게 진행되나"가 불안을 줄인다 */
+function stepsBlock(){
+  var st = (SITE.steps || []).filter(function(x){ return x && has(x.name); });
+  if (!st.length) return "";
+  var h = '<section id="sec-steps" class="reveal band"><div class="wrap">'
+        + '<div class="sec-head"><span class="eyebrow">How it works</span><h2 class="t-sec">진행 순서</h2></div>'
+        + '<ol class="steps">';
+  st.forEach(function(x){
+    h += '<li><span class="s-num"></span><div><div class="s-name">' + esc(x.name) + '</div>'
+       + (has(x.note) ? '<div class="s-note">' + esc(x.note) + '</div>' : '') + '</div></li>';
+  });
+  h += '</ol></div></section>';
   return h;
 }
 
@@ -1078,18 +1114,18 @@ function footerBlock(){
 function stickyBlock(){
   var c = SITE.contact || {}, km = kakaoMapLink(), bk = safeUrl(c.booking);
   var parts = [];
-  if (bk) parts.push('<a class="btn btn-primary lead" href="'+esc(bk)+'" target="_blank" rel="noopener">'+I.cal+'예약하기</a>');
-  else if (km) parts.push('<a class="btn btn-primary lead" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
-  if (has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
-  else if (bk && km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
+  var kk2 = safeUrl(c.kakaoChannel);
+  if (has(c.phone)) parts.push('<a class="btn btn-primary lead" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화 걸기</a>');
+  if (has(c.sms)) parts.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'사진 견적</a>');
+  else if (kk2) parts.push('<a class="btn btn-ghost" href="'+esc(kk2.replace(/\/+$/,"")+"/chat")+'" target="_blank" rel="noopener">'+I.chat+'카톡</a>');
   if (!parts.length) return "";
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
 /* 위쪽 차례 막대 — 있는 칸만 모아서 만든다 */
 function topnavBlock(){
-  var map = [["sec-menu","메뉴"],["sec-photo","사진"],["sec-owner","소개"],
-             ["sec-hours","영업시간"],["sec-place","오시는 길"],["sec-contact","문의"]];
+  var map = [["sec-menu","서비스"],["sec-booking","비용"],["sec-photo","작업 사례"],["sec-owner","소개"],
+             ["sec-steps","진행 순서"],["sec-place","지역"],["sec-hours","접수 시간"],["sec-contact","문의"]];
   var links = [];
   map.forEach(function(m){
     if (document.getElementById(m[0])) links.push('<a href="#'+m[0]+'">'+m[1]+'</a>');
@@ -1105,8 +1141,8 @@ function render(){
   if (SITE.demo){
     html += '<div class="demo-ribbon"><b>틀 미리보기</b> · 내용은 모양을 보려고 넣은 예시입니다. 빌더에서 받는 파일에는 이 줄이 없습니다.</div>';
   }
-  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + ownerBlock() + hoursBlock()
-        + placeBlock() + reviewBlock() + contactBlock() + footerBlock();
+  html += heroBlock() + quoteBlock() + menuBlock() + bookingBlock() + galleryBlock() + ownerBlock()
+        + stepsBlock() + placeBlock() + hoursBlock() + reviewBlock() + contactBlock() + footerBlock();
 
   document.getElementById("app").innerHTML = html;
   document.body.insertAdjacentHTML("beforeend", stickyBlock());

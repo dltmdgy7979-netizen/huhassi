@@ -6,8 +6,8 @@
 
 <!-- ===== BUILDER:HEAD_START (빌더가 이 블록을 통째로 바꿔 씁니다) ===== -->
 <meta name="robots" content="noindex, nofollow">
-<title>결 헤어 · 광주 동구</title>
-<meta name="description" content="광주 동구 1인 미용실. 예약제로 한 분씩만 봅니다.">
+<title>소담식당 · 광주 동구</title>
+<meta name="description" content="광주 동구 작은 한식당. 매일 아침 끓이는 국과 제철 반찬.">
 <meta name="theme-color" content="#FAF7F3">
 <!-- ===== BUILDER:HEAD_END ===== -->
 
@@ -21,10 +21,10 @@
    디자인 토큰
    ============================================================ */
 :root{
-  --primary:#9B6F75;          /* 업종 색 방향: 저채도의 부드러운 1색 */
-  --primary-deep:#7C565C;
-  --primary-soft:#F3EDEE;
-  --primary-shadow:rgba(155,111,117,.25);
+  --primary:#C0452C;          /* 업종 색 방향: 음식 색에서 가져온 따뜻한 1색 */
+  --primary-deep:#9A3620;
+  --primary-soft:#FBEDE8;
+  --primary-shadow:rgba(192,69,44,.25);
   --ink:#1B1714;
   --ink-2:#4A423C;
   --ink-3:#8A7F77;
@@ -242,7 +242,7 @@ section.band{
   border-radius:var(--radius); overflow:hidden; background:var(--card);
   border:1px solid var(--line); box-shadow:var(--shadow-s);
 }
-.m-card img{ width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--primary-soft); display:block; }
+.m-card img{ width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--primary-soft); display:block; }
 .m-card .c-body{ padding:13px 15px 15px; }
 .m-card .c-name{ font-size:16.5px; font-weight:700; letter-spacing:-.024em; }
 .m-card .c-price{ margin-top:5px; font-size:17px; font-weight:750; color:var(--primary); letter-spacing:-.02em; }
@@ -416,13 +416,13 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 
 .sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 </style>
-<link rel="icon" href="../../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="후하씨 huhassi">
 <meta property="og:locale" content="ko_KR">
-<meta property="og:url" content="https://huhassi-web-production.up.railway.app/demos/landing-builder/sample/beauty.html">
-<meta property="og:title" content="결 헤어 · 광주 동구">
-<meta property="og:description" content="광주 동구 1인 미용실. 예약제로 한 분씩만 봅니다.">
+<meta property="og:url" content="https://huhassi-web-production.up.railway.app/landing/sample/restaurant.html">
+<meta property="og:title" content="소담식당 · 광주 동구">
+<meta property="og:description" content="광주 동구 작은 한식당. 매일 아침 끓이는 국과 제철 반찬.">
 <meta property="og:image" content="https://huhassi-web-production.up.railway.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -437,56 +437,89 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 <script type="application/json" id="site-data">
 {
   "demo": true,
-  "theme": { "primary": "#9B6F75", "titleFont": "sans" },
+  "theme": { "primary": "#C0452C" },
+
   "shop": {
-    "name": "결 헤어",
-    "tagline": "광주 동구 1인 미용실.\n예약제로 한 분씩만 봅니다.",
-    "logo": "", "hero": "",
-    "quote": "머리는 그날 하루가 아니라\n한 달을 같이 삽니다.",
-    "quoteBy": "결 헤어 원장 드림"
+    "name": "소담식당",
+    "tagline": "광주 동구 작은 한식당.\n매일 아침 끓이는 국과 제철 반찬.",
+    "logo": "",
+    "hero": "",
+    "quote": "매일 아침 네 시에 국을 올립니다.\n그게 전부입니다.",
+    "quoteBy": "소담식당 주인 드림"
   },
-  "contact": { "phone": "010-0000-0000", "sms": "", "booking": "", "kakaoChannel": "", "email": "" },
+
+  "contact": {
+    "phone": "010-0000-0000",
+    "sms": "",
+    "kakaoChannel": "",
+    "email": ""
+  },
+
   "place": {
     "address": "광주 동구 예시로 12",
-    "kakaoMapUrl": "", "naverMapUrl": "", "mapImage": "",
-    "info": [ { "label": "주차", "value": "건물 뒤 2대" } ]
+    "kakaoMapUrl": "",
+    "naverMapUrl": "",
+    "mapImage": "",
+    "info": [
+      { "label": "주차", "value": "가게 앞 2대 · 인근 공영주차장 도보 3분" },
+      { "label": "단체석", "value": "최대 12명 (하루 전 예약)" }
+    ]
   },
+
   "hours": {
     "week": {
-      "mon": null,
-      "tue": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "wed": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "thu": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "fri": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "sat": { "open": "10:00", "close": "18:00", "breakStart": "", "breakEnd": "" },
+      "mon": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
+      "tue": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
+      "wed": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
+      "thu": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
+      "fri": { "open": "11:00", "close": "21:00", "breakStart": "15:00", "breakEnd": "17:00" },
+      "sat": { "open": "11:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
       "sun": null
     },
-    "lastOrder": "", "holidayNote": "월요일과 일요일은 쉽니다."
+    "lastOrder": "20:30",
+    "holidayNote": "공휴일은 정상 영업합니다."
   },
-  "notice": { "on": false, "label": "예약 마감", "reason": "", "resumeDate": "" },
+
+  "notice": { "on": false, "label": "임시 휴무", "reason": "", "resumeDate": "" },
+
   "menu": {
-    "title": "시술 메뉴와 가격",
+    "title": "대표 메뉴",
     "items": [
-      { "name": "여성 커트", "price": "25,000원", "duration": "40분", "signature": true, "note": "상담 포함", "photo": "" },
-      { "name": "뿌리 염색", "price": "60,000원부터", "duration": "1시간 30분", "signature": true, "note": "기장이 어깨 아래면 10,000원 추가", "photo": "" },
-      { "name": "일반 펌", "price": "90,000원부터", "duration": "2시간", "signature": false, "note": "기장·모량에 따라 추가요금이 있습니다", "photo": "" },
-      { "name": "클리닉", "price": "50,000원", "duration": "40분", "signature": false, "note": "", "photo": "" }
+      { "name": "소담 백반", "price": "11,000원", "signature": true, "note": "국 + 반찬 7가지 · 밥 추가 무료", "photo": "" },
+      { "name": "들깨 수제비", "price": "10,000원", "signature": true, "note": "주문 후 반죽을 떼서 끓입니다", "photo": "" },
+      { "name": "제철 나물 비빔밥", "price": "10,000원", "signature": false, "note": "", "photo": "" },
+      { "name": "묵은지 등갈비찜 (2인)", "price": "32,000원", "signature": false, "note": "", "photo": "" },
+      { "name": "계란말이", "price": "8,000원", "signature": false, "note": "", "photo": "" }
     ],
-    "priceNote": "표시 금액은 재료비·부가세를 포함한, 손님이 실제 내시는 금액입니다. \u0027부터\u0027로 적힌 시술은 상담 때 최종 금액을 먼저 알려드립니다."
+    "priceNote": "표시 금액은 손님이 실제 내는 금액입니다."
   },
-  "owner": {
-    "name": "", "role": "", "text": "", "photo": ""
+
+  "owner": { "name": "", "role": "", "text": "", "photo": "" },
+
+  "origin": [
+    { "item": "쌀", "value": "국내산" },
+    { "item": "돼지고기", "value": "국내산" },
+    { "item": "김치(배추·고춧가루)", "value": "국내산" }
+  ],
+
+  "takeout": {
+    "packing": true,
+    "delivery": false,
+    "links": []
   },
-  "booking": {
-    "howto": "네이버 예약 또는 전화로 받습니다. 당일 예약은 전화로 주세요.",
-    "deposit": "없습니다.",
-    "cancel": "예약 시간 2시간 전까지 연락 주시면 변경·취소가 됩니다.",
-    "notes": "1인샵이라 늦으시면 시술 시간이 줄어듭니다. 늦을 것 같으면 미리 연락 주세요."
-  },
-  "origin": [],
-  "takeout": { "packing": false, "delivery": false, "area": "", "links": [] },
-  "gallery": [], "reviews": [], "links": [],
-  "legal": { "bizName": "", "bizNumber": "", "privacyUrl": "", "credit": true }
+
+  "gallery": [],
+
+  "reviews": [],
+
+  "links": [],
+
+  "legal": {
+    "bizName": "",
+    "bizNumber": "",
+    "privacyUrl": "",
+    "credit": true
+  }
 }
 </script>
 
@@ -739,19 +772,17 @@ function heroBlock(){
   var nameHtml = '<h1 class="t-hero">' + esc(s.name || "") + '</h1>'
     + (has(s.tagline) ? '<p class="tagline">' + nl(s.tagline) + '</p>' : '');
 
-  /* 예약형: 예약하기가 주 CTA. 예약 링크가 없으면 전화가 주 CTA가 된다 */
+  /* 예약 링크가 있으면 그게 주 CTA, 없으면 길찾기 (방문형) */
   var acts = [];
   var km = kakaoMapLink();
   var bk = safeUrl(c.booking);
-  var kk = safeUrl(c.kakaoChannel);
   if (bk){
     acts.push('<a class="btn btn-primary" href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + '예약하기</a>');
-    if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
-    else if (kk) acts.push('<a class="btn btn-ghost" href="' + esc(kk.replace(/\/+$/,"") + "/chat") + '" target="_blank" rel="noopener">' + I.chat + '카톡 문의</a>');
+    if (km) acts.push('<a class="btn btn-ghost" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
+    else if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
   } else {
-    if (has(c.phone)) acts.push('<a class="btn btn-primary" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '예약 전화</a>');
-    if (kk) acts.push('<a class="btn btn-ghost" href="' + esc(kk.replace(/\/+$/,"") + "/chat") + '" target="_blank" rel="noopener">' + I.chat + '카톡 문의</a>');
-    else if (km) acts.push('<a class="btn btn-ghost" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
+    if (km) acts.push('<a class="btn btn-primary" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
+    if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
   }
   var actsHtml = acts.length ? '<div class="hero-actions">' + acts.join("") + '</div>' : "";
 
@@ -814,8 +845,8 @@ function menuBlock(){
   var sorted = withPhoto.concat(noPhoto);
 
   var h = '<section id="sec-menu" class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Services</span>'
-        + '<h2 class="t-sec">'+esc(m.title || "시술 메뉴와 가격")+'</h2></div>';
+        + '<div class="sec-head"><span class="eyebrow">Menu</span>'
+        + '<h2 class="t-sec">'+esc(m.title || "대표 메뉴")+'</h2></div>';
 
   if (cards.length){
     h += '<div class="m-cards">';
@@ -823,9 +854,7 @@ function menuBlock(){
       h += '<div class="m-card"><img src="'+esc(it.photo)+'" alt="'+esc(it.name)+'" loading="lazy">'
          + '<div class="c-body"><div class="c-name">'+esc(it.name)+'</div>'
          + (has(it.price) ? '<div class="c-price num">'+esc(it.price)+'</div>' : "")
-         + ((has(it.duration) || has(it.note)) ? '<div class="c-note">'
-             + [has(it.duration) ? '약 '+esc(it.duration) : '', has(it.note) ? esc(it.note) : '']
-                 .filter(Boolean).join(' · ') + '</div>' : "")
+         + (has(it.note) ? '<div class="c-note">'+esc(it.note)+'</div>' : "")
          + '</div></div>';
     });
     h += '</div>';
@@ -841,10 +870,7 @@ function menuBlock(){
        + esc(it.name) + '</div>';
     if (has(it.price)) h += '<div class="m-price num">'+esc(it.price)+'</div>';
     h += '</div>';
-    var sub = [];
-    if (has(it.duration)) sub.push('약 ' + esc(it.duration));
-    if (has(it.note)) sub.push(esc(it.note));
-    if (sub.length) h += '<div class="m-note">'+sub.join(' · ')+'</div>';
+    if (has(it.note)) h += '<div class="m-note">'+esc(it.note)+'</div>';
     h += '</div></div>';
   });
   h += '</div>';
@@ -881,7 +907,7 @@ function galleryBlock(){
   if (!g.length) return "";
   var scroll = g.length >= 4;
   var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">작업 사진</h2></div>'
+        + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">가게 사진</h2></div>'
         + '<div class="gal'+(scroll ? " scroll" : "")+'">';
   g.forEach(function(x){
     h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || "가게 사진")+'" loading="lazy">';
@@ -895,7 +921,7 @@ function ownerBlock(){
   if (!has(o.name) && !has(o.text) && !has(o.photo)) return "";
 
   var h = '<section id="sec-owner" class="reveal band"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">People</span><h2 class="t-sec">담당 디자이너</h2></div>'
+        + '<div class="sec-head"><span class="eyebrow">People</span><h2 class="t-sec">만드는 사람</h2></div>'
         + '<div class="owner">';
   if (has(o.photo)) h += '<img src="' + esc(o.photo) + '" alt="' + esc(o.name || "사장님") + '" loading="lazy">';
   h += '<div class="o-body">';
@@ -903,33 +929,6 @@ function ownerBlock(){
   if (has(o.role)) h += '<div class="o-role">' + esc(o.role) + '</div>';
   if (has(o.text)) h += '<div class="o-text">' + nl(o.text) + '</div>';
   h += '</div></div></div></section>';
-  return h;
-}
-
-function bookingBlock(){
-  var b = SITE.booking || {}, c = SITE.contact || {};
-  var rows = [];
-  if (has(b.howto))   rows.push(["예약 방법", b.howto]);
-  if (has(b.deposit)) rows.push(["예약금", b.deposit]);
-  if (has(b.cancel))  rows.push(["취소 · 변경", b.cancel]);
-  if (has(b.notes))   rows.push(["알아두실 것", b.notes]);
-  var bk = safeUrl(c.booking);
-  if (!rows.length && !bk) return "";
-
-  var h = '<section id="sec-booking" class="reveal band"><div class="wrap">'
-        + '<div class="sec-head"><span class="eyebrow">Booking</span><h2 class="t-sec">예약 안내</h2></div>'
-        + '<div class="card place-card">';
-  if (rows.length){
-    h += '<ul class="info-list" style="margin-top:0">';
-    rows.forEach(function(r, i){
-      h += '<li' + (i === 0 ? ' style="border-top:0;padding-top:0"' : '') + '>'
-         + '<b>' + esc(r[0]) + '</b><span>' + nl(r[1]) + '</span></li>';
-    });
-    h += '</ul>';
-  }
-  if (bk) h += '<a class="btn btn-primary" style="width:100%;margin-top:' + (rows.length ? '16px' : '0') + '" '
-             + 'href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + '예약하기</a>';
-  h += '</div></div></section>';
   return h;
 }
 
@@ -1080,16 +1079,16 @@ function stickyBlock(){
   var c = SITE.contact || {}, km = kakaoMapLink(), bk = safeUrl(c.booking);
   var parts = [];
   if (bk) parts.push('<a class="btn btn-primary lead" href="'+esc(bk)+'" target="_blank" rel="noopener">'+I.cal+'예약하기</a>');
-  else if (has(c.phone)) parts.push('<a class="btn btn-primary lead" href="'+esc(telUrl(c.phone))+'">'+I.phone+'예약 전화</a>');
-  if (bk && has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
-  else if (km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
+  else if (km) parts.push('<a class="btn btn-primary lead" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
+  if (has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
+  else if (bk && km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
 /* 위쪽 차례 막대 — 있는 칸만 모아서 만든다 */
 function topnavBlock(){
-  var map = [["sec-menu","시술"],["sec-photo","사진"],["sec-owner","소개"],["sec-booking","예약"],
+  var map = [["sec-menu","메뉴"],["sec-photo","사진"],["sec-owner","소개"],
              ["sec-hours","영업시간"],["sec-place","오시는 길"],["sec-contact","문의"]];
   var links = [];
   map.forEach(function(m){
@@ -1106,8 +1105,8 @@ function render(){
   if (SITE.demo){
     html += '<div class="demo-ribbon"><b>틀 미리보기</b> · 내용은 모양을 보려고 넣은 예시입니다. 빌더에서 받는 파일에는 이 줄이 없습니다.</div>';
   }
-  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + ownerBlock() + bookingBlock()
-        + hoursBlock() + placeBlock() + reviewBlock() + contactBlock() + footerBlock();
+  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + ownerBlock() + hoursBlock()
+        + placeBlock() + reviewBlock() + contactBlock() + footerBlock();
 
   document.getElementById("app").innerHTML = html;
   document.body.insertAdjacentHTML("beforeend", stickyBlock());

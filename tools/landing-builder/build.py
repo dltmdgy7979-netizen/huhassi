@@ -16,8 +16,8 @@ import re, sys, pathlib
 HERE = pathlib.Path(__file__).parent
 ROOT = HERE.parent.parent
 SRC = HERE / "builder.src.html"
-OUT = ROOT / "public" / "demos" / "landing-builder" / "index.html"
-SAMPLE = OUT.parent / "sample"
+OUT = ROOT / "public" / "landing" / "make" / "index.html"
+SAMPLE = ROOT / "public" / "landing" / "sample"
 
 # 이름 → 틀 파일
 TEMPLATES = {
