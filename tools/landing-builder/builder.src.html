@@ -287,6 +287,14 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <span class="hint">줄을 바꾸면 화면에서도 줄이 바뀝니다.</span>
         </label>
 
+        <label class="f"><span>가게 한마디 <span class="opt">선택 · 첫 화면 다음에 크게 나옵니다</span></span>
+          <textarea id="f-quote" rows="2" placeholder="예: 매일 아침 네 시에 국을 올립니다.&#10;그게 전부입니다."></textarea>
+          <span class="hint">가게를 한 문장으로 말한다면? 사진이 적어도 이 한 줄이 화면을 채웁니다.</span>
+        </label>
+        <label class="f"><span>한마디 아래 이름 <span class="opt">선택</span></span>
+          <input type="text" id="f-quoteby" placeholder="예: 소담식당 주인 드림">
+        </label>
+
         <div class="f"><span>대표 사진 <span class="opt">선택 · 첫 화면 큰 사진</span></span>
           <div class="pick">
             <img class="thumb" id="th-hero" alt="">
@@ -304,6 +312,13 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
             <label class="tbtn" for="fi-logo">고르기</label>
             <button class="mini del" data-clearfor="logo" title="지우기">✕</button>
             <input type="file" accept="image/*" id="fi-logo" class="filein">
+          </div>
+        </div>
+
+        <div class="f"><span>제목 글꼴</span>
+          <div class="swatches">
+            <label class="chk" style="margin:0 14px 0 0"><input type="radio" name="titlefont" value="serif" id="tf-serif" checked><span><b style="font-weight:600">명조</b><i>차분하고 전통적인 느낌</i></span></label>
+            <label class="chk" style="margin:0"><input type="radio" name="titlefont" value="sans" id="tf-sans"><span><b style="font-weight:600">고딕</b><i>깔끔하고 현대적인 느낌</i></span></label>
           </div>
         </div>
 
@@ -902,10 +917,15 @@ function fillHours(h){
 function readForm(){
   return {
     demo: false,
-    theme: { primary: val("#f-color") || "#C0452C" },
+    theme: {
+      primary: val("#f-color") || "#C0452C",
+      titleFont: chk("#tf-sans") ? "sans" : "serif"
+    },
     shop: {
       name: val("#f-name"),
       tagline: ($("#f-tagline").value || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim(),
+      quote: ($("#f-quote").value || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim(),
+      quoteBy: val("#f-quoteby"),
       logo: IMG.logo,
       hero: IMG.hero
     },
@@ -954,6 +974,10 @@ function fillForm(d){
 
   setVal("#f-name", s.name);
   $("#f-tagline").value = s.tagline || "";
+  $("#f-quote").value = s.quote || "";
+  setVal("#f-quoteby", s.quoteBy);
+  var tf = (d.theme && d.theme.titleFont) === "sans" ? "sans" : "serif";
+  setChk("#tf-serif", tf === "serif"); setChk("#tf-sans", tf === "sans");
   setVal("#f-color", (d.theme && d.theme.primary) || "#C0452C");
   markSwatch(val("#f-color"));
 
@@ -1092,6 +1116,9 @@ function buildHTML(d){
     + '<meta name="color-scheme" content="light dark">\n'
     + '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n'
     + '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">\n'
+    + (d.theme.titleFont === "sans" ? "" :
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+      + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap">\n')
     + '<style>\n' + css + '\n</style>\n'
     + '</head>\n<body>\n'
     + '<script type="application/json" id="site-data">\n' + jsonSafe(d) + '\n' + CLOSE + '\n'
@@ -1232,8 +1259,8 @@ function doReset(){
    ============================================================ */
 function EMPTY(){
   return {
-    demo:false, theme:{ primary:"#C0452C" },
-    shop:{ name:"", tagline:"", logo:"", hero:"" },
+    demo:false, theme:{ primary:"#C0452C", titleFont:"serif" },
+    shop:{ name:"", tagline:"", quote:"", quoteBy:"", logo:"", hero:"" },
     contact:{ phone:"", sms:"", kakaoChannel:"", email:"" },
     place:{ address:"", kakaoMapUrl:"", naverMapUrl:"", mapImage:"", info:[
       { label:"주차", value:"" }
@@ -1261,6 +1288,8 @@ function SAMPLE(){
   var d = EMPTY();
   d.shop.name = "소담식당";
   d.shop.tagline = "광주 동구 작은 한식당.\n매일 아침 끓이는 국과 제철 반찬.";
+  d.shop.quote = "매일 아침 네 시에 국을 올립니다.\n그게 전부입니다.";
+  d.shop.quoteBy = "소담식당 주인 드림";
   d.contact.phone = "062-000-0000";
   d.place.address = "광주 동구 예시로 12";
   d.place.info = [

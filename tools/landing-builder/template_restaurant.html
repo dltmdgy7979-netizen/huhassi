@@ -16,6 +16,8 @@
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap">
 
 <style>
 /* ============================================================
@@ -44,6 +46,8 @@
   --shadow-m:0 2px 6px rgba(27,23,20,.06), 0 12px 32px rgba(27,23,20,.07);
   --maxw:720px;
   --pad:22px;
+  /* 제목 글꼴. 점주가 '명조'를 고르면 자바스크립트가 명조로 바꾼다 */
+  --font-title:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
   --sec-gap:88px;
 }
 @media (min-width:768px){ :root{ --sec-gap:112px; --pad:32px; } }
@@ -72,6 +76,8 @@ body{
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   font-size:16px; line-height:1.7; letter-spacing:-.011em;
   -webkit-font-smoothing:antialiased;
+  /* 한국어는 이게 없으면 단어 중간에서 줄이 끊긴다 ("올립/니다") */
+  word-break:keep-all; overflow-wrap:break-word;
   padding-bottom:calc(74px + env(safe-area-inset-bottom));
 }
 @media (min-width:768px){ body{ padding-bottom:0; } }
@@ -82,8 +88,14 @@ button{ font:inherit; color:inherit; }
 /* ============================================================
    타이포 위계 (4단계)
    ============================================================ */
-.t-hero{ font-size:clamp(32px,8.4vw,52px); line-height:1.18; letter-spacing:-.035em; font-weight:800; margin:0; }
-.t-sec{ font-size:clamp(21px,5vw,27px); line-height:1.3; letter-spacing:-.028em; font-weight:750; margin:0; }
+body[data-title-font="serif"]{
+  --font-title:"Noto Serif KR","Pretendard Variable",Pretendard,serif;
+}
+.t-hero{ font-family:var(--font-title); font-size:clamp(32px,8.4vw,52px); line-height:1.18; letter-spacing:-.035em; font-weight:800; margin:0; }
+.t-sec{ font-family:var(--font-title); font-size:clamp(21px,5vw,27px); line-height:1.3; letter-spacing:-.028em; font-weight:750; margin:0; }
+/* 명조는 획이 가늘어 같은 굵기로도 더 가벼워 보인다. 한 단계 올린다 */
+body[data-title-font="serif"] .t-hero{ font-weight:700; letter-spacing:-.03em; }
+body[data-title-font="serif"] .t-sec{ font-weight:600; letter-spacing:-.022em; }
 .t-body{ font-size:16px; line-height:1.75; color:var(--ink-2); }
 .t-cap{ font-size:13px; line-height:1.6; color:var(--ink-3); letter-spacing:-.005em; }
 .num{ font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
@@ -198,6 +210,20 @@ section{ margin-top:var(--sec-gap); }
 /* ============================================================
    메뉴 / 가격표
    ============================================================ */
+/* 가게 한마디 — 사진이 없어도 한 화면을 채우는 장치 */
+.quote{ text-align:center; }
+.quote .mark{
+  font-family:Georgia,"Times New Roman",serif; font-size:46px; line-height:.9;
+  color:var(--primary); opacity:.32; display:block; margin-bottom:2px;
+}
+.quote .q{
+  font-family:var(--font-title); font-weight:600;
+  font-size:clamp(20px,5.4vw,28px); line-height:1.6; letter-spacing:-.028em;
+  color:var(--ink); margin:0 auto; max-width:24ch;
+  word-break:keep-all;
+}
+.quote .by{ margin-top:16px; font-size:13.5px; color:var(--ink-3); letter-spacing:-.01em; }
+
 .menu-list{ display:flex; flex-direction:column; gap:0; }
 .m-item{
   display:flex; gap:14px; align-items:flex-start;
@@ -278,6 +304,7 @@ section{ margin-top:var(--sec-gap); }
 .map-img{ margin-top:18px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--line); }
 .info-list{ margin:18px 0 0; padding:0; list-style:none; }
 .info-list li{ display:flex; gap:11px; padding:9px 0; font-size:14.5px; color:var(--ink-2); border-top:1px solid var(--line); }
+.info-list li span{ min-width:0; overflow-wrap:anywhere; }
 .info-list li b{ color:var(--ink); font-weight:650; flex:none; min-width:4.6em; }
 
 /* ============================================================
@@ -350,7 +377,9 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
     "name": "소담식당",
     "tagline": "광주 동구 작은 한식당.\n매일 아침 끓이는 국과 제철 반찬.",
     "logo": "",
-    "hero": ""
+    "hero": "",
+    "quote": "매일 아침 네 시에 국을 올립니다.\n그게 전부입니다.",
+    "quoteBy": "소담식당 주인 드림"
   },
 
   "contact": {
@@ -517,6 +546,9 @@ function isDark(){
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
 function applyTheme(){
+  var tf = (SITE.theme && SITE.theme.titleFont) || "serif";
+  document.body.setAttribute("data-title-font", tf === "sans" ? "sans" : "serif");
+
   var hex = (SITE.theme && SITE.theme.primary) || "";
   var rgb = hex2rgb(hex);
   if (!rgb) return;
@@ -703,6 +735,17 @@ function heroBlock(){
     + (has(s.logo) ? '<img class="hero-logo" src="' + esc(s.logo) + '" alt="' + esc(s.name) + ' 로고">' : "")
     + statusHtml + nameHtml + actsHtml + noticeHtml
     + '</div></div></header>';
+}
+
+function quoteBlock(){
+  var q = (SITE.shop || {}).quote;
+  if (!has(q)) return "";
+  var by = (SITE.shop || {}).quoteBy;
+  return '<section class="reveal quote"><div class="wrap">'
+    + '<span class="mark">\u201C</span>'
+    + '<p class="q">' + nl(q) + '</p>'
+    + (has(by) ? '<div class="by">' + esc(by) + '</div>' : "")
+    + '</div></section>';
 }
 
 function menuBlock(){
@@ -929,7 +972,7 @@ function render(){
   if (SITE.demo){
     html += '<div class="demo-ribbon"><b>틀 미리보기</b> · 내용은 모양을 보려고 넣은 예시입니다. 빌더에서 받는 파일에는 이 줄이 없습니다.</div>';
   }
-  html += heroBlock() + menuBlock() + galleryBlock() + hoursBlock()
+  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + hoursBlock()
         + placeBlock() + reviewBlock() + contactBlock() + footerBlock();
 
   document.getElementById("app").innerHTML = html;
@@ -937,7 +980,7 @@ function render(){
 
   /* 보이는 칸이 적으면 간격을 좁힌다 */
   var secCount = document.querySelectorAll("#app section").length;
-  document.body.classList.toggle("lean", secCount <= 4);
+  document.body.classList.toggle("lean", secCount <= 5);
 
   if (has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
 
