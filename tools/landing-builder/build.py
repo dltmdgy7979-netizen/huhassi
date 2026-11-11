@@ -24,6 +24,7 @@ TEMPLATES = {
     "restaurant": "template_restaurant.html",
     "shop": "template_shop.html",
     "beauty": "template_beauty.html",
+    "academy": "template_academy.html",
 }
 
 

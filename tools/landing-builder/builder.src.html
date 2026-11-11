@@ -294,6 +294,8 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           <b>판매점</b><i>꽃집 · 정육점 · 반찬 · 옷 등. 상품 사진이 중심</i></button>
         <button type="button" class="tpl" data-tpl="beauty" aria-pressed="false">
           <b>미용 · 뷰티</b><i>미용실 · 네일 · 속눈썹 · 피부관리. 예약이 중심</i></button>
+        <button type="button" class="tpl" data-tpl="academy" aria-pressed="false">
+          <b>학원 · 교습소</b><i>과정과 교습비, 상담 전화가 중심</i></button>
       </div>
     </div>
 
@@ -544,20 +546,19 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
 
     <!-- 9-3. 예약 안내 (예약형만) -->
     <details class="fs" id="fs-booking">
-      <summary><span class="n">9</span>예약 안내</summary>
+      <summary><span class="n">9</span><span id="bk-title">예약 안내</span></summary>
       <div class="fs-body">
-        <span class="hint" style="display:block;margin-top:12px">예약 전에 알아야 할 것을 미리 적어두면 전화 문의가 줄어듭니다.</span>
-        <label class="f"><span>예약 방법 <span class="opt">선택</span></span>
+        <span class="hint" style="display:block;margin-top:12px" id="bk-hint">예약 전에 알아야 할 것을 미리 적어두면 전화 문의가 줄어듭니다.</span>
+        <label class="f"><span id="bk-l-howto">예약 방법</span>
           <input type="text" id="f-bk-howto" placeholder="예: 네이버 예약 또는 전화로 받습니다. 당일 예약은 전화로.">
         </label>
-        <label class="f"><span>예약금 <span class="opt">선택</span></span>
+        <label class="f"><span id="bk-l-deposit">예약금</span>
           <input type="text" id="f-bk-deposit" placeholder="예: 없습니다 / 2만원 (시술비에서 차감)">
         </label>
-        <label class="f"><span>취소 · 변경 규정 <span class="opt">선택</span></span>
+        <label class="f"><span id="bk-l-cancel">취소 · 변경 규정</span>
           <input type="text" id="f-bk-cancel" placeholder="예: 2시간 전까지 연락 주시면 변경·취소가 됩니다">
-          <span class="hint">노쇼 규정을 분명히 적어두는 게 서로 편합니다.</span>
         </label>
-        <label class="f"><span>알아두실 것 <span class="opt">선택</span></span>
+        <label class="f"><span id="bk-l-notes">알아두실 것</span>
           <textarea id="f-bk-notes" rows="2" placeholder="예: 1인샵이라 늦으시면 시술 시간이 줄어듭니다."></textarea>
         </label>
       </div>
@@ -672,6 +673,12 @@ window.onerror = function(msg, src, line, col){
 <script type="text/plain" id="tpl-runtime-beauty">
 /*RUNTIME_HERE:beauty*/
 </script>
+<script type="text/plain" id="tpl-css-academy">
+/*CSS_HERE:academy*/
+</script>
+<script type="text/plain" id="tpl-runtime-academy">
+/*RUNTIME_HERE:academy*/
+</script>
 
 <script>
 (function(){
@@ -694,7 +701,7 @@ var TPLDEF = {
     itemsWord: "메뉴", itemsTitle: "대표 메뉴",
     secItems: "메뉴와 가격", secOrigin: "원산지 표기", secTakeout: "포장 · 배달",
     packing: "포장 가능", showArea: false, showOrigin: true, showTakeout: true,
-    showDuration: false, showBooking: false,
+    showDuration: false, showBooking: false, showTarget: false,
     addItem: "＋ 메뉴 추가", sigHint: "대표로 찍고 사진까지 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)"
   },
   shop: {
@@ -703,7 +710,7 @@ var TPLDEF = {
     secItems: "상품과 가격", secOrigin: "원산지 · 이력 표시", secTakeout: "예약 주문 · 픽업 · 배달",
     packing: "예약 주문 · 픽업 가능", showArea: true, showOrigin: true, showTakeout: true,
     addItem: "＋ 상품 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 6개까지)",
-    showDuration: false, showBooking: false
+    showDuration: false, showBooking: false, showTarget: false
   },
   beauty: {
     name: "미용 · 뷰티 틀", color: "#9B6F75", titleFont: "sans", schema: "BeautySalon",
@@ -711,7 +718,23 @@ var TPLDEF = {
     secItems: "시술 메뉴와 가격", secOrigin: "", secTakeout: "",
     packing: "", showArea: false, showOrigin: false, showTakeout: false,
     addItem: "＋ 시술 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)",
-    showDuration: true, showBooking: true
+    showDuration: true, showBooking: true, showTarget: false,
+    durLabel: "소요 시간 (예: 1시간 30분)",
+    bkTitle: "예약 안내", bkHowto: "예약 방법", bkDeposit: "예약금",
+    bkCancel: "취소 · 변경 규정", bkNotes: "알아두실 것",
+    bkHint: "예약 전에 알아야 할 것을 미리 적어두면 전화 문의가 줄어듭니다."
+  },
+  academy: {
+    name: "학원 · 교습소 틀", color: "#36506E", titleFont: "sans", schema: "EducationalOrganization",
+    itemsWord: "과정", itemsTitle: "과정과 교습비",
+    secItems: "과정과 교습비", secOrigin: "", secTakeout: "",
+    packing: "", showArea: false, showOrigin: false, showTakeout: false,
+    addItem: "＋ 과정 추가", sigHint: "사진을 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)",
+    showDuration: true, showBooking: true, showTarget: true,
+    durLabel: "요일 · 시간 (예: 월·수·금 17:00 ~ 18:30)",
+    bkTitle: "교습비와 반환 기준", bkHowto: "납부 방법", bkDeposit: "그 밖의 경비 (교재비 등)",
+    bkCancel: "교습비 반환 기준", bkNotes: "알아두실 것",
+    bkHint: "학원법상 교습비와 반환 기준은 게시 의무가 있습니다. '상담 시 안내'로 대신하지 마세요."
   }
 };
 function TD(){ return TPLDEF[TPL] || TPLDEF.restaurant; }
@@ -859,7 +882,8 @@ var ROWDEF = {
     html:'<div class="row2">'
        + '<input type="text" data-k="name" placeholder="메뉴 이름">'
        + '<input type="text" data-k="price" placeholder="가격 (예: 11,000원)"></div>'
-       + '<input type="text" data-k="duration" placeholder="소요 시간 (예: 1시간 30분)" style="margin-top:8px" data-only="duration">'
+       + '<input type="text" data-k="target" placeholder="대상 (예: 초등 4~6학년)" style="margin-top:8px" data-only="target">'
+       + '<input type="text" data-k="duration" placeholder="소요 시간" style="margin-top:8px" data-only="duration">'
        + '<input type="text" data-k="note" placeholder="한 줄 설명 (선택)" style="margin-top:8px">'
        + '<label class="chk"><input type="checkbox" data-k="signature"><span><b>대표 메뉴로 표시</b><i>대표로 찍고 사진까지 넣으면 큰 카드로 올라갑니다 (앞의 2개까지)</i></span></label>'
   },
@@ -1529,11 +1553,43 @@ function SAMPLE_BEAUTY(){
   return d;
 }
 
+function SAMPLE_ACADEMY(){
+  var d = EMPTY();
+  d.theme.primary = "#36506E"; d.theme.titleFont = "sans";
+  d.shop.name = "곧은 국어교습소";
+  d.shop.tagline = "광주 동구 소규모 국어 교습소.\n한 반 8명까지만 받습니다.";
+  d.shop.quote = "읽고 쓰는 힘은 벼락치기로 늘지 않습니다.\n그래서 천천히, 대신 끝까지 봅니다.";
+  d.shop.quoteBy = "곧은 국어교습소";
+  d.contact.phone = "062-000-0000";
+  d.place.address = "광주 동구 예시로 12, 3층";
+  d.place.info = [
+    { label:"차량 운행", value:"하지 않습니다" },
+    { label:"상담 시간", value:"평일 오후 2시 ~ 6시 (수업 중에는 받기 어렵습니다)" }
+  ];
+  DAYS.forEach(function(k){ d.hours.week[k] = null; });
+  DAYS.slice(0, 5).forEach(function(k){ d.hours.week[k] = { open:"14:00", close:"22:00", breakStart:"", breakEnd:"" }; });
+  d.hours.holidayNote = "주말과 공휴일은 쉽니다.";
+  d.menu.items = [
+    { name:"국어 기본반", target:"초등 4~6학년", duration:"월·수·금 17:00 ~ 18:30", price:"180,000원 / 월", note:"정원 8명", signature:true, photo:"" },
+    { name:"국어 심화반", target:"중등 1~3학년", duration:"화·목 19:00 ~ 21:00", price:"220,000원 / 월", note:"정원 8명", signature:true, photo:"" },
+    { name:"독서·논술", target:"초등 5학년 ~ 중등 1학년", duration:"토 10:00 ~ 12:00", price:"120,000원 / 월", note:"정원 6명", signature:false, photo:"" }
+  ];
+  d.menu.priceNote = "표시한 교습비는 교육청에 등록·신고한 금액입니다. 이 금액을 넘겨 받지 않습니다.";
+  d.booking = {
+    howto: "매월 1일에 한 달치를 받습니다. 중간에 들어오시면 남은 횟수만큼만 계산합니다.",
+    deposit: "교재비는 실비로 따로 받습니다. 한 학기 2~3만원 수준입니다.",
+    cancel: "교습 시작 전에 그만두시면 전액 돌려드립니다. 시작한 뒤에는 남은 기간에 해당하는 금액을 교육청 반환 기준에 따라 돌려드립니다.",
+    notes: "성적이 얼마나 오른다는 약속은 드리지 않습니다. 대신 매달 무엇을 어떻게 했는지 적어 보내드립니다."
+  };
+  d.notice.label = "모집 마감";
+  return d;
+}
+
 $("#btn-sample").onclick = function(){
   ask("예시로 채울까요?", "지금 넣은 내용이 예시로 바뀝니다. 모양을 보는 용도이니, 받기 전에 꼭 실제 내용으로 고쳐 주세요.", null, "예시로 채우기",
     function(){
       IMG = { hero:"", logo:"", mapImage:"", owner:"" }; GALLERY = [];
-      var S = { shop: SAMPLE_SHOP, beauty: SAMPLE_BEAUTY };
+      var S = { shop: SAMPLE_SHOP, beauty: SAMPLE_BEAUTY, academy: SAMPLE_ACADEMY };
       fillForm((S[TPL] || SAMPLE)()); changed(); applyTpl();
       toast("예시입니다. 실제 내용으로 바꿔 주세요");
     });
@@ -1566,7 +1622,20 @@ function applyTpl(){
     if (n.textContent === "8") el.parentNode.style.display = t.showTakeout ? "" : "none";
   });
   var fb = $("#fs-booking"); if (fb) fb.style.display = t.showBooking ? "" : "none";
-  $$('[data-only="duration"]').forEach(function(el){ el.style.display = t.showDuration ? "" : "none"; });
+  $$('[data-only="duration"]').forEach(function(el){
+    el.style.display = t.showDuration ? "" : "none";
+    if (t.durLabel) el.placeholder = t.durLabel;
+  });
+  $$('[data-only="target"]').forEach(function(el){ el.style.display = t.showTarget ? "" : "none"; });
+
+  if (t.showBooking){
+    $("#bk-title").textContent = t.bkTitle;
+    $("#bk-hint").textContent = t.bkHint;
+    $("#bk-l-howto").textContent = t.bkHowto;
+    $("#bk-l-deposit").textContent = t.bkDeposit;
+    $("#bk-l-cancel").textContent = t.bkCancel;
+    $("#bk-l-notes").textContent = t.bkNotes;
+  }
 
   $$(".rw", $("#rows-menu")).forEach(function(rw){
     var i = rw.querySelector("[data-k='signature']");
