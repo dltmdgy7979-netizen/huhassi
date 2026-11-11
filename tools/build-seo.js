@@ -23,24 +23,41 @@ const pick = (html, re) => { const m = html.match(re); return m ? m[1].trim() : 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 // 템플릿(샘플 페이지)과 404 는 검색에 올리지 않는다
-const noindex = (r) => /(^|\/)template\.html$/.test(r) || r === "404.html" || r === "request.html";
+// demos/landing-builder: 아직 만드는 중이라 갤러리에도 검색에도 올리지 않는다
+const noindex = (r) =>
+  /(^|\/)template\.html$/.test(r) ||
+  r === "404.html" ||
+  r === "request.html" ||
+  r === "demos/landing-builder/index.html";
 
 let changed = 0;
 const pages = [];
 
 for (const file of walk(ROOT)) {
   const r = rel(file);
-  let html = fs.readFileSync(file, "utf8");
-  const before = html;
+  const original = fs.readFileSync(file, "utf8");
 
-  const title = pick(html, /<title>([\s\S]*?)<\/title>/i);
-  const desc = pick(html, /<meta\s+name="description"\s+content="([^"]*)"/i);
+  // ★ 머리말(<head>) 안에서만 손댄다.
+  //   예전에는 파일 전체에 정규식을 돌렸는데, 쪽 안의 자바스크립트가
+  //   '<meta property="og:...' 같은 글자를 문자열로 들고 있으면 그 줄이 잘려
+  //   따옴표가 안 닫히고 쪽 전체가 멈췄다. (빌더 쪽에서 실제로 터졌음)
+  const headEnd = original.search(/<\/head>/i);
+  if (headEnd === -1) {
+    console.warn(`  건너뜀(머리말 없음): ${r}`);
+    continue;
+  }
+  let head = original.slice(0, headEnd);
+  const tail = original.slice(headEnd);
+  const before = head;
+
+  const title = pick(head, /<title>([\s\S]*?)<\/title>/i);
+  const desc = pick(head, /<meta\s+name="description"\s+content="([^"]*)"/i);
   const url = BASE + "/" + r;
 
   // 이미 있는 것은 지우고 한 번에 다시 넣는다 (중복 방지)
   // 아이콘 줄에는 data: URI 안에 '>' 가 들어 있을 수 있다.
   // [^>]* 로 자르면 줄 가운데가 잘려 쓰레기가 남으므로, 줄 단위로 통째로 지운다.
-  html = html
+  head = head
     .replace(/[ \t]*<link rel="canonical"[^\n]*\n?/gi, "")
     .replace(/[ \t]*<meta property="og:[^\n]*\n?/gi, "")
     .replace(/[ \t]*<meta name="twitter:[^\n]*\n?/gi, "")
@@ -65,15 +82,17 @@ for (const file of walk(ROOT)) {
     `<meta name="twitter:card" content="summary_large_image">`
   ].filter(Boolean);
 
-  if (noindex(r) && !/<meta\s+name="robots"/i.test(html)) {
+  if (noindex(r) && !/<meta\s+name="robots"/i.test(head)) {
     block.unshift(`<meta name="robots" content="noindex">`);
   }
 
-  // </head> 바로 앞에 넣는다
-  html = html.replace(/([ \t]*)<\/head>/i, (m, indent) =>
-    block.map((l) => indent + l).join("\n") + "\n" + indent + "</head>");
+  // 머리말 끝(</head>) 바로 앞에 넣는다. 본문은 손대지 않는다.
+  const indent = (head.match(/\n([ \t]*)$/) || [, ""])[1];
+  head = head.replace(/[ \t]*$/, "") + (head.endsWith("\n") || head === "" ? "" : "\n")
+       + block.map((l) => indent + l).join("\n") + "\n" + indent;
 
-  if (html !== before) { fs.writeFileSync(file, html); changed++; }
+  const html = head + tail;
+  if (head !== before) { fs.writeFileSync(file, html); changed++; }
   if (!noindex(r)) pages.push({ url, r });
 }
 
