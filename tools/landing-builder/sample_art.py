@@ -292,11 +292,11 @@ def p_outdoor():
 
 # ---------- 틀마다 무엇을 넣나 ----------
 PLAN = {
-  "restaurant": dict(hero=r_hero(), items=[r_baekban(), r_sujebi(), r_bibim()],
+  "restaurant": dict(hero=r_hero(), band=r_side(), items=[r_baekban(), r_sujebi(), r_bibim()],
       gallery=[(storefront("#EFE2D0", "#C0452C", "#5B3A22", "#C0452C"), "가게 앞 (예시 그림)"),
                (interior("#F3E7D8", "#C9A77F", "#C0452C"), "가게 안 (예시 그림)"),
                (r_side(), "반찬 (예시 그림)")]),
-  "shop": dict(hero=s_hero(), items=[s_item("bouquet"), s_item("small"), s_item("pot"), s_item("dry")],
+  "shop": dict(hero=s_hero(), band=s_shelf(), items=[s_item("bouquet"), s_item("small"), s_item("pot"), s_item("dry")],
       gallery=[(storefront("#E4ECE2", "#2F6B4F", "#2F4A3A", "#2F6B4F"), "가게 앞 (예시 그림)"),
                (s_shelf(), "화분 선반 (예시 그림)"),
                (interior("#EEF2EA", "#CDBFA6", "#2F6B4F"), "가게 안 (예시 그림)")]),
@@ -365,6 +365,7 @@ def apply():
         p = ROOT / f"template_{name}.html"; s = p.read_text(encoding="utf-8")
         m = pat.search(s); d = json.loads(m.group(2))
         d["shop"]["hero"] = uri(plan["hero"])
+        if plan.get("band"): d["shop"]["band"] = uri(plan["band"])
         for it, art in zip(d.get("menu", {}).get("items", []), plan["items"]): it["photo"] = uri(art)
         d["gallery"] = [{"src": uri(a), "alt": alt} for a, alt in plan["gallery"]]
         body = json.dumps(d, ensure_ascii=False, indent=2).replace("<", "\\u003c")
