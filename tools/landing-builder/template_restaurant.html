@@ -15,9 +15,9 @@
 <!-- ===== BUILDER:HEAD_END ===== -->
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap" media="print" onload="this.media='all'">
 
 <style>
 /* ============================================================
@@ -30,7 +30,7 @@
   --primary-shadow:rgba(192,69,44,.25);
   --ink:#1B1714;
   --ink-2:#4A423C;
-  --ink-3:#8A7F77;
+  --ink-3:#6F655E;
   --line:#E8E0D8;
   --bg:#FAF7F3;
   --card:#FFFFFF;
@@ -59,7 +59,7 @@ body.lean{ --sec-gap:48px; }
 /* 어두운 화면 */
 @media (prefers-color-scheme:dark){
   :root{
-    --ink:#F3EEE9; --ink-2:#BCB3AB; --ink-3:#8A8079;
+    --ink:#F3EEE9; --ink-2:#BCB3AB; --ink-3:#9C928A;
     --line:#332D29; --bg:#141110; --card:#1C1917;
     --ok:#4FBF88; --ok-soft:#15291F;
     --warn:#D9A24E; --warn-soft:#2A2013;
@@ -116,7 +116,7 @@ section.band{
 .sec-head{ margin-bottom:18px; }
 .sec-head .eyebrow{
   display:block; font-size:12px; font-weight:700; letter-spacing:.14em;
-  color:var(--primary); text-transform:uppercase; margin-bottom:9px;
+  color:var(--primary-text, var(--primary)); text-transform:uppercase; margin-bottom:9px;
 }
 .reveal{ opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1); }
 .reveal.in{ opacity:1; transform:none; }
@@ -209,7 +209,7 @@ section.band{
   -webkit-tap-highlight-color:transparent;
 }
 .btn:active{ transform:scale(.975); }
-.btn-primary{ background:var(--primary); color:#fff; box-shadow:0 2px 10px var(--primary-shadow); }
+.btn-primary{ background:var(--primary-btn, var(--primary)); color:var(--on-primary, #fff); box-shadow:0 2px 10px var(--primary-shadow); }
 .btn-primary:hover{ background:var(--primary-deep); }
 .btn-ghost{ background:var(--card); color:var(--ink); border-color:var(--line); box-shadow:var(--shadow-s); }
 .btn-ghost:hover{ border-color:#D6CCC2; }
@@ -226,16 +226,18 @@ section.band{
   transform:translateY(-101%); transition:transform .28s cubic-bezier(.2,.8,.3,1);
 }
 .topnav.show{ transform:none; }
+.topnav:not(.show){ visibility:hidden; }
 .topnav .nav-in{
   max-width:var(--maxw); margin:0 auto; padding:13px var(--pad);
   display:flex; gap:20px; overflow-x:auto; scrollbar-width:none;
 }
 .topnav .nav-in::-webkit-scrollbar{ display:none; }
 .topnav a{
+  display:inline-flex; align-items:center; min-height:44px;
   font-size:14px; font-weight:650; letter-spacing:-.02em;
   color:var(--ink-2); text-decoration:none; white-space:nowrap;
 }
-.topnav a:hover{ color:var(--primary); }
+.topnav a:hover{ color:var(--primary-text, var(--primary)); }
 
 /* ============================================================
    메뉴 / 가격표
@@ -250,14 +252,14 @@ section.band{
 .m-card img{ width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--primary-soft); display:block; }
 .m-card .c-body{ padding:13px 15px 15px; }
 .m-card .c-name{ font-size:16.5px; font-weight:700; letter-spacing:-.024em; }
-.m-card .c-price{ margin-top:5px; font-size:17px; font-weight:750; color:var(--primary); letter-spacing:-.02em; }
+.m-card .c-price{ margin-top:5px; font-size:17px; font-weight:750; color:var(--primary-text, var(--primary)); letter-spacing:-.02em; }
 .m-card .c-note{ margin-top:6px; font-size:13px; color:var(--ink-3); line-height:1.55; }
 
 /* 가게 한마디 — 사진이 없어도 한 화면을 채우는 장치 */
 .quote{ text-align:center; }
 .quote .mark{
   font-family:Georgia,"Times New Roman",serif; font-size:46px; line-height:.9;
-  color:var(--primary); opacity:.32; display:block; margin-bottom:2px;
+  color:var(--primary-text, var(--primary)); opacity:.32; display:block; margin-bottom:2px;
 }
 .quote .q{
   font-family:var(--font-title); font-weight:600;
@@ -283,7 +285,7 @@ section.band{
 .badge{
   display:inline-block; vertical-align:2px; margin-right:6px;
   font-size:11px; font-weight:750; letter-spacing:.02em;
-  color:#fff; background:var(--primary); padding:2.5px 7px; border-radius:6px;
+  color:var(--on-primary, #fff); background:var(--primary-btn, var(--primary)); padding:2.5px 7px; border-radius:6px;
 }
 .price-note{ margin-top:16px; font-size:12.5px; color:var(--ink-3); }
 
@@ -333,7 +335,7 @@ section.band{
 }
 .owner .o-body{ flex:1 1 auto; min-width:0; }
 .owner .o-name{ font-family:var(--font-title); font-size:19px; font-weight:700; letter-spacing:-.025em; }
-.owner .o-role{ margin-top:3px; font-size:13px; color:var(--primary); font-weight:650; }
+.owner .o-role{ margin-top:3px; font-size:13px; color:var(--primary-text, var(--primary)); font-weight:650; }
 .owner .o-text{ margin-top:11px; font-size:15.5px; line-height:1.75; color:var(--ink-2); }
 @media (max-width:420px){
   .owner{ gap:14px; }
@@ -379,7 +381,8 @@ section.band{
    ============================================================ */
 .contact-grid{ display:grid; gap:10px; }
 @media (min-width:520px){ .contact-grid{ grid-template-columns:1fr 1fr; } }
-.contact-grid .btn{ width:100%; }
+.contact-grid .btn{ width:100%; min-width:0; overflow-wrap:anywhere; white-space:normal; text-align:center; }
+.chip{ min-height:44px; }
 .share{ display:flex; gap:9px; flex-wrap:wrap; margin-top:20px; }
 
 /* ============================================================
@@ -389,7 +392,7 @@ footer{ margin-top:var(--sec-gap); padding:26px 0 22px; border-top:1px solid var
 footer .f-name{ font-size:15px; font-weight:700; letter-spacing:-.02em; }
 footer .f-meta{ margin-top:8px; font-size:12.5px; color:var(--ink-3); line-height:1.75; }
 footer .f-meta a{ color:var(--ink-3); text-decoration:underline; text-underline-offset:2px; }
-footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
+footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
 
 /* ============================================================
    하단 스티키 CTA
@@ -431,7 +434,7 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .fab > *:active{ transform:scale(.92); }
 .fab svg{ width:23px; height:23px; }
 .fab .f-kakao{ background:#FEE500; border-color:#EFD200; color:#1B1600; }
-.fab .f-call{ background:var(--primary); border-color:transparent; color:#fff; box-shadow:0 4px 16px var(--primary-shadow); }
+.fab .f-call{ background:var(--primary-btn, var(--primary)); border-color:transparent; color:var(--on-primary, #fff); box-shadow:0 4px 16px var(--primary-shadow); }
 .fab .f-top{ opacity:0; pointer-events:none; }
 .fab .f-top.on{ opacity:1; pointer-events:auto; }
 @media (prefers-reduced-motion:reduce){ .fab > *{ transition:none; } }
@@ -744,6 +747,22 @@ function applyTheme(){
   r.setProperty("--primary-deep", dark ? mix(rgb, [255,255,255], 0.34) : mix(rgb, [0,0,0], 0.24));
   r.setProperty("--primary-soft", dark ? mix(rgb, [20,17,16], 0.84)    : mix(rgb, [255,255,255], 0.90));
   r.setProperty("--primary-shadow", "rgba(" + rgb.join(",") + (dark ? ",.34)" : ",.25)"));
+
+  /* 고른 색으로 글자가 읽히는지 스스로 확인하고, 안 읽히면 조금씩 옮긴다 */
+  function lum(c){ var a = c.map(function(v){ v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126*a[0] + .7152*a[1] + .0722*a[2]; }
+  function ratio(a, b){ var x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); }
+  function step(c, to, t){ return c.map(function(v, i){ return Math.round(v + (to[i] - v) * t); }); }
+  function css(c){ return "rgb(" + c.join(",") + ")"; }
+  var W = [255,255,255], K = [27,23,20], i;
+  if (ratio(rgb, K) >= 7){                       /* 밝은 색(노랑 등): 단추 글자를 어둡게 */
+    r.setProperty("--on-primary", "#1B1714"); r.setProperty("--primary-btn", hex);
+  } else {                                        /* 그 밖: 흰 글자가 읽힐 때까지 단추 바탕을 조금 진하게 */
+    var btn = rgb; for (i = 0; i < 12 && ratio(btn, W) < 4.5; i++) btn = step(btn, [0,0,0], .06);
+    r.setProperty("--on-primary", "#fff"); r.setProperty("--primary-btn", css(btn));
+  }
+  var page = dark ? [28,25,23] : [250,247,243], txt = rgb;
+  for (i = 0; i < 16 && ratio(txt, page) < 4.5; i++) txt = step(txt, dark ? W : [0,0,0], .07);
+  r.setProperty("--primary-text", css(txt));
 }
 
 /* ---------- 한국 시간 ---------- */
@@ -1027,8 +1046,8 @@ function galleryBlock(){
   var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">가게 사진</h2></div>'
         + '<div class="gal'+(scroll ? " scroll" : "")+'">';
-  g.forEach(function(x){
-    h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || "가게 사진")+'" loading="lazy">';
+  g.forEach(function(x, gi){
+    h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("가게 사진 " + (gi + 1)))+'" loading="lazy">';
   });
   h += '</div></div></section>';
   return h;
@@ -1273,8 +1292,9 @@ function render(){
   if (SITE.demo){
     html += '<div class="demo-ribbon"><b>틀 미리보기</b> · 내용은 모양을 보려고 넣은 예시입니다. 빌더에서 받는 파일에는 이 줄이 없습니다.</div>';
   }
-  html += heroBlock() + quoteBlock() + menuBlock() + galleryBlock() + ownerBlock() + hoursBlock()
-        + placeBlock() + reviewBlock() + contactBlock() + footerBlock();
+  [heroBlock, quoteBlock, menuBlock, galleryBlock, ownerBlock, hoursBlock, placeBlock, reviewBlock, contactBlock, footerBlock].forEach(function(fn){
+    try { html += fn(); } catch (e) { if (window.console) console.warn("칸 하나를 건너뜀:", e); }
+  });
 
   document.getElementById("app").innerHTML = html;
   document.body.insertAdjacentHTML("beforeend", stickyBlock());
@@ -1291,7 +1311,7 @@ function render(){
   var secCount = document.querySelectorAll("#app section").length;
   document.body.classList.toggle("lean", secCount <= 5);
 
-  if (has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
+  if (!document.title && has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
 
   bind();
   revealOn();

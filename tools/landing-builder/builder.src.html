@@ -619,6 +619,21 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
       </div>
     </details>
 
+    <!-- 13. 검색·공유 -->
+    <details class="fs">
+      <summary><span class="n">13</span>검색·카톡 공유 <span class="opt">올린 뒤에 채워도 됩니다</span></summary>
+      <div class="fs-body">
+        <label class="f"><span>홈페이지 주소 <span class="opt">선택</span></span>
+          <input type="url" id="f-siteurl" placeholder="https://">
+          <span class="hint">파일을 올리면 생기는 주소입니다. 넣어 두면 카톡으로 보냈을 때 그림이 같이 뜨고, 검색엔진이 이 주소를 대표 주소로 압니다. 아직 주소가 없으면 비워 두세요. 나중에 <b>기존 파일 불러오기</b>로 다시 열어 넣으면 됩니다.</span>
+        </label>
+        <div class="f"><span>카톡 공유용 그림</span>
+          <button type="button" class="tbtn" id="btn-og">공유용 그림 받기 (og.jpg)</button>
+          <span class="hint">가게 이름이 들어간 가로 그림이 만들어집니다. 받은 <b>og.jpg</b> 를 이름을 바꾸지 말고 홈페이지 파일과 <b>같은 자리</b>에 올리세요. 위 주소 칸이 비어 있으면 그림을 올려도 연결되지 않습니다.</span>
+        </div>
+      </div>
+    </details>
+
     <div style="margin-top:20px;display:flex;gap:9px;flex-wrap:wrap">
       <button class="tbtn" id="btn-sample">예시로 채워보기</button>
       <label class="tbtn" for="fi-load">기존 파일 불러오기</label>
@@ -1205,6 +1220,7 @@ function readForm(){
     gallery: GALLERY.map(function(s){ return { src:s, alt:"" }; }),
     reviews: readRows("reviews").filter(function(x){ return x.text; }),
     links: readRows("links").filter(function(x){ return x.label && x.url; }),
+    site: { url: cleanSiteUrl(val("#f-siteurl")) },
     legal: {
       bizName: val("#f-bizname"), bizNumber: val("#f-biznumber"),
       privacyUrl: val("#f-privacy"), credit: chk("#f-credit")
@@ -1258,6 +1274,7 @@ function fillForm(d){
 
   setVal("#f-bizname", L.bizName); setVal("#f-biznumber", L.bizNumber);
   setVal("#f-privacy", L.privacyUrl);
+  setVal("#f-siteurl", (d.site && d.site.url) || "");
   setChk("#f-credit", L.credit !== false);
 
   ["menu","origin","info","dlinks","links","reviews","steps"].forEach(function(k){ clearRows(k); });
@@ -1342,6 +1359,81 @@ function jsonLd(d){
   return o;
 }
 
+/* 주소는 http(s) 로 시작하는 것만 받는다 */
+function cleanSiteUrl(v){
+  v = String(v || "").trim();
+  if (!/^https?:\/\/[^\s"'<>]+$/i.test(v)) return "";
+  try { return new URL(v).href; } catch (e) { return ""; }
+}
+
+/* 스크립트가 돌기 전에도(검색 로봇, 링크 미리보기, JS 막힌 곳) 읽히는 기본 본문.
+   스크립트가 돌면 이 자리를 통째로 바꿔 그린다. */
+function staticHTML(d){
+  var sh = d.shop || {}, c = d.contact || {}, pl = d.place || {}, h = "";
+  var DAYS = [["mon","월"],["tue","화"],["wed","수"],["thu","목"],["fri","금"],["sat","토"],["sun","일"]];
+  h += '<div style="max-width:680px;margin:0 auto;padding:28px 22px;line-height:1.8">';
+  h += '<h1>' + esc(sh.name || "") + '</h1>';
+  if (sh.tagline) h += '<p>' + esc(sh.tagline).replace(/\n/g, "<br>") + '</p>';
+  if (c.phone) h += '<p>전화 <a href="tel:' + esc(String(c.phone).replace(/[^0-9+]/g, "")) + '">' + esc(c.phone) + '</a></p>';
+  if (pl.address) h += '<p>주소 ' + esc(pl.address) + '</p>';
+  var wk = (d.hours && d.hours.week) || {}, rows = "";
+  DAYS.forEach(function(x){
+    var v = wk[x[0]];
+    if (v && v.open && v.close) rows += '<li>' + x[1] + ' ' + esc(v.open) + '–' + esc(v.close) + '</li>';
+    else if (v === null) rows += '<li>' + x[1] + ' 쉽니다</li>';
+  });
+  if (rows) h += '<h2>영업시간</h2><ul>' + rows + '</ul>';
+  var items = (d.menu && Array.isArray(d.menu.items)) ? d.menu.items.filter(function(i){ return i && i.name; }) : [];
+  if (items.length){
+    h += '<h2>' + esc((d.menu && d.menu.title) || "안내") + '</h2><ul>';
+    items.forEach(function(i){ h += '<li>' + esc(i.name) + (i.price ? ' — ' + esc(i.price) : '') + '</li>'; });
+    h += '</ul>';
+  }
+  return h + '</div>';
+}
+
+/* 카톡·문자로 보냈을 때 뜨는 가로 그림(1200×630)을 만들어 내려 준다 */
+function makeOg(){
+  state = readForm();
+  var W = 1200, H = 630, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  var x = cv.getContext("2d");
+  var FONT = '"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif';
+  var name = state.shop.name || "우리 가게";
+  var line = String(state.shop.tagline || "").split(/\n/)[0] || "";
+  function finish(hasPhoto){
+    var g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, hasPhoto ? "rgba(0,0,0,.22)" : "rgba(0,0,0,.05)");
+    g.addColorStop(1, hasPhoto ? "rgba(0,0,0,.74)" : "rgba(0,0,0,.34)");
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    var size = 92; x.fillStyle = "#fff";
+    do { x.font = "800 " + size + "px " + FONT; size -= 4; } while (x.measureText(name).width > W - 160 && size > 40);
+    x.fillText(name, 80, line ? H - 150 : H - 96);
+    if (line){
+      x.font = "500 38px " + FONT; x.fillStyle = "rgba(255,255,255,.9)";
+      while (x.measureText(line).width > W - 160 && line.length > 4) line = line.slice(0, -2) + "…";
+      x.fillText(line, 80, H - 86);
+    }
+    cv.toBlob(function(blob){
+      if (!blob){ toast("그림을 만들지 못했어요"); return; }
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "og.jpg";
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+      toast(state.site.url ? "og.jpg 를 받았어요. 홈페이지 파일과 같은 자리에 올리세요"
+                           : "og.jpg 를 받았어요. '홈페이지 주소' 칸도 채워야 연결됩니다");
+    }, "image/jpeg", 0.86);
+  }
+  function flat(){ x.fillStyle = (state.theme && state.theme.primary) || "#333"; x.fillRect(0, 0, W, H); finish(false); }
+  if (IMG.hero){
+    var im = new Image();
+    im.onload = function(){
+      var sc = Math.max(W / im.width, H / im.height), w = im.width * sc, hh = im.height * sc;
+      x.drawImage(im, (W - w) / 2, (H - hh) / 2, w, hh); finish(true);
+    };
+    im.onerror = flat; im.src = IMG.hero;
+  } else flat();
+}
+
 function buildHTML(d){
   var css = $("#tpl-css-" + TPL).textContent;
   var rt  = $("#tpl-runtime-" + TPL).textContent;
@@ -1351,6 +1443,10 @@ function buildHTML(d){
   var title = name + (area ? " · " + area : "");
   var desc  = (d.shop.tagline || "").replace(/\n+/g, " ").slice(0, 110)
             || (name + (area ? " · " + area : ""));
+
+  var su = cleanSiteUrl(d.site && d.site.url), ogImg = "";
+  if (su){ try { ogImg = new URL("og.jpg", su).href; } catch (e) { su = ""; } }
+  var ASYNC = ' media="print" onload="this.media=\'all\'"';
 
   var ldObj = jsonLd(d);
   var ld = ldObj
@@ -1365,19 +1461,24 @@ function buildHTML(d){
     + '<meta property="og:type" content="website">\n'
     + '<meta property="og:title" content="' + esc(title) + '">\n'
     + '<meta property="og:description" content="' + esc(desc) + '">\n'
+    + (su ? '<link rel="canonical" href="' + esc(su) + '">\n'
+          + '<meta property="og:url" content="' + esc(su) + '">\n'
+          + '<meta property="og:image" content="' + esc(ogImg) + '">\n'
+          + '<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
+          + '<meta name="twitter:card" content="summary_large_image">\n' : "")
     + '<meta name="theme-color" content="#FAF7F3" media="(prefers-color-scheme: light)">\n'
     + '<meta name="theme-color" content="#141110" media="(prefers-color-scheme: dark)">\n'
     + ld
     + '<meta name="color-scheme" content="light dark">\n'
     + '<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n'
-    + '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">\n'
+    + '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"' + ASYNC + '>\n'
     + (d.theme.titleFont === "sans" ? "" :
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-      + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap">\n')
+      + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap"' + ASYNC + '>\n')
     + '<style>\n' + css + '\n</style>\n'
     + '</head>\n<body>\n'
     + '<script type="application/json" id="site-data">\n' + jsonSafe(d) + '\n' + CLOSE + '\n'
-    + '<div id="app"></div>\n'
+    + '<div id="app">' + staticHTML(d) + '</div>\n'
     + '<div class="toast" id="toast" role="status" aria-live="polite"></div>\n'
     + '<script>\n' + rt + '\n' + CLOSE + '\n'
     + '</body>\n</html>\n';
@@ -1476,6 +1577,7 @@ function download(){
   } else go();
 }
 $("#btn-get").onclick = download;
+$("#btn-og").onclick = makeOg;
 $("#btn-get-2").onclick = download;
 
 $("#fi-load").onchange = function(){
