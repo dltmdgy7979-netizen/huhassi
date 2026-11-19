@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>올리는 법 · 내 가게 홈페이지</title>
+<meta name="description" content="받은 묶음 하나를 무료 호스팅에 올려 홈페이지 주소를 만드는 방법.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap" media="print" onload="this.media='all'">
+<style>
+/* ============================================================
+   이름을 바꾸려면 HTML 안의 "내 가게 홈페이지" 를 찾아 바꾸면 됩니다.
+   색을 바꾸려면 아래 --accent 한 줄만 바꾸면 됩니다.
+   ============================================================ */
+:root{
+  --accent:#A3620E;
+  --accent-deep:#7D4A0A;
+  --accent-soft:#F7EFE3;
+  --ink:#1B1714; --ink-2:#4A423C; --ink-3:#8A7F77;
+  --line:#E8E0D8; --bg:#FAF7F3; --card:#FFFFFF;
+  --radius:18px; --radius-sm:12px;
+  --shadow-s:0 1px 2px rgba(27,23,20,.05), 0 2px 8px rgba(27,23,20,.04);
+  --shadow-m:0 2px 6px rgba(27,23,20,.06), 0 12px 32px rgba(27,23,20,.07);
+  --maxw:720px; --pad:22px; --gap:72px;
+  --font-title:"Noto Serif KR","Pretendard Variable",Pretendard,serif;
+}
+@media (min-width:768px){ :root{ --gap:92px; --pad:32px; } }
+@media (prefers-color-scheme:dark){
+  :root{
+    --accent:#D7903A; --accent-deep:#EFB469; --accent-soft:#2A2114;
+    --ink:#F3EEE9; --ink-2:#BCB3AB; --ink-3:#8A8079;
+    --line:#332D29; --bg:#141110; --card:#1C1917;
+    --shadow-s:0 1px 2px rgba(0,0,0,.34), 0 2px 8px rgba(0,0,0,.22);
+    --shadow-m:0 2px 6px rgba(0,0,0,.38), 0 12px 32px rgba(0,0,0,.3);
+  }
+}
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo",sans-serif;
+  font-size:16px; line-height:1.75; letter-spacing:-.011em;
+  -webkit-font-smoothing:antialiased;
+  word-break:keep-all; overflow-wrap:break-word;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));
+}
+@media (min-width:768px){ body{ padding-bottom:0; } }
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+section{ margin-top:var(--gap); }
+section.band{
+  padding:calc(var(--gap) * .68) 0; background:var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.t-hero{ font-family:var(--font-title); font-size:clamp(34px,9.6vw,54px); line-height:1.22; letter-spacing:-.035em; font-weight:700; margin:0; }
+.t-sec{ font-family:var(--font-title); font-size:clamp(21px,5vw,28px); line-height:1.32; letter-spacing:-.025em; font-weight:600; margin:0; }
+.eyebrow{ display:block; font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--accent); text-transform:uppercase; margin-bottom:9px; }
+.sec-head{ margin-bottom:20px; }
+.lead{ margin:14px 0 0; font-size:clamp(16px,4.3vw,18.5px); color:var(--ink-2); line-height:1.75; max-width:30ch; }
+
+/* 머리말 */
+.top{ padding:18px 0 0; }
+.brandline{ display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:-.03em; font-size:15.5px; }
+.brandline i{ width:22px; height:22px; border-radius:7px; background:var(--accent); display:block; flex:none; }
+
+/* 첫 화면 */
+.hero{ padding:34px 0 0; }
+.hero-panel{
+  background:linear-gradient(168deg, var(--accent-soft) 0%, var(--bg) 94%);
+  border-bottom:1px solid var(--line); padding:38px 0 42px; margin-top:22px;
+}
+.tag{
+  display:inline-flex; align-items:center; gap:7px; padding:7px 13px; border-radius:999px;
+  background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow-s);
+  font-size:13px; font-weight:650; color:var(--ink-2); margin-bottom:16px;
+}
+.tag .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+.acts{ display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:50px; padding:0 22px; border-radius:13px; border:1px solid transparent;
+  font-size:16px; font-weight:700; letter-spacing:-.018em; text-decoration:none; cursor:pointer;
+  transition:transform .12s ease, background .2s ease, border-color .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:active{ transform:scale(.975); }
+.btn-primary{ background:var(--accent); color:#fff; box-shadow:0 2px 10px rgba(163,98,14,.26); }
+.btn-primary:hover{ background:var(--accent-deep); }
+.btn-ghost{ background:var(--card); color:var(--ink); border-color:var(--line); box-shadow:var(--shadow-s); }
+.btn-ghost:hover{ border-color:#D6CCC2; }
+.btn svg{ width:18px; height:18px; flex:none; }
+.note{ margin-top:14px; font-size:13px; color:var(--ink-3); }
+
+/* 3단계 */
+.steps{ list-style:none; margin:0; padding:0; counter-reset:s; }
+.steps li{ display:flex; gap:15px; padding:16px 0; border-top:1px solid var(--line); }
+.steps li:first-child{ border-top:0; padding-top:0; }
+.steps .n{
+  counter-increment:s; flex:none; width:30px; height:30px; border-radius:50%;
+  background:var(--accent); color:#fff; font-size:13.5px; font-weight:750;
+  display:grid; place-items:center; margin-top:2px;
+}
+.steps .n::before{ content:counter(s); }
+.steps b{ display:block; font-size:16.5px; font-weight:700; letter-spacing:-.022em; }
+.steps span{ display:block; margin-top:4px; font-size:14px; color:var(--ink-3); line-height:1.65; }
+
+/* 업종 */
+.kinds{ display:grid; gap:10px; }
+@media (min-width:560px){ .kinds{ grid-template-columns:1fr 1fr; } }
+.kind{
+  display:block; text-decoration:none; background:var(--card);
+  border:1px solid var(--line); border-radius:var(--radius); padding:16px 17px;
+  box-shadow:var(--shadow-s); transition:border-color .18s, transform .12s;
+}
+.kind:hover{ border-color:var(--accent); }
+.kind:active{ transform:scale(.99); }
+.kind .k-top{ display:flex; align-items:center; gap:9px; }
+.kind .swatch{ width:14px; height:14px; border-radius:5px; flex:none; }
+.kind b{ font-size:16px; font-weight:700; letter-spacing:-.024em; }
+.kind i{ font-style:normal; display:block; margin-top:6px; font-size:13.5px; color:var(--ink-3); line-height:1.6; }
+.kind .see{ display:inline-block; margin-top:10px; font-size:13px; font-weight:650; color:var(--accent); }
+
+/* 들어가는 것 */
+.feats{ list-style:none; margin:0; padding:0; }
+.feats li{ padding:15px 0; border-top:1px solid var(--line); }
+.feats li:first-child{ border-top:0; padding-top:0; }
+.feats b{ display:block; font-size:16px; font-weight:700; letter-spacing:-.022em; }
+.feats span{ display:block; margin-top:4px; font-size:14.5px; color:var(--ink-2); line-height:1.7; }
+
+/* 솔직한 안내 */
+.honest{ background:var(--accent-soft); border:1px solid var(--line); border-radius:var(--radius); padding:20px; }
+.honest h3{ margin:0 0 10px; font-size:16px; font-weight:750; letter-spacing:-.024em; }
+.honest p{ margin:0 0 10px; font-size:14.5px; color:var(--ink-2); line-height:1.75; }
+.honest p:last-child{ margin-bottom:0; }
+
+footer{ margin-top:var(--gap); padding:26px 0 30px; border-top:1px solid var(--line); }
+footer .f1{ font-size:14.5px; font-weight:650; }
+footer .f2{ margin-top:7px; font-size:12.5px; color:var(--ink-3); line-height:1.75; }
+footer a{ color:var(--ink-3); }
+
+/* 하단 고정 */
+.sticky{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom));
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(14px) saturate(1.2);
+  border-top:1px solid var(--line);
+  max-width:var(--maxw); margin:0 auto;
+  transform:translateY(110%); transition:transform .3s cubic-bezier(.2,.8,.3,1);
+}
+.sticky.show{ transform:none; }
+.sticky .btn{ width:100%; }
+@media (min-width:768px){ .sticky{ display:none; } }
+
+.reveal{ opacity:0; transform:translateY(16px); transition:opacity .65s cubic-bezier(.2,.7,.3,1), transform .65s cubic-bezier(.2,.7,.3,1); }
+.reveal.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){ .reveal{ opacity:1; transform:none; transition:none; } }
+
+/* ---------- 안내 쪽 전용 ---------- */
+.g-hero{ padding:30px 0 6px; }
+.g-hero h1{ font-family:var(--font-title); font-size:clamp(28px,7.6vw,42px); line-height:1.28; letter-spacing:-.035em; margin:14px 0 0; }
+.g-hero p{ margin:14px 0 0; color:var(--ink-2); font-size:16.5px; max-width:34ch; }
+.gsteps{ list-style:none; margin:0; padding:0; counter-reset:g; }
+.gsteps > li{ counter-increment:g; position:relative; padding:22px 0 22px 50px; border-top:1px solid var(--line); }
+.gsteps > li:first-child{ border-top:0; padding-top:4px; }
+.gsteps > li::before{ content:counter(g); position:absolute; left:0; top:22px; width:34px; height:34px; border-radius:50%;
+  background:var(--accent); color:#fff; font-weight:750; font-size:15px; display:grid; place-items:center; }
+.gsteps > li:first-child::before{ top:4px; }
+.gsteps h3{ margin:3px 0 0; font-size:18px; font-weight:750; letter-spacing:-.026em; }
+.gsteps p{ margin:8px 0 0; font-size:15px; color:var(--ink-2); line-height:1.8; }
+.gsteps ul{ margin:8px 0 0; padding-left:18px; font-size:15px; color:var(--ink-2); line-height:1.85; }
+.key{ display:inline-block; padding:1px 8px; border-radius:7px; background:var(--card); border:1px solid var(--line);
+  font-size:13.5px; font-weight:650; color:var(--ink); white-space:nowrap; }
+.url{ display:block; margin-top:10px; padding:11px 14px; border-radius:11px; background:var(--card); border:1px solid var(--line);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; color:var(--ink); overflow-wrap:anywhere; }
+.tip{ margin-top:12px; padding:13px 15px; border-radius:12px; background:var(--accent-soft); border:1px solid var(--line); font-size:14px; color:var(--ink-2); line-height:1.75; }
+.tip b{ color:var(--ink); }
+.back{ display:inline-block; margin-top:18px; font-size:14px; font-weight:650; color:var(--accent); text-decoration:none; }
+body{ padding-bottom:0; }
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <a class="brandline" href="../" style="text-decoration:none"><i></i>내 가게 홈페이지</a>
+</div></div>
+
+<header class="g-hero"><div class="wrap">
+  <div class="tag"><span class="dot"></span>컴퓨터로 15분 · 무료</div>
+  <h1>받은 묶음을 올려<br>주소 만들기</h1>
+  <p>묶음 하나를 끌어다 놓으면 <b>이름.pages.dev</b> 모양의 주소가 생깁니다. Cloudflare Pages 라는 무료 호스팅을 씁니다.</p>
+</div></header>
+
+<section><div class="wrap">
+  <div class="honest">
+    <h3>시작하기 전에</h3>
+    <p><b>컴퓨터에서 하세요.</b> 파일을 끌어다 놓는 단계가 있어 휴대폰으로는 번거롭습니다.</p>
+    <p><b>화면 글자가 조금 다를 수 있습니다.</b> 이 안내는 2026년 11월 Cloudflare 공식 문서를 보고 적었습니다. 화면은 영어로 나올 수 있고, 단추 이름이 바뀌었을 수도 있습니다. 아래에 적은 영어 단추 이름과 비슷한 것을 찾아 누르시면 됩니다.</p>
+    <p><b>가입이 한 번 필요합니다.</b> Cloudflare 계정은 가게 주인 본인 이메일로 만드세요. 홈페이지의 주인이 그 계정이 됩니다.</p>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">Steps</span><h2 class="t-sec">차례대로 따라 하기</h2></div>
+  <ol class="gsteps">
+    <li><h3>올리기용 묶음 받기</h3>
+      <p><a href="../make/">만들기 화면</a> 맨 아래 <b>13번 "올리기 · 검색 · 카톡 공유"</b>에서 <span class="key">올리기용 묶음 받기</span> 를 누릅니다. <b>homepage.zip</b> 이 내려옵니다.</p>
+      <div class="tip"><b>압축을 풀지 마세요.</b> zip 그대로 올립니다. 안에는 홈페이지 파일(index.html)과 카톡 공유 그림(og.jpg)이 들어 있습니다.</div></li>
+
+    <li><h3>Cloudflare 가입하고 들어가기</h3>
+      <p>아래 주소로 가서 이메일로 가입합니다. 가입 뒤 받은 메일에서 인증 링크를 한 번 눌러야 합니다.</p>
+      <span class="url">https://dash.cloudflare.com/sign-up</span></li>
+
+    <li><h3>새 Pages 프로젝트 만들기</h3>
+      <p>왼쪽 메뉴에서 <span class="key">Workers &amp; Pages</span> 를 누르고, <span class="key">Create application</span> → <span class="key">Pages</span> → <span class="key">Use direct upload</span> 순서로 들어갑니다.</p>
+      <p>화면에 따라 마지막 단추가 <span class="key">Drag and drop your files</span> 로 나오기도 합니다. "Git 연결"이 아니라 <b>파일을 직접 올리는 쪽</b>을 고르면 됩니다.</p></li>
+
+    <li><h3>프로젝트 이름 정하기</h3>
+      <p>이름 칸에 영어 소문자·숫자·하이픈(-)으로 가게 이름을 적습니다. 이 이름이 주소가 됩니다.</p>
+      <span class="url">sodam-sikdang &nbsp;→&nbsp; https://sodam-sikdang.pages.dev</span>
+      <div class="tip">이미 누가 쓰는 이름이면 뒤에 글자가 덧붙을 수 있습니다. 주소는 6번에서 화면에 나오는 것을 그대로 믿으세요.</div></li>
+
+    <li><h3>묶음 끌어다 놓기</h3>
+      <p>1번에서 받은 <b>homepage.zip</b> 을 화면의 점선 상자에 끌어다 놓고, 파일 목록에 <b>index.html</b> 이 보이면 <span class="key">Deploy site</span> (또는 <span class="key">Save and Deploy</span>) 를 누릅니다.</p></li>
+
+    <li><h3>주소 확인하기</h3>
+      <p>잠시 뒤 완료 화면에 <b>…pages.dev</b> 주소가 나옵니다. 눌러서 홈페이지가 뜨는지 휴대폰으로도 열어 보세요. 처음 몇 분은 안 열릴 수 있습니다.</p></li>
+
+    <li><h3>카톡 공유 그림 연결하기 <span style="font-weight:500;color:var(--ink-3);font-size:14px">(한 번만)</span></h3>
+      <p>주소를 알게 됐으니 한 번 더 올려야 카톡으로 보냈을 때 그림이 같이 뜹니다.</p>
+      <ul>
+        <li>만들기 화면에서 <span class="key">기존 파일 불러오기</span> 로 아까 받은 <b>homepage.zip</b> 을 엽니다.</li>
+        <li>13번 <b>홈페이지 주소</b> 칸에 6번의 주소를 넣습니다.</li>
+        <li><span class="key">올리기용 묶음 받기</span> 를 다시 누릅니다.</li>
+        <li>Cloudflare 에서 방금 만든 프로젝트로 들어가 <span class="key">Create deployment</span> (새 배포) 를 누르고 새 묶음을 올립니다.</li>
+      </ul></li>
+  </ol>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">Later</span><h2 class="t-sec">올린 뒤에</h2></div>
+  <ul class="feats">
+    <li><b>메뉴나 가격을 바꾸고 싶을 때</b>
+      <span>만들기 화면에서 <b>기존 파일 불러오기</b>로 묶음을 열어 고치고, 다시 받아서 7번처럼 새 배포로 올리면 됩니다. 주소는 그대로입니다.</span></li>
+    <li><b>내 도메인(예: 우리가게.kr)을 쓰고 싶을 때</b>
+      <span>도메인을 산 뒤 Cloudflare 프로젝트의 <b>Custom domains</b> 에서 연결합니다. 도메인을 산 업체 쪽에서도 설정할 것이 있어, 이 안내에서는 다루지 않습니다.</span></li>
+    <li><b>지도에 내 홈페이지 주소 넣기</b>
+      <span>네이버 스마트플레이스와 카카오맵 매장 정보의 "홈페이지" 칸에 6번 주소를 넣어 두면, 지도에서 가게를 본 손님이 바로 넘어옵니다.</span></li>
+    <li><b>묶음을 잃어버리지 마세요</b>
+      <span>마지막으로 올린 homepage.zip 을 보관해 두세요. 고칠 때 그 파일에서 다시 시작합니다.</span></li>
+  </ul>
+  <a class="back" href="../make/">← 만들기 화면으로</a>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="f1">내 가게 홈페이지</div>
+  <div class="f2">Cloudflare 와 Cloudflare Pages 는 Cloudflare, Inc. 의 서비스이며 이 도구와는 관계가 없습니다.<br>무료 요금제의 조건은 바뀔 수 있으니 가입할 때 한 번 확인하세요.</div>
+</div></footer>
+</body>
+</html>

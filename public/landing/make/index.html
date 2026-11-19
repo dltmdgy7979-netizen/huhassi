@@ -625,8 +625,12 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
 
     <!-- 13. 검색·공유 -->
     <details class="fs">
-      <summary><span class="n">13</span>검색·카톡 공유 <span class="opt">올린 뒤에 채워도 됩니다</span></summary>
+      <summary><span class="n">13</span>올리기 · 검색 · 카톡 공유</summary>
       <div class="fs-body">
+        <div class="f"><span>올리기용 묶음</span>
+          <button type="button" class="tbtn go" id="btn-zip">올리기용 묶음 받기 (homepage.zip)</button>
+          <span class="hint">홈페이지 파일(<b>index.html</b>)과 카톡 공유 그림(<b>og.jpg</b>)이 한 묶음으로 내려옵니다. 압축을 풀지 말고 <b>그대로</b> 올리면 됩니다. <a href="../guide/" target="_blank" rel="noopener"><b>올리는 법 보기 →</b></a><br>나중에 내용을 고칠 때는 이 묶음을 <b>기존 파일 불러오기</b>로 다시 열 수 있습니다.</span>
+        </div>
         <label class="f"><span>홈페이지 주소 <span class="opt">선택</span></span>
           <input type="url" id="f-siteurl" placeholder="https://">
           <span class="hint">파일을 올리면 생기는 주소입니다. 넣어 두면 카톡으로 보냈을 때 그림이 같이 뜨고, 검색엔진이 이 주소를 대표 주소로 압니다. 아직 주소가 없으면 비워 두세요. 나중에 <b>기존 파일 불러오기</b>로 다시 열어 넣으면 됩니다.</span>
@@ -658,7 +662,7 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
   <button class="tbtn go" id="btn-get-2">내 홈페이지 받기</button>
 </div>
 
-<input type="file" accept=".html,text/html" id="fi-load" class="filein">
+<input type="file" accept=".html,.zip,text/html,application/zip" id="fi-load" class="filein">
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <div class="modal" id="modal">
@@ -8018,7 +8022,7 @@ function staticHTML(d){
 }
 
 /* 카톡·문자로 보냈을 때 뜨는 가로 그림(1200×630)을 만들어 내려 준다 */
-function makeOg(){
+function makeOg(done){
   state = readForm();
   var W = 1200, H = 630, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
   var x = cv.getContext("2d");
@@ -8039,6 +8043,7 @@ function makeOg(){
       x.fillText(line, 80, H - 86);
     }
     cv.toBlob(function(blob){
+      if (typeof done === "function"){ done(blob); return; }
       if (!blob){ toast("그림을 만들지 못했어요"); return; }
       var a = document.createElement("a");
       a.href = URL.createObjectURL(blob); a.download = "og.jpg";
@@ -8057,6 +8062,56 @@ function makeOg(){
     };
     im.onerror = flat; im.src = IMG.hero;
   } else flat();
+}
+
+/* 올리기용 묶음(zip). 압축하지 않고 담기만 한다 — 바깥 라이브러리 없이. */
+function crc32(u8){
+  var t = crc32.t, c, n, k, i;
+  if (!t){ t = crc32.t = []; for (n = 0; n < 256; n++){ c = n; for (k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[n] = c >>> 0; } }
+  c = 0xFFFFFFFF;
+  for (i = 0; i < u8.length; i++) c = t[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function makeZip(files){
+  var enc = new TextEncoder(), parts = [], central = [], off = 0, csize = 0, now = new Date();
+  var dt = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+  var tm = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+  files.forEach(function(f){
+    var nm = enc.encode(f.name), crc = crc32(f.data), n = f.data.length;
+    var lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(10, tm, true); lh.setUint16(12, dt, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, n, true); lh.setUint32(22, n, true); lh.setUint16(26, nm.length, true);
+    parts.push(new Uint8Array(lh.buffer), nm, f.data);
+    var ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint16(12, tm, true); ch.setUint16(14, dt, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, n, true); ch.setUint32(24, n, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+    central.push(new Uint8Array(ch.buffer), nm);
+    off += 30 + nm.length + n; csize += 46 + nm.length;
+  });
+  var e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+  e.setUint32(12, csize, true); e.setUint32(16, off, true);
+  return new Blob(parts.concat(central, [new Uint8Array(e.buffer)]), { type:"application/zip" });
+}
+function downloadZip(){
+  state = readForm();
+  if (!state.shop.name){ toast("가게 이름부터 넣어 주세요"); return; }
+  var html = new TextEncoder().encode(buildHTML(state));
+  var finish = function(files){
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(makeZip(files)); a.download = "homepage.zip";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+    toast("묶음을 받았어요. 풀지 말고 그대로 올리세요");
+  };
+  makeOg(function(blob){
+    if (!blob || !blob.arrayBuffer) return finish([{ name:"index.html", data:html }]);
+    blob.arrayBuffer().then(function(buf){
+      finish([{ name:"index.html", data:html }, { name:"og.jpg", data:new Uint8Array(buf) }]);
+    }, function(){ finish([{ name:"index.html", data:html }]); });
+  });
 }
 
 function buildHTML(d){
@@ -8193,7 +8248,7 @@ function download(){
     a.download = romanize(state.shop.name) + "_landing.html";
     document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
-    toast("받았어요. 올리는 법 안내를 보세요");
+    toast("받았어요. 올리실 때는 13번의 '올리기용 묶음'을 쓰세요");
   };
   if (ms.length){
     ask("비어 있는 칸이 있어요",
@@ -8203,6 +8258,7 @@ function download(){
 }
 $("#btn-get").onclick = download;
 $("#btn-og").onclick = makeOg;
+$("#btn-zip").onclick = downloadZip;
 $("#btn-get-2").onclick = download;
 
 $("#fi-load").onchange = function(){
