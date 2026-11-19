@@ -843,7 +843,7 @@ var MAXW = 800;
 var IMG = { hero:"", logo:"", mapImage:"", owner:"" };
 var GALLERY = [];
 
-function shrink(file, cb){
+function shrink(file, cb, bigW){
   if (!file) return cb(null, "파일이 없어요");
   if (!/^image\//.test(file.type)) return cb(null, "사진 파일만 넣을 수 있어요");
   if (file.size > 25 * 1024 * 1024) return cb(null, "사진이 너무 큽니다 (25MB 넘음)");
@@ -855,13 +855,14 @@ function shrink(file, cb){
     try{
       var w = im.naturalWidth, h = im.naturalHeight;
       if (!w || !h) return cb(null, "사진을 읽지 못했어요");
-      if (w > MAXW){ h = Math.round(h * MAXW / w); w = MAXW; }
+      var MW = bigW || MAXW;
+      if (w > MW){ h = Math.round(h * MW / w); w = MW; }
       var cv = document.createElement("canvas");
       cv.width = w; cv.height = h;
       var cx = cv.getContext("2d");
       cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h);
       cx.drawImage(im, 0, 0, w, h);
-      var out = cv.toDataURL("image/webp", 0.82);
+      var out = cv.toDataURL("image/webp", bigW ? 0.76 : 0.82);
       if (out.indexOf("data:image/webp") !== 0){
         out = cv.toDataURL("image/jpeg", 0.84);   /* WebP 안 되는 브라우저 */
       }
@@ -888,7 +889,7 @@ function wireOne(slot){
       $(map[slot]).src = data;
       $(nmap[slot]).textContent = "넣었어요";
       changed();
-    });
+    }, slot === "hero" ? 1440 : 0);
   };
 }
 ["hero","logo","mapImage","owner"].forEach(wireOne);
