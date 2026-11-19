@@ -191,6 +191,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -425,6 +427,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -434,7 +438,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -482,47 +489,138 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 <script type="application/json" id="site-data">
 {
   "demo": true,
-  "theme": { "primary": "#1F6E8C", "titleFont": "sans" },
+  "theme": {
+    "primary": "#1F6E8C",
+    "titleFont": "sans"
+  },
   "shop": {
     "name": "시원공조",
     "tagline": "광주 전 지역 에어컨·보일러 출장 수리.\n전화 주시면 그날 안에 답드립니다.",
-    "logo": "", "hero": "",
+    "logo": "",
+    "hero": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0U4RjFGNCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q1RTVFQiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iNzQuMDAiIHJ4PSIwIiBmaWxsPSJ1cmwoI2JnKSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIwLjAwIiB5PSI3NC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIyNi4wMCIgcng9IjAiIGZpbGw9IiNDOUJCQTgiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMC4wMCIgeT0iNzQuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMC44MCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDgiIC8+PGVsbGlwc2UgY3g9IjUwLjgwIiBjeT0iMzIuNDAiIHJ4PSIyNi4wMCIgcnk9IjIuMDAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMTIiLz48cmVjdCB4PSIyNC4wMCIgeT0iMTQuMDAiIHdpZHRoPSI1Mi4wMCIgaGVpZ2h0PSIxNS4wMCIgcng9IjMiIGZpbGw9IiNGQkZDRkMiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjQuMDAiIHk9IjI1LjAwIiB3aWR0aD0iNTIuMDAiIGhlaWdodD0iNC4wMCIgcng9IjIiIGZpbGw9IiNFM0VBRUUiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjguMDAiIHk9IjI2LjQwIiB3aWR0aD0iNDQuMDAiIGhlaWdodD0iMS4wMCIgcng9IjAuNSIgZmlsbD0iIzlGQjNCRiIgb3BhY2l0eT0iMSIgLz48Y2lyY2xlIGN4PSI3MC4wMCIgY3k9IjE5LjAwIiByPSIxLjAwIiBmaWxsPSIjM0ZCOTg0IiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTMyIDM0IHEtMyA2IDAgMTIgcTMgNiAwIDEyIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjAuNzUiLz48cGF0aCBkPSJNNDMgMzQgcS0zIDYgMCAxMiBxMyA2IDAgMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMC43NSIvPjxwYXRoIGQ9Ik01NCAzNCBxLTMgNiAwIDEyIHEzIDYgMCAxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIwLjc1Ii8+PHBhdGggZD0iTTY1IDM0IHEtMyA2IDAgMTIgcTMgNiAwIDEyIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjAuNzUiLz48cmVjdCB4PSI3MC4wMCIgeT0iMzQuMDAiIHdpZHRoPSIxLjYwIiBoZWlnaHQ9IjU4LjAwIiByeD0iMCIgZmlsbD0iIzhEOEQ4RCIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI4Ni4wMCIgeT0iMzQuMDAiIHdpZHRoPSIxLjYwIiBoZWlnaHQ9IjU4LjAwIiByeD0iMCIgZmlsbD0iIzhEOEQ4RCIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3MC4wMCIgeT0iNDAuMDAiIHdpZHRoPSIxNy42MCIgaGVpZ2h0PSIxLjQwIiByeD0iMCIgZmlsbD0iI0E5QTlBOSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3MC4wMCIgeT0iNDkuMDAiIHdpZHRoPSIxNy42MCIgaGVpZ2h0PSIxLjQwIiByeD0iMCIgZmlsbD0iI0E5QTlBOSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3MC4wMCIgeT0iNTguMDAiIHdpZHRoPSIxNy42MCIgaGVpZ2h0PSIxLjQwIiByeD0iMCIgZmlsbD0iI0E5QTlBOSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3MC4wMCIgeT0iNjcuMDAiIHdpZHRoPSIxNy42MCIgaGVpZ2h0PSIxLjQwIiByeD0iMCIgZmlsbD0iI0E5QTlBOSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3MC4wMCIgeT0iNzYuMDAiIHdpZHRoPSIxNy42MCIgaGVpZ2h0PSIxLjQwIiByeD0iMCIgZmlsbD0iI0E5QTlBOSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3MC4wMCIgeT0iODUuMDAiIHdpZHRoPSIxNy42MCIgaGVpZ2h0PSIxLjQwIiByeD0iMCIgZmlsbD0iI0E5QTlBOSIgb3BhY2l0eT0iMSIgLz48ZWxsaXBzZSBjeD0iMjYuODAiIGN5PSI5NC40MCIgcng9IjE2LjAwIiByeT0iMi4yMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4xNCIvPjxyZWN0IHg9IjExLjAwIiB5PSI3OC4wMCIgd2lkdGg9IjMwLjAwIiBoZWlnaHQ9IjE0LjAwIiByeD0iMiIgZmlsbD0iIzFGNkU4QyIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIxMS4wMCIgeT0iNzguMDAiIHdpZHRoPSIzMC4wMCIgaGVpZ2h0PSI0LjAwIiByeD0iMiIgZmlsbD0iIzE4NTg2RiIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIyMi4wMCIgeT0iNzMuNTAiIHdpZHRoPSI4LjAwIiBoZWlnaHQ9IjUuMDAiIHJ4PSIyIiBmaWxsPSJub25lIiBvcGFjaXR5PSIxIiBzdHJva2U9IiMzQTJGMkEiIHN0cm9rZS13aWR0aD0iMS40Ii8+PHJlY3QgeD0iMjQuMDAiIHk9IjgzLjAwIiB3aWR0aD0iNC4wMCIgaGVpZ2h0PSIzLjAwIiByeD0iMC42IiBmaWxsPSIjRTlDNDZBIiBvcGFjaXR5PSIxIiAvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ2IDkwKSByb3RhdGUoLTEwKSI+PHJlY3QgeD0iMC4wMCIgeT0iMC4wMCIgd2lkdGg9IjE4LjAwIiBoZWlnaHQ9IjIuMDAiIHJ4PSIxIiBmaWxsPSIjQjlDMEM0IiBvcGFjaXR5PSIxIiAvPjxjaXJjbGUgY3g9IjE5LjAwIiBjeT0iMS4wMCIgcj0iMy4wMCIgZmlsbD0iI0I5QzBDNCIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9IjIwLjQwIiBjeT0iMS4wMCIgcj0iMS41MCIgZmlsbD0iI0M5QkJBOCIgb3BhY2l0eT0iMSIvPjwvZz48L3N2Zz4=",
     "quote": "고치면 될 것을 바꾸라고 하지 않습니다.\n바꿔야 할 것은 바꿔야 한다고 말씀드립니다.",
     "quoteBy": "시원공조"
   },
-  "contact": { "phone": "010-0000-0000", "sms": "010-0000-0000", "booking": "", "kakaoChannel": "https://pf.kakao.com/_example", "email": "" },
+  "contact": {
+    "phone": "010-0000-0000",
+    "sms": "010-0000-0000",
+    "booking": "",
+    "kakaoChannel": "https://pf.kakao.com/_example",
+    "email": ""
+  },
   "place": {
     "address": "광주 전 지역 · 담양 · 화순 · 나주 일부",
-    "kakaoMapUrl": "", "naverMapUrl": "", "mapImage": "",
+    "kakaoMapUrl": "",
+    "naverMapUrl": "",
+    "mapImage": "",
     "info": [
-      { "label": "당일 방문", "value": "오전에 연락 주시면 대체로 그날 갑니다" },
-      { "label": "먼 지역", "value": "나주·화순은 출장비가 1만원 더 붙습니다" }
+      {
+        "label": "당일 방문",
+        "value": "오전에 연락 주시면 대체로 그날 갑니다"
+      },
+      {
+        "label": "먼 지역",
+        "value": "나주·화순은 출장비가 1만원 더 붙습니다"
+      }
     ]
   },
   "hours": {
     "week": {
-      "mon": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
-      "tue": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
-      "wed": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
-      "thu": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
-      "fri": { "open": "08:00", "close": "19:00", "breakStart": "", "breakEnd": "" },
-      "sat": { "open": "08:00", "close": "17:00", "breakStart": "", "breakEnd": "" },
+      "mon": {
+        "open": "08:00",
+        "close": "19:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "tue": {
+        "open": "08:00",
+        "close": "19:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "wed": {
+        "open": "08:00",
+        "close": "19:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "thu": {
+        "open": "08:00",
+        "close": "19:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "fri": {
+        "open": "08:00",
+        "close": "19:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "sat": {
+        "open": "08:00",
+        "close": "17:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
       "sun": null
     },
-    "lastOrder": "", "holidayNote": "일요일은 급한 건만 전화로 받습니다."
+    "lastOrder": "",
+    "holidayNote": "일요일은 급한 건만 전화로 받습니다."
   },
-  "notice": { "on": false, "label": "오늘 접수 마감", "reason": "", "resumeDate": "" },
+  "notice": {
+    "on": false,
+    "label": "오늘 접수 마감",
+    "reason": "",
+    "resumeDate": ""
+  },
   "menu": {
     "title": "하는 일",
     "items": [
-      { "name": "에어컨 수리", "target": "", "duration": "", "price": "진단 후 안내", "signature": true, "note": "냉방 약함 · 물 떨어짐 · 소음 · 전원 안 들어옴", "photo": "" },
-      { "name": "에어컨 설치 · 이전", "target": "", "duration": "", "price": "100,000원부터", "signature": true, "note": "배관 길이와 실외기 위치에 따라 달라집니다", "photo": "" },
-      { "name": "에어컨 분해 청소", "target": "", "duration": "", "price": "80,000원부터", "signature": false, "note": "벽걸이 기준. 스탠드·천장형은 따로 안내드립니다", "photo": "" },
-      { "name": "보일러 점검 · 수리", "target": "", "duration": "", "price": "진단 후 안내", "signature": false, "note": "온수 안 나옴 · 난방 안 됨 · 소음 · 누수", "photo": "" }
+      {
+        "name": "에어컨 수리",
+        "target": "",
+        "duration": "",
+        "price": "진단 후 안내",
+        "signature": true,
+        "note": "냉방 약함 · 물 떨어짐 · 소음 · 전원 안 들어옴",
+        "photo": ""
+      },
+      {
+        "name": "에어컨 설치 · 이전",
+        "target": "",
+        "duration": "",
+        "price": "100,000원부터",
+        "signature": true,
+        "note": "배관 길이와 실외기 위치에 따라 달라집니다",
+        "photo": ""
+      },
+      {
+        "name": "에어컨 분해 청소",
+        "target": "",
+        "duration": "",
+        "price": "80,000원부터",
+        "signature": false,
+        "note": "벽걸이 기준. 스탠드·천장형은 따로 안내드립니다",
+        "photo": ""
+      },
+      {
+        "name": "보일러 점검 · 수리",
+        "target": "",
+        "duration": "",
+        "price": "진단 후 안내",
+        "signature": false,
+        "note": "온수 안 나옴 · 난방 안 됨 · 소음 · 누수",
+        "photo": ""
+      }
     ],
     "priceNote": "적어둔 금액은 가장 흔한 경우의 시작 가격입니다. 현장 상태에 따라 달라질 수 있어, 작업 전에 최종 금액을 먼저 알려드리고 동의하신 뒤에 시작합니다."
   },
-  "owner": { "name": "", "role": "", "text": "", "photo": "" },
+  "owner": {
+    "name": "",
+    "role": "",
+    "text": "",
+    "photo": ""
+  },
   "booking": {
     "howto": "30,000원. 수리를 맡기시면 작업비에 포함되어 따로 받지 않습니다.",
     "deposit": "부품비와 작업비는 따로 계산됩니다. 부품은 들어간 것만 실비로 받습니다.",
@@ -530,15 +628,52 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
     "notes": "작업한 부분은 3개월 동안 같은 증상이면 무상으로 다시 봐드립니다."
   },
   "steps": [
-    { "name": "전화 또는 사진으로 증상 알려주기", "note": "증상 사진을 보내주시면 견적이 훨씬 빨라집니다" },
-    { "name": "예상 비용 안내", "note": "전화로 대략의 범위를 먼저 말씀드립니다" },
-    { "name": "방문 · 진단", "note": "현장에서 최종 금액을 알려드리고 동의를 받습니다" },
-    { "name": "작업 · 확인 후 결제", "note": "다 된 것을 함께 확인한 뒤에 계산합니다" }
+    {
+      "name": "전화 또는 사진으로 증상 알려주기",
+      "note": "증상 사진을 보내주시면 견적이 훨씬 빨라집니다"
+    },
+    {
+      "name": "예상 비용 안내",
+      "note": "전화로 대략의 범위를 먼저 말씀드립니다"
+    },
+    {
+      "name": "방문 · 진단",
+      "note": "현장에서 최종 금액을 알려드리고 동의를 받습니다"
+    },
+    {
+      "name": "작업 · 확인 후 결제",
+      "note": "다 된 것을 함께 확인한 뒤에 계산합니다"
+    }
   ],
   "origin": [],
-  "takeout": { "packing": false, "delivery": false, "area": "", "links": [] },
-  "gallery": [], "reviews": [], "links": [],
-  "legal": { "bizName": "", "bizNumber": "", "privacyUrl": "", "credit": true }
+  "takeout": {
+    "packing": false,
+    "delivery": false,
+    "area": "",
+    "links": []
+  },
+  "gallery": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0U4RjFGNCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q1RTVFQiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJnbCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0YxRjhGQSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0M5RERFNSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iNzIuMDAiIHJ4PSIwIiBmaWxsPSJ1cmwoI2JnKSIgb3BhY2l0eT0iMSIgLz48Y2lyY2xlIGN4PSIxOC4wMCIgY3k9IjIwLjAwIiByPSI5LjAwIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjUiLz48cmVjdCB4PSIwLjAwIiB5PSI3Mi4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIyOC4wMCIgcng9IjAiIGZpbGw9IiNCOUIyQTYiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMC4wMCIgeT0iNzIuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMS4wMCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDgiIC8+PHJlY3QgeD0iNi4wMCIgeT0iODYuMDAiIHdpZHRoPSIxMi4wMCIgaGVpZ2h0PSIxLjIwIiByeD0iMCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41IiAvPjxyZWN0IHg9IjMwLjAwIiB5PSI4Ni4wMCIgd2lkdGg9IjEyLjAwIiBoZWlnaHQ9IjEuMjAiIHJ4PSIwIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjUiIC8+PHJlY3QgeD0iNTQuMDAiIHk9Ijg2LjAwIiB3aWR0aD0iMTIuMDAiIGhlaWdodD0iMS4yMCIgcng9IjAiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNSIgLz48cmVjdCB4PSI3OC4wMCIgeT0iODYuMDAiIHdpZHRoPSIxMi4wMCIgaGVpZ2h0PSIxLjIwIiByeD0iMCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41IiAvPjxlbGxpcHNlIGN4PSI1MC44MCIgY3k9IjgxLjQwIiByeD0iNDAuMDAiIHJ5PSIyLjQwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjE2Ii8+PHBhdGggZD0iTTEwIDQ2IGg1NCBsMTYgMTAgaDggYTMgMyAwIDAgMSAzIDMgdjE1IGgtODEgWiIgZmlsbD0iI0ZCRkNGQyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxyZWN0IHg9IjEwLjAwIiB5PSI2Mi4wMCIgd2lkdGg9IjgxLjAwIiBoZWlnaHQ9IjQuMDAiIHJ4PSIwIiBmaWxsPSIjMUY2RThDIiBvcGFjaXR5PSIxIiAvPjxwYXRoIGQ9Ik02MiA0OSBsMTIgOCBoLTEyIFoiIGZpbGw9InVybCgjZ2wpIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHJlY3QgeD0iNDQuMDAiIHk9IjQ5LjAwIiB3aWR0aD0iMTUuMDAiIGhlaWdodD0iOC4wMCIgcng9IjEiIGZpbGw9InVybCgjZ2wpIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjE3LjAwIiB5PSI1MC4wMCIgd2lkdGg9IjIwLjAwIiBoZWlnaHQ9IjYuMDAiIHJ4PSIxIiBmaWxsPSIjMUY2RThDIiBvcGFjaXR5PSIwLjE0IiAvPjxyZWN0IHg9IjE0LjAwIiB5PSI0MS4wMCIgd2lkdGg9IjQ2LjAwIiBoZWlnaHQ9IjEuNjAiIHJ4PSIwIiBmaWxsPSIjOEQ4RDhEIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjE0LjAwIiB5PSI0NC4wMCIgd2lkdGg9IjQ2LjAwIiBoZWlnaHQ9IjEuNjAiIHJ4PSIwIiBmaWxsPSIjOEQ4RDhEIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjE4LjAwIiB5PSI0MS4wMCIgd2lkdGg9IjEuMjAiIGhlaWdodD0iNC42MCIgcng9IjAiIGZpbGw9IiM4RDhEOEQiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjcuMDAiIHk9IjQxLjAwIiB3aWR0aD0iMS4yMCIgaGVpZ2h0PSI0LjYwIiByeD0iMCIgZmlsbD0iIzhEOEQ4RCIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIzNi4wMCIgeT0iNDEuMDAiIHdpZHRoPSIxLjIwIiBoZWlnaHQ9IjQuNjAiIHJ4PSIwIiBmaWxsPSIjOEQ4RDhEIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjQ1LjAwIiB5PSI0MS4wMCIgd2lkdGg9IjEuMjAiIGhlaWdodD0iNC42MCIgcng9IjAiIGZpbGw9IiM4RDhEOEQiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNTQuMDAiIHk9IjQxLjAwIiB3aWR0aD0iMS4yMCIgaGVpZ2h0PSI0LjYwIiByeD0iMCIgZmlsbD0iIzhEOEQ4RCIgb3BhY2l0eT0iMSIgLz48Y2lyY2xlIGN4PSIyOC4wMCIgY3k9Ijc2LjAwIiByPSI3LjAwIiBmaWxsPSIjMkIyNzI1IiBvcGFjaXR5PSIxIi8+PGNpcmNsZSBjeD0iMjguMDAiIGN5PSI3Ni4wMCIgcj0iMy40MCIgZmlsbD0iI0I5QzBDNCIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9Ijc0LjAwIiBjeT0iNzYuMDAiIHI9IjcuMDAiIGZpbGw9IiMyQjI3MjUiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSI3NC4wMCIgY3k9Ijc2LjAwIiByPSIzLjQwIiBmaWxsPSIjQjlDMEM0IiBvcGFjaXR5PSIxIi8+PC9zdmc+",
+      "alt": "작업 차량 (예시 그림)"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0VFRjNGNSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0RERTdFQiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMTAwLjAwIiByeD0iMCIgZmlsbD0idXJsKCNiZykiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNi4wMCIgeT0iOC4wMCIgd2lkdGg9Ijg4LjAwIiBoZWlnaHQ9Ijg0LjAwIiByeD0iMyIgZmlsbD0iI0Y5RkJGQiIgb3BhY2l0eT0iMC42IiAvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2IDMwKSByb3RhdGUoMjQpIj48cmVjdCB4PSIwLjAwIiB5PSIwLjAwIiB3aWR0aD0iNDYuMDAiIGhlaWdodD0iNC40MCIgcng9IjIiIGZpbGw9IiNCOUMwQzQiIG9wYWNpdHk9IjEiIC8+PGNpcmNsZSBjeD0iNDguMDAiIGN5PSIyLjIwIiByPSI2LjAwIiBmaWxsPSIjQjlDMEM0IiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTQ2IC0xIGg4IHY2LjQgaC04IFoiIGZpbGw9IiNFRUYzRjUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSIwLjAwIiBjeT0iMi4yMCIgcj0iNC40MCIgZmlsbD0iI0I5QzBDNCIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9IjAuMDAiIGN5PSIyLjIwIiByPSIxLjgwIiBmaWxsPSIjRUVGM0Y1IiBvcGFjaXR5PSIxIi8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQwIDcwKSByb3RhdGUoLTI4KSI+PHJlY3QgeD0iMC4wMCIgeT0iMC4wMCIgd2lkdGg9IjE4LjAwIiBoZWlnaHQ9IjYuMDAiIHJ4PSIzIiBmaWxsPSIjMUY2RThDIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjE4LjAwIiB5PSIyLjEwIiB3aWR0aD0iMzAuMDAiIGhlaWdodD0iMS44MCIgcng9IjAiIGZpbGw9IiNCOUMwQzQiIG9wYWNpdHk9IjEiIC8+PHBhdGggZD0iTTQ4IDEuNCBsMyAxLjYgbC0zIDEuNiBaIiBmaWxsPSIjOEQ4RDhEIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE0IDc2KSByb3RhdGUoLTgpIj48cmVjdCB4PSIwLjAwIiB5PSIwLjAwIiB3aWR0aD0iMTguMDAiIGhlaWdodD0iNi4wMCIgcng9IjMiIGZpbGw9IiNFOUM0NkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMTguMDAiIHk9IjIuMTAiIHdpZHRoPSIyNC4wMCIgaGVpZ2h0PSIxLjgwIiByeD0iMCIgZmlsbD0iI0I5QzBDNCIgb3BhY2l0eT0iMSIgLz48L2c+PGVsbGlwc2UgY3g9Ijc2LjgwIiBjeT0iMzEuNDAiIHJ4PSIxMS4wMCIgcnk9IjExLjAwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjEiLz48Y2lyY2xlIGN4PSI3Ni4wMCIgY3k9IjMwLjAwIiByPSIxMS4wMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9Ijc2LjAwIiBjeT0iMzAuMDAiIHI9IjguNjAiIGZpbGw9IiNGQkZDRkMiIG9wYWNpdHk9IjEiLz48cGF0aCBkPSJNNzYgMzAgTDgxIDI1IiBmaWxsPSJub25lIiBzdHJva2U9IiNCNTM1MkEiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSI3Ni4wMCIgY3k9IjMwLjAwIiByPSIxLjIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIi8+PHJlY3QgeD0iNzUuNzAiIHk9IjIyLjQwIiB3aWR0aD0iMC42MCIgaGVpZ2h0PSIyLjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA3NiAzMCkiLz48cmVjdCB4PSI3NS43MCIgeT0iMjIuNDAiIHdpZHRoPSIwLjYwIiBoZWlnaHQ9IjIuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgtOTAgNzYgMzApIi8+PHJlY3QgeD0iNzUuNzAiIHk9IjIyLjQwIiB3aWR0aD0iMC42MCIgaGVpZ2h0PSIyLjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgdHJhbnNmb3JtPSJyb3RhdGUoLTYwIDc2IDMwKSIvPjxyZWN0IHg9Ijc1LjcwIiB5PSIyMi40MCIgd2lkdGg9IjAuNjAiIGhlaWdodD0iMi4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0icm90YXRlKC0zMCA3NiAzMCkiLz48cmVjdCB4PSI3NS43MCIgeT0iMjIuNDAiIHdpZHRoPSIwLjYwIiBoZWlnaHQ9IjIuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgwIDc2IDMwKSIvPjxyZWN0IHg9Ijc1LjcwIiB5PSIyMi40MCIgd2lkdGg9IjAuNjAiIGhlaWdodD0iMi4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0icm90YXRlKDMwIDc2IDMwKSIvPjxyZWN0IHg9Ijc1LjcwIiB5PSIyMi40MCIgd2lkdGg9IjAuNjAiIGhlaWdodD0iMi4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc2IDMwKSIvPjxyZWN0IHg9Ijc1LjcwIiB5PSIyMi40MCIgd2lkdGg9IjAuNjAiIGhlaWdodD0iMi4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0icm90YXRlKDkwIDc2IDMwKSIvPjxyZWN0IHg9Ijc1LjcwIiB5PSIyMi40MCIgd2lkdGg9IjAuNjAiIGhlaWdodD0iMi4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0icm90YXRlKDEyMCA3NiAzMCkiLz48ZWxsaXBzZSBjeD0iNzguODAiIGN5PSI3NS40MCIgcng9IjkuMDAiIHJ5PSI5LjAwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjEiLz48Y2lyY2xlIGN4PSI3OC4wMCIgY3k9Ijc0LjAwIiByPSI5LjAwIiBmaWxsPSIjRTlDNDZBIiBvcGFjaXR5PSIxIi8+PGNpcmNsZSBjeD0iNzguMDAiIGN5PSI3NC4wMCIgcj0iNS42MCIgZmlsbD0iI0Y5RkJGQiIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9Ijc4LjAwIiBjeT0iNzQuMDAiIHI9IjQuNjAiIGZpbGw9IiNEREU3RUIiIG9wYWNpdHk9IjEiLz48L3N2Zz4=",
+      "alt": "공구 (예시 그림)"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0U0RTlFQiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0QzREJERSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iNzguMDAiIHJ4PSIwIiBmaWxsPSJ1cmwoI2JnKSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIwLjAwIiB5PSIxMC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIwLjUwIiByeD0iMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIwLjAwIiB5PSIyMi4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIwLjUwIiByeD0iMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIwLjAwIiB5PSIzNC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIwLjUwIiByeD0iMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIwLjAwIiB5PSI0Ni4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIwLjUwIiByeD0iMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIwLjAwIiB5PSI1OC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIwLjUwIiByeD0iMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIwLjAwIiB5PSI3MC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIwLjUwIiByeD0iMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIwLjAwIiB5PSI3OC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIyMi4wMCIgcng9IjAiIGZpbGw9IiNCREI1QTgiIG9wYWNpdHk9IjEiIC8+PGVsbGlwc2UgY3g9IjUwLjgwIiBjeT0iODMuNDAiIHJ4PSIzNC4wMCIgcnk9IjMuMDAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMTQiLz48cmVjdCB4PSIxOC4wMCIgeT0iMzAuMDAiIHdpZHRoPSI2NC4wMCIgaGVpZ2h0PSI1MC4wMCIgcng9IjMiIGZpbGw9IiNGNEY2RjYiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMTguMDAiIHk9IjMwLjAwIiB3aWR0aD0iNjQuMDAiIGhlaWdodD0iNi4wMCIgcng9IjMiIGZpbGw9IiNFM0VBRUUiIG9wYWNpdHk9IjEiIC8+PGNpcmNsZSBjeD0iNDQuMDAiIGN5PSI1OC4wMCIgcj0iMTguMDAiIGZpbGw9IiNEOUUxRTQiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSI0NC4wMCIgY3k9IjU4LjAwIiByPSIxNS41MCIgZmlsbD0iIzNBNEE1MiIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNTkuMDAgNTguMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNTYuOTkgNjUuNTEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNTEuNDkgNzEuMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNDMuOTggNzMuMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMMzYuNDggNzAuOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMMzAuOTkgNjUuNDciIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMMjkuMDAgNTcuOTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMMzEuMDMgNTAuNDYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMMzYuNTQgNDQuOTkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNDQuMDUgNDMuMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNTEuNTUgNDUuMDQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00NCA1OCBMNTcuMDIgNTAuNTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5RTFFNCIgc3Ryb2tlLXdpZHRoPSIwLjkiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9IjQ0LjAwIiBjeT0iNTguMDAiIHI9IjMuNDAiIGZpbGw9IiNEOUUxRTQiIG9wYWNpdHk9IjEiLz48cmVjdCB4PSI2OC4wMCIgeT0iNDIuMDAiIHdpZHRoPSI5LjAwIiBoZWlnaHQ9IjEuNDAiIHJ4PSIwLjUiIGZpbGw9IiNCOUM3Q0QiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNjguMDAiIHk9IjQ2LjAwIiB3aWR0aD0iOS4wMCIgaGVpZ2h0PSIxLjQwIiByeD0iMC41IiBmaWxsPSIjQjlDN0NEIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjY4LjAwIiB5PSI1MC4wMCIgd2lkdGg9IjkuMDAiIGhlaWdodD0iMS40MCIgcng9IjAuNSIgZmlsbD0iI0I5QzdDRCIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI2OC4wMCIgeT0iNTQuMDAiIHdpZHRoPSI5LjAwIiBoZWlnaHQ9IjEuNDAiIHJ4PSIwLjUiIGZpbGw9IiNCOUM3Q0QiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNjguMDAiIHk9IjU4LjAwIiB3aWR0aD0iOS4wMCIgaGVpZ2h0PSIxLjQwIiByeD0iMC41IiBmaWxsPSIjQjlDN0NEIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjY4LjAwIiB5PSI2Mi4wMCIgd2lkdGg9IjkuMDAiIGhlaWdodD0iMS40MCIgcng9IjAuNSIgZmlsbD0iI0I5QzdDRCIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI2OC4wMCIgeT0iNjYuMDAiIHdpZHRoPSI5LjAwIiBoZWlnaHQ9IjEuNDAiIHJ4PSIwLjUiIGZpbGw9IiNCOUM3Q0QiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNjguMDAiIHk9IjcwLjAwIiB3aWR0aD0iOS4wMCIgaGVpZ2h0PSIxLjQwIiByeD0iMC41IiBmaWxsPSIjQjlDN0NEIiBvcGFjaXR5PSIxIiAvPjxwYXRoIGQ9Ik04MiA0NCBoOCB2LTQ0IiBmaWxsPSJub25lIiBzdHJva2U9IiNDOThGNUEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTgyIDUwIGgxMiB2LTUwIiBmaWxsPSJub25lIiBzdHJva2U9IiM4RDhEOEQiIHN0cm9rZS13aWR0aD0iMS42IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjEiLz48L3N2Zz4=",
+      "alt": "실외기 (예시 그림)"
+    }
+  ],
+  "reviews": [],
+  "links": [],
+  "legal": {
+    "bizName": "",
+    "bizNumber": "",
+    "privacyUrl": "",
+    "credit": true
+  }
 }
 </script>
 
@@ -1191,6 +1326,8 @@ function stickyBlock(){
   if (has(c.sms)) parts.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'사진 견적</a>');
   else if (kk2) parts.push('<a class="btn btn-ghost" href="'+esc(kk2.replace(/\/+$/,"")+"/chat")+'" target="_blank" rel="noopener">'+I.chat+'카톡</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 

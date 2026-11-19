@@ -181,7 +181,7 @@ h1 .pk{
 /* ---------- 푸터 ---------- */
 footer{ margin-top:var(--gap); padding:34px 0 38px; border-top:1px solid var(--line); position:relative; overflow:hidden; }
 footer .mark{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  position:absolute; right:-6px; bottom:-18px;
   font-size:clamp(54px,17vw,110px); font-weight:850; letter-spacing:-.06em; white-space:nowrap;
   color:#fff; opacity:.034; pointer-events:none; user-select:none;
 }
@@ -201,7 +201,8 @@ footer .fsub{ margin-top:9px; font-size:12.5px; color:var(--ink-3); line-height:
 .fab{ position:fixed; right:14px; bottom:calc(90px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px; opacity:0; pointer-events:none; transition:opacity .3s ease; }
 .fab.show{ opacity:1; pointer-events:auto; }
-@media (min-width:768px){ .fab{ bottom:calc(22px + env(safe-area-inset-bottom)); } }
+@media (min-width:768px){ .fab{ bottom:calc(22px + env(safe-area-inset-bottom)); } .dock{ display:none; } body{ padding-bottom:0; } }
+@media (max-width:767px){ .fab .f-call{ display:none; } }
 .fab > *{ width:50px; height:50px; border-radius:50%; display:grid; place-items:center; padding:0;
   border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer;
   box-shadow:0 6px 22px rgba(0,0,0,.55); text-decoration:none; transition:transform .14s ease, opacity .25s; }
@@ -284,7 +285,7 @@ footer .fsub{ margin-top:9px; font-size:12.5px; color:var(--ink-3); line-height:
 <section class="reveal"><div class="wrap">
   <div class="sec-head">
     <span class="no">01</span><span class="eyebrow">Our place</span>
-    <h2 class="t-sec">들어오시면<br>이런 분위기입니다</h2>
+    <h2 class="t-sec">밖에서 보면<br>이런 가게입니다</h2>
     <p class="t-sub">옆으로 넘겨 보세요.</p>
   </div>
 </div>

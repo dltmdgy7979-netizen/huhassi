@@ -838,6 +838,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -1058,6 +1060,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -1067,7 +1071,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -1710,6 +1717,8 @@ function stickyBlock(){
   if (has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
   else if (bk && km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
@@ -1993,6 +2002,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -2217,6 +2228,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -2226,7 +2239,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -2871,6 +2887,8 @@ function stickyBlock(){
   if (has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
   else if (bk && km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
@@ -3154,6 +3172,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -3374,6 +3394,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -3383,7 +3405,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -4060,6 +4085,8 @@ function stickyBlock(){
   if (bk && has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
   else if (km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
@@ -4343,6 +4370,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -4564,6 +4593,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -4573,7 +4604,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -5248,6 +5282,8 @@ function stickyBlock(){
   if (kk2) parts.push('<a class="btn btn-ghost" href="'+esc(kk2.replace(/\/+$/,"")+"/chat")+'" target="_blank" rel="noopener">'+I.chat+'카톡</a>');
   else if (km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
@@ -5537,6 +5573,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -5771,6 +5809,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -5780,7 +5820,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -6464,6 +6507,8 @@ function stickyBlock(){
   if (has(c.sms)) parts.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'사진 견적</a>');
   else if (kk2) parts.push('<a class="btn btn-ghost" href="'+esc(kk2.replace(/\/+$/,"")+"/chat")+'" target="_blank" rel="noopener">'+I.chat+'카톡</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 

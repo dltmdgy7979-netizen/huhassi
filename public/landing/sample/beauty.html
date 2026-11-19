@@ -185,6 +185,8 @@ section.band{
 .hero-over .status{ margin-bottom:10px; box-shadow:0 2px 10px rgba(0,0,0,.22); }
 .hero-logo.on-photo{ width:48px; height:48px; border-radius:13px; margin-bottom:10px; box-shadow:0 3px 12px rgba(0,0,0,.35); }
 .hero-below{ padding-top:18px; }
+.hero.no-photo + section.band{ margin-top:0; border-top:0; }
+.hero.has-photo + section.band{ margin-top:30px; }
 .hero-below .hero-actions{ margin-top:0; }
 
 /* 긴급 공지 */
@@ -405,6 +407,8 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 .sticky.show{ transform:none; }
 .sticky .btn{ flex:1 1 0; min-width:0; }
 .sticky .btn.lead{ flex:1.5 1 0; }
+.sticky .btn.k{ flex:0 0 52px; padding:0; background:#FEE500; border-color:#EFD200; color:#1B1600; }
+.sticky .btn.k svg{ width:21px; height:21px; }
 @media (min-width:768px){ .sticky{ display:none; } }
 
 /* ============================================================
@@ -414,7 +418,10 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
   position:fixed; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:45;
   display:flex; flex-direction:column; gap:10px;
 }
-@media (max-width:767px){ .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); } }
+@media (max-width:767px){
+  .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .sticky ~ .fab .f-kakao, .sticky ~ .fab .f-call{ display:none; }
+}
 .fab > *{
   width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
   border:1px solid var(--line); background:var(--card); color:var(--ink);
@@ -462,45 +469,124 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
 <script type="application/json" id="site-data">
 {
   "demo": true,
-  "theme": { "primary": "#9B6F75", "titleFont": "sans" },
+  "theme": {
+    "primary": "#9B6F75",
+    "titleFont": "sans"
+  },
   "shop": {
     "name": "결 헤어",
     "tagline": "광주 동구 1인 미용실.\n예약제로 한 분씩만 봅니다.",
-    "logo": "", "hero": "",
+    "logo": "",
+    "hero": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0Y1RUNFQiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0VBREFEQiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJtciIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0Y3RkFGQSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5RTNFMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iNzAuMDAiIHJ4PSIwIiBmaWxsPSJ1cmwoI2JnKSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIwLjAwIiB5PSI3MC4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIzMC4wMCIgcng9IjAiIGZpbGw9IiNEOUM3QkQiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMC4wMCIgeT0iNzAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMC44MCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDgiIC8+PHBhdGggZD0iTTMwIDYyIFYzMCBhMjAgMjAgMCAwIDEgNDAgMCBWNjIgWiIgZmlsbD0iI0M5QTI1QiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik0zMi41IDYyIFYzMCBhMTcuNSAxNy41IDAgMCAxIDM1IDAgVjYyIFoiIGZpbGw9InVybCgjbXIpIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTM4IDU4IEw1OCAyMCBMNjMgMjIgTDQzIDYwIFoiIGZpbGw9IiNmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjAuNCIvPjxyZWN0IHg9IjIyLjAwIiB5PSI2Mi4wMCIgd2lkdGg9IjU2LjAwIiBoZWlnaHQ9IjMuMDAiIHJ4PSIxIiBmaWxsPSIjN0E1QTNGIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjI0LjAwIiB5PSI2NS4wMCIgd2lkdGg9IjUyLjAwIiBoZWlnaHQ9IjEuMjAiIHJ4PSIwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjA4IiAvPjxyZWN0IHg9IjI3LjAwIiB5PSI1My4wMCIgd2lkdGg9IjMuNjAiIGhlaWdodD0iOS4wMCIgcng9IjEiIGZpbGw9IiM5QjZGNzUiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjguMDAiIHk9IjUxLjQwIiB3aWR0aD0iMS42MCIgaGVpZ2h0PSIxLjgwIiByeD0iMC4zIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjMyLjAwIiB5PSI1NS41MCIgd2lkdGg9IjMuNjAiIGhlaWdodD0iNi41MCIgcng9IjEiIGZpbGw9IiNGN0YzRUMiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMzMuMDAiIHk9IjUzLjkwIiB3aWR0aD0iMS42MCIgaGVpZ2h0PSIxLjgwIiByeD0iMC4zIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjY4LjAwIiB5PSI1NC4wMCIgd2lkdGg9IjMuNjAiIGhlaWdodD0iOC4wMCIgcng9IjEiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNjkuMDAiIHk9IjUyLjQwIiB3aWR0aD0iMS42MCIgaGVpZ2h0PSIxLjgwIiByeD0iMC4zIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjczLjAwIiB5PSI1Ni41MCIgd2lkdGg9IjMuNjAiIGhlaWdodD0iNS41MCIgcng9IjEiIGZpbGw9IiNDOUEyNUIiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNzQuMDAiIHk9IjU0LjkwIiB3aWR0aD0iMS42MCIgaGVpZ2h0PSIxLjgwIiByeD0iMC4zIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxlbGxpcHNlIGN4PSI1MC44MCIgY3k9Ijk2LjQwIiByeD0iMTQuMDAiIHJ5PSIyLjQwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjE0Ii8+PHJlY3QgeD0iNDkuMDAiIHk9IjgwLjAwIiB3aWR0aD0iMi4wMCIgaGVpZ2h0PSIxNC4wMCIgcng9IjAiIGZpbGw9IiM4RDhEOEQiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNDAuMDAiIHk9IjkzLjAwIiB3aWR0aD0iMjAuMDAiIGhlaWdodD0iMi4wMCIgcng9IjEiIGZpbGw9IiM2RTZFNkUiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMzYuMDAiIHk9IjcyLjAwIiB3aWR0aD0iMjguMDAiIGhlaWdodD0iOS4wMCIgcng9IjMiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMzkuMDAiIHk9IjU0LjAwIiB3aWR0aD0iMjIuMDAiIGhlaWdodD0iMjAuMDAiIHJ4PSI0IiBmaWxsPSIjNEEzQjM2IiBvcGFjaXR5PSIxIiAvPjxlbGxpcHNlIGN4PSI4OC44MCIgY3k9Ijk3LjQwIiByeD0iNy4wMCIgcnk9IjEuNjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMTQiLz48cGF0aCBkPSJNODMgODIgaDEwIGwtMS41IDE0IGgtNyBaIiBmaWxsPSIjRjdGM0VDIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PGVsbGlwc2UgY3g9Ijg0LjAwIiBjeT0iNzQuMDAiIHJ4PSI4LjAwIiByeT0iMi44OCIgZmlsbD0iIzVFOEMzQSIgb3BhY2l0eT0iMSIgdHJhbnNmb3JtPSJyb3RhdGUoNjAgODQuMDAgNzQuMDApIi8+PGVsbGlwc2UgY3g9IjkyLjAwIiBjeT0iNzIuMDAiIHJ4PSI4LjAwIiByeT0iMi44OCIgZmlsbD0iIzRFN0EzMCIgb3BhY2l0eT0iMSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDkyLjAwIDcyLjAwKSIvPjxlbGxpcHNlIGN4PSI4OC4wMCIgY3k9IjY2LjAwIiByeD0iOC4wMCIgcnk9IjIuODgiIGZpbGw9IiM3RkE2NTAiIG9wYWNpdHk9IjEiIHRyYW5zZm9ybT0icm90YXRlKDkwIDg4LjAwIDY2LjAwKSIvPjwvc3ZnPg==",
     "quote": "머리는 그날 하루가 아니라\n한 달을 같이 삽니다.",
     "quoteBy": "결 헤어 원장 드림"
   },
-  "contact": { "phone": "010-0000-0000", "sms": "", "booking": "", "kakaoChannel": "https://pf.kakao.com/_example", "email": "" },
+  "contact": {
+    "phone": "010-0000-0000",
+    "sms": "",
+    "booking": "",
+    "kakaoChannel": "https://pf.kakao.com/_example",
+    "email": ""
+  },
   "place": {
     "address": "광주 동구 예시로 12",
-    "kakaoMapUrl": "", "naverMapUrl": "", "mapImage": "",
-    "info": [ { "label": "주차", "value": "건물 뒤 2대" } ]
+    "kakaoMapUrl": "",
+    "naverMapUrl": "",
+    "mapImage": "",
+    "info": [
+      {
+        "label": "주차",
+        "value": "건물 뒤 2대"
+      }
+    ]
   },
   "hours": {
     "week": {
       "mon": null,
-      "tue": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "wed": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "thu": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "fri": { "open": "10:00", "close": "20:00", "breakStart": "", "breakEnd": "" },
-      "sat": { "open": "10:00", "close": "18:00", "breakStart": "", "breakEnd": "" },
+      "tue": {
+        "open": "10:00",
+        "close": "20:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "wed": {
+        "open": "10:00",
+        "close": "20:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "thu": {
+        "open": "10:00",
+        "close": "20:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "fri": {
+        "open": "10:00",
+        "close": "20:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
+      "sat": {
+        "open": "10:00",
+        "close": "18:00",
+        "breakStart": "",
+        "breakEnd": ""
+      },
       "sun": null
     },
-    "lastOrder": "", "holidayNote": "월요일과 일요일은 쉽니다."
+    "lastOrder": "",
+    "holidayNote": "월요일과 일요일은 쉽니다."
   },
-  "notice": { "on": false, "label": "예약 마감", "reason": "", "resumeDate": "" },
+  "notice": {
+    "on": false,
+    "label": "예약 마감",
+    "reason": "",
+    "resumeDate": ""
+  },
   "menu": {
     "title": "시술 메뉴와 가격",
     "items": [
-      { "name": "여성 커트", "price": "25,000원", "duration": "40분", "signature": true, "note": "상담 포함", "photo": "" },
-      { "name": "뿌리 염색", "price": "60,000원부터", "duration": "1시간 30분", "signature": true, "note": "기장이 어깨 아래면 10,000원 추가", "photo": "" },
-      { "name": "일반 펌", "price": "90,000원부터", "duration": "2시간", "signature": false, "note": "기장·모량에 따라 추가요금이 있습니다", "photo": "" },
-      { "name": "클리닉", "price": "50,000원", "duration": "40분", "signature": false, "note": "", "photo": "" }
+      {
+        "name": "여성 커트",
+        "price": "25,000원",
+        "duration": "40분",
+        "signature": true,
+        "note": "상담 포함",
+        "photo": ""
+      },
+      {
+        "name": "뿌리 염색",
+        "price": "60,000원부터",
+        "duration": "1시간 30분",
+        "signature": true,
+        "note": "기장이 어깨 아래면 10,000원 추가",
+        "photo": ""
+      },
+      {
+        "name": "일반 펌",
+        "price": "90,000원부터",
+        "duration": "2시간",
+        "signature": false,
+        "note": "기장·모량에 따라 추가요금이 있습니다",
+        "photo": ""
+      },
+      {
+        "name": "클리닉",
+        "price": "50,000원",
+        "duration": "40분",
+        "signature": false,
+        "note": "",
+        "photo": ""
+      }
     ],
-    "priceNote": "표시 금액은 재료비·부가세를 포함한, 손님이 실제 내시는 금액입니다. \u0027부터\u0027로 적힌 시술은 상담 때 최종 금액을 먼저 알려드립니다."
+    "priceNote": "표시 금액은 재료비·부가세를 포함한, 손님이 실제 내시는 금액입니다. '부터'로 적힌 시술은 상담 때 최종 금액을 먼저 알려드립니다."
   },
   "owner": {
-    "name": "", "role": "", "text": "", "photo": ""
+    "name": "",
+    "role": "",
+    "text": "",
+    "photo": ""
   },
   "booking": {
     "howto": "네이버 예약 또는 전화로 받습니다. 당일 예약은 전화로 주세요.",
@@ -509,9 +595,34 @@ footer .credit{ margin-top:16px; font-size:11.5px; color:#B5ABA3; }
     "notes": "1인샵이라 늦으시면 시술 시간이 줄어듭니다. 늦을 것 같으면 미리 연락 주세요."
   },
   "origin": [],
-  "takeout": { "packing": false, "delivery": false, "area": "", "links": [] },
-  "gallery": [], "reviews": [], "links": [],
-  "legal": { "bizName": "", "bizNumber": "", "privacyUrl": "", "credit": true }
+  "takeout": {
+    "packing": false,
+    "delivery": false,
+    "area": "",
+    "links": []
+  },
+  "gallery": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0YyRThFNiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0U2RDZENCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMTAwLjAwIiByeD0iMCIgZmlsbD0idXJsKCNiZykiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iOC4wMCIgeT0iMTAuMDAiIHdpZHRoPSI0Ni4wMCIgaGVpZ2h0PSI4MC4wMCIgcng9IjMiIGZpbGw9IiNGQkY3RjQiIG9wYWNpdHk9IjAuNyIgLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNiA3OCkgcm90YXRlKDEyKSI+PGNpcmNsZSBjeD0iMC4wMCIgY3k9IjAuMDAiIHI9IjUuMDAiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iNC40IiBmaWxsPSJub25lIiBzdHJva2U9IiMzQTJGMkEiIHN0cm9rZS13aWR0aD0iMS42Ii8+PGNpcmNsZSBjeD0iMTEiIGN5PSIwIiByPSI0LjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzNBMkYyQSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz48cGF0aCBkPSJNMiAtNCBMOCAtMzggTDEwIC0zOCBMNiAtNCBaIiBmaWxsPSIjQkZDNUM4IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTkgLTQgTDMgLTM4IEwxIC0zOCBMNSAtNCBaIiBmaWxsPSIjRDVEQURDIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PGNpcmNsZSBjeD0iNS41MCIgY3k9Ii05LjAwIiByPSIwLjkwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIi8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYwIDIyKSByb3RhdGUoMTgpIj48cmVjdCB4PSIwLjAwIiB5PSIwLjAwIiB3aWR0aD0iNDAuMDAiIGhlaWdodD0iNC4wMCIgcng9IjEiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMS41MCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMy40MCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNS4zMCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNy4yMCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iOS4xMCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMTEuMDAiIHk9IjQuMDAiIHdpZHRoPSIwLjkwIiBoZWlnaHQ9IjcuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjEyLjkwIiB5PSI0LjAwIiB3aWR0aD0iMC45MCIgaGVpZ2h0PSI3LjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIxNC44MCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMTYuNzAiIHk9IjQuMDAiIHdpZHRoPSIwLjkwIiBoZWlnaHQ9IjcuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjE4LjYwIiB5PSI0LjAwIiB3aWR0aD0iMC45MCIgaGVpZ2h0PSI3LjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIyMC41MCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjIuNDAiIHk9IjQuMDAiIHdpZHRoPSIwLjkwIiBoZWlnaHQ9IjcuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjI0LjMwIiB5PSI0LjAwIiB3aWR0aD0iMC45MCIgaGVpZ2h0PSI3LjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIyNi4yMCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjguMTAiIHk9IjQuMDAiIHdpZHRoPSIwLjkwIiBoZWlnaHQ9IjcuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjMwLjAwIiB5PSI0LjAwIiB3aWR0aD0iMC45MCIgaGVpZ2h0PSI3LjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIzMS45MCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMzMuODAiIHk9IjQuMDAiIHdpZHRoPSIwLjkwIiBoZWlnaHQ9IjcuMDAiIHJ4PSIwIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjM1LjcwIiB5PSI0LjAwIiB3aWR0aD0iMC45MCIgaGVpZ2h0PSI3LjAwIiByeD0iMCIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIzNy42MCIgeT0iNC4wMCIgd2lkdGg9IjAuOTAiIGhlaWdodD0iNy4wMCIgcng9IjAiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDc0IDYyKSByb3RhdGUoLTI0KSI+PHJlY3QgeD0iMC4wMCIgeT0iMC4wMCIgd2lkdGg9IjUuMDAiIGhlaWdodD0iMjYuMDAiIHJ4PSIyIiBmaWxsPSIjOUI2Rjc1IiBvcGFjaXR5PSIxIiAvPjxlbGxpcHNlIGN4PSIyLjUwIiBjeT0iLTguMDAiIHJ4PSI2LjUwIiByeT0iMTAuMDAiIGZpbGw9IiM0QTNCMzYiIG9wYWNpdHk9IjEiLz48cmVjdCB4PSItMi42MCIgeT0iLTE1LjAwIiB3aWR0aD0iMC41MCIgaGVpZ2h0PSIxMy4wMCIgcng9IjAiIGZpbGw9IiNDOUEyNUIiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iLTEuMTAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjAuNDAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjEuOTAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjMuNDAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjQuOTAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjYuNDAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjcuOTAiIHk9Ii0xNS4wMCIgd2lkdGg9IjAuNTAiIGhlaWdodD0iMTMuMDAiIHJ4PSIwIiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2MiA4Mikgcm90YXRlKDMwKSI+PHJlY3QgeD0iMC4wMCIgeT0iMC4wMCIgd2lkdGg9IjE0LjAwIiBoZWlnaHQ9IjIuNjAiIHJ4PSIxLjIiIGZpbGw9IiNDOUEyNUIiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMC4wMCIgeT0iMS4wMCIgd2lkdGg9IjkuMDAiIGhlaWdodD0iMC42MCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMTUiIC8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcwIDg4KSByb3RhdGUoLTEyKSI+PHJlY3QgeD0iMC4wMCIgeT0iMC4wMCIgd2lkdGg9IjE0LjAwIiBoZWlnaHQ9IjIuNjAiIHJ4PSIxLjIiIGZpbGw9IiNDOUEyNUIiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMC4wMCIgeT0iMS4wMCIgd2lkdGg9IjkuMDAiIGhlaWdodD0iMC42MCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMTUiIC8+PC9nPjxlbGxpcHNlIGN4PSI4Ni44MCIgY3k9IjIzLjQwIiByeD0iNy4wMCIgcnk9IjcuMDAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMSIvPjxjaXJjbGUgY3g9Ijg2LjAwIiBjeT0iMjIuMDAiIHI9IjcuMDAiIGZpbGw9IiNGQkY3RjQiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSI4Ni4wMCIgY3k9IjIyLjAwIiByPSI0LjYwIiBmaWxsPSIjRUFEQURCIiBvcGFjaXR5PSIxIi8+PGNpcmNsZSBjeD0iODYuMDAiIGN5PSIyMi4wMCIgcj0iMi4wMCIgZmlsbD0iI0ZCRjdGNCIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==",
+      "alt": "도구 (예시 그림)"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0Y1RUNFQiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0U4REFEOCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAuMDAiIHk9IjAuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMTAwLjAwIiByeD0iMCIgZmlsbD0idXJsKCNiZykiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNC4wMCIgeT0iNDYuMDAiIHdpZHRoPSI5Mi4wMCIgaGVpZ2h0PSIyLjYwIiByeD0iMC41IiBmaWxsPSIjQzlBMjVCIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjQuMDAiIHk9IjQ4LjYwIiB3aWR0aD0iOTIuMDAiIGhlaWdodD0iMS40MCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDciIC8+PHJlY3QgeD0iOS4wMCIgeT0iMjUuNzMiIHdpZHRoPSI4LjU5IiBoZWlnaHQ9IjIwLjI3IiByeD0iMiIgZmlsbD0iI0Y3RjNFQyIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIxMS40MSIgeT0iMjIuNzMiIHdpZHRoPSIzLjc4IiBoZWlnaHQ9IjMuNDAiIHJ4PSIwLjYiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMTAuMjAiIHk9IjMzLjQzIiB3aWR0aD0iNi4xOSIgaGVpZ2h0PSI1LjI3IiByeD0iMC42IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjU1IiAvPjxyZWN0IHg9IjIxLjY1IiB5PSIxOS42NCIgd2lkdGg9IjkuMTEiIGhlaWdodD0iMjYuMzYiIHJ4PSIyIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjI0LjIwIiB5PSIxNi42NCIgd2lkdGg9IjQuMDEiIGhlaWdodD0iMy40MCIgcng9IjAuNiIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIyMi44NSIgeT0iMjkuNjYiIHdpZHRoPSI2LjcxIiBoZWlnaHQ9IjYuODUiIHJ4PSIwLjYiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNTUiIC8+PHJlY3QgeD0iMzQuOTgiIHk9IjE2LjEwIiB3aWR0aD0iNy41NCIgaGVpZ2h0PSIyOS45MCIgcng9IjIiIGZpbGw9IiM5QjZGNzUiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMzcuMDkiIHk9IjEzLjEwIiB3aWR0aD0iMy4zMiIgaGVpZ2h0PSIzLjQwIiByeD0iMC42IiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjM2LjE4IiB5PSIyNy40NiIgd2lkdGg9IjUuMTQiIGhlaWdodD0iNy43NyIgcng9IjAuNiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41NSIgLz48cmVjdCB4PSI0Ni43NCIgeT0iMjIuNzAiIHdpZHRoPSI5LjQxIiBoZWlnaHQ9IjIzLjMwIiByeD0iMiIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI0OS4zNyIgeT0iMTkuNzAiIHdpZHRoPSI0LjE0IiBoZWlnaHQ9IjMuNDAiIHJ4PSIwLjYiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNDcuOTQiIHk9IjMxLjU1IiB3aWR0aD0iNy4wMSIgaGVpZ2h0PSI2LjA2IiByeD0iMC42IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjU1IiAvPjxyZWN0IHg9IjYwLjMyIiB5PSIyNi4wMyIgd2lkdGg9IjcuNTYiIGhlaWdodD0iMTkuOTciIHJ4PSIyIiBmaWxsPSIjRDlCOEIwIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjYyLjQ0IiB5PSIyMy4wMyIgd2lkdGg9IjMuMzMiIGhlaWdodD0iMy40MCIgcng9IjAuNiIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI2MS41MiIgeT0iMzMuNjIiIHdpZHRoPSI1LjE2IiBoZWlnaHQ9IjUuMTkiIHJ4PSIwLjYiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNTUiIC8+PHJlY3QgeD0iNzIuNDQiIHk9IjI2LjE3IiB3aWR0aD0iOC4zNSIgaGVpZ2h0PSIxOS44MyIgcng9IjIiIGZpbGw9IiNGN0YzRUMiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNzQuNzgiIHk9IjIzLjE3IiB3aWR0aD0iMy42NyIgaGVpZ2h0PSIzLjQwIiByeD0iMC42IiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjczLjY0IiB5PSIzMy43MCIgd2lkdGg9IjUuOTUiIGhlaWdodD0iNS4xNiIgcng9IjAuNiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41NSIgLz48cmVjdCB4PSI4NC40MCIgeT0iMjUuODgiIHdpZHRoPSI3LjgwIiBoZWlnaHQ9IjIwLjEyIiByeD0iMiIgZmlsbD0iIzlCNkY3NSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI4Ni41OCIgeT0iMjIuODgiIHdpZHRoPSIzLjQzIiBoZWlnaHQ9IjMuNDAiIHJ4PSIwLjYiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iODUuNjAiIHk9IjMzLjUzIiB3aWR0aD0iNS40MCIgaGVpZ2h0PSI1LjIzIiByeD0iMC42IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjU1IiAvPjxyZWN0IHg9IjQuMDAiIHk9IjkwLjAwIiB3aWR0aD0iOTIuMDAiIGhlaWdodD0iMi42MCIgcng9IjAuNSIgZmlsbD0iI0M5QTI1QiIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI0LjAwIiB5PSI5Mi42MCIgd2lkdGg9IjkyLjAwIiBoZWlnaHQ9IjEuNDAiIHJ4PSIwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjA3IiAvPjxyZWN0IHg9IjkuMDAiIHk9IjY0LjIzIiB3aWR0aD0iMTAuOTAiIGhlaWdodD0iMjUuNzciIHJ4PSIyIiBmaWxsPSIjRDlCOEIwIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjEyLjA1IiB5PSI2MS4yMyIgd2lkdGg9IjQuODAiIGhlaWdodD0iMy40MCIgcng9IjAuNiIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIxMC4yMCIgeT0iNzQuMDIiIHdpZHRoPSI4LjUwIiBoZWlnaHQ9IjYuNzAiIHJ4PSIwLjYiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNTUiIC8+PHJlY3QgeD0iMjQuMzYiIHk9IjY2LjAzIiB3aWR0aD0iNy4xMCIgaGVpZ2h0PSIyMy45NyIgcng9IjIiIGZpbGw9IiNEOUI4QjAiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMjYuMzUiIHk9IjYzLjAzIiB3aWR0aD0iMy4xMiIgaGVpZ2h0PSIzLjQwIiByeD0iMC42IiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjI1LjU2IiB5PSI3NS4xNCIgd2lkdGg9IjQuNzAiIGhlaWdodD0iNi4yMyIgcng9IjAuNiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41NSIgLz48cmVjdCB4PSIzNS4yNCIgeT0iNzEuMTkiIHdpZHRoPSI4Ljg5IiBoZWlnaHQ9IjE4LjgxIiByeD0iMiIgZmlsbD0iI0Y3RjNFQyIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIzNy43MyIgeT0iNjguMTkiIHdpZHRoPSIzLjkxIiBoZWlnaHQ9IjMuNDAiIHJ4PSIwLjYiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMzYuNDQiIHk9Ijc4LjM0IiB3aWR0aD0iNi40OSIgaGVpZ2h0PSI0Ljg5IiByeD0iMC42IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjU1IiAvPjxyZWN0IHg9IjQ3LjU5IiB5PSI2Ni44NiIgd2lkdGg9IjcuNTUiIGhlaWdodD0iMjMuMTQiIHJ4PSIyIiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjQ5LjcwIiB5PSI2My44NiIgd2lkdGg9IjMuMzIiIGhlaWdodD0iMy40MCIgcng9IjAuNiIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI0OC43OSIgeT0iNzUuNjUiIHdpZHRoPSI1LjE1IiBoZWlnaHQ9IjYuMDIiIHJ4PSIwLjYiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNTUiIC8+PHJlY3QgeD0iNTkuNDQiIHk9IjYxLjM4IiB3aWR0aD0iOS41OSIgaGVpZ2h0PSIyOC42MiIgcng9IjIiIGZpbGw9IiM5QjZGNzUiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNjIuMTIiIHk9IjU4LjM4IiB3aWR0aD0iNC4yMiIgaGVpZ2h0PSIzLjQwIiByeD0iMC42IiBmaWxsPSIjM0EyRjJBIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjYwLjY0IiB5PSI3Mi4yNSIgd2lkdGg9IjcuMTkiIGhlaWdodD0iNy40NCIgcng9IjAuNiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41NSIgLz48cmVjdCB4PSI3Mi45MSIgeT0iNjguNTciIHdpZHRoPSI3LjM0IiBoZWlnaHQ9IjIxLjQzIiByeD0iMiIgZmlsbD0iI0U5RENEMiIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI3NC45NiIgeT0iNjUuNTciIHdpZHRoPSIzLjIzIiBoZWlnaHQ9IjMuNDAiIHJ4PSIwLjYiIGZpbGw9IiMzQTJGMkEiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iNzQuMTEiIHk9Ijc2LjcxIiB3aWR0aD0iNC45NCIgaGVpZ2h0PSI1LjU3IiByeD0iMC42IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjU1IiAvPjxyZWN0IHg9IjgzLjI5IiB5PSI2NS44NSIgd2lkdGg9IjguNzQiIGhlaWdodD0iMjQuMTUiIHJ4PSIyIiBmaWxsPSIjRDlCOEIwIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9Ijg1Ljc0IiB5PSI2Mi44NSIgd2lkdGg9IjMuODQiIGhlaWdodD0iMy40MCIgcng9IjAuNiIgZmlsbD0iIzNBMkYyQSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI4NC40OSIgeT0iNzUuMDMiIHdpZHRoPSI2LjM0IiBoZWlnaHQ9IjYuMjgiIHJ4PSIwLjYiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNTUiIC8+PC9zdmc+",
+      "alt": "제품 선반 (예시 그림)"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3kiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGNEVFRTYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFQURGRDIiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZ2wiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNFOUYwRUUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDRkRBRDYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB4PSIwLjAwIiB5PSIwLjAwIiB3aWR0aD0iMTAwLjAwIiBoZWlnaHQ9IjEwMC4wMCIgcng9IjAiIGZpbGw9InVybCgjc2t5KSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIwLjAwIiB5PSI4Mi4wMCIgd2lkdGg9IjEwMC4wMCIgaGVpZ2h0PSIxOC4wMCIgcng9IjAiIGZpbGw9IiNDRkM2QkIiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMC4wMCIgeT0iODIuMDAiIHdpZHRoPSIxMDAuMDAiIGhlaWdodD0iMS4wMCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDgiIC8+PHJlY3QgeD0iMTAuMDAiIHk9IjE0LjAwIiB3aWR0aD0iODAuMDAiIGhlaWdodD0iNjguMDAiIHJ4PSIxLjUiIGZpbGw9IiNGMUU0RTIiIG9wYWNpdHk9IjEiIC8+PHJlY3QgeD0iMTAuMDAiIHk9IjE0LjAwIiB3aWR0aD0iODAuMDAiIGhlaWdodD0iOS4wMCIgcng9IjEuNSIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4wNiIgLz48cmVjdCB4PSIyOC4wMCIgeT0iMTcuNTAiIHdpZHRoPSI0NC4wMCIgaGVpZ2h0PSI3LjAwIiByeD0iMS4yIiBmaWxsPSIjRkJGN0YwIiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjM0LjAwIiB5PSIyMC4yMCIgd2lkdGg9IjMyLjAwIiBoZWlnaHQ9IjEuNjAiIHJ4PSIwLjgiIGZpbGw9IiM5QjZGNzUiIG9wYWNpdHk9IjAuODUiIC8+PHJlY3QgeD0iMTYuMDAiIHk9IjQwLjAwIiB3aWR0aD0iNDAuMDAiIGhlaWdodD0iMzQuMDAiIHJ4PSIxIiBmaWxsPSJ1cmwoI2dsKSIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSIxNi4wMCIgeT0iNDAuMDAiIHdpZHRoPSI0MC4wMCIgaGVpZ2h0PSIzNC4wMCIgcng9IjEiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjEiIHN0cm9rZT0iIzRBM0IzNiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMjIgNzIgTDQwIDQyIEw0NiA0MiBMMjggNzIgWiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMC4yOCIvPjxyZWN0IHg9IjM1LjQwIiB5PSI0MC4wMCIgd2lkdGg9IjEuMjAiIGhlaWdodD0iMzQuMDAiIHJ4PSIwIiBmaWxsPSIjNEEzQjM2IiBvcGFjaXR5PSIxIiAvPjxyZWN0IHg9IjY0LjAwIiB5PSI0MC4wMCIgd2lkdGg9IjIwLjAwIiBoZWlnaHQ9IjQyLjAwIiByeD0iMSIgZmlsbD0iIzRBM0IzNiIgb3BhY2l0eT0iMSIgLz48cmVjdCB4PSI2Ni41MCIgeT0iNDMuMDAiIHdpZHRoPSIxNS4wMCIgaGVpZ2h0PSIyMi4wMCIgcng9IjAuOCIgZmlsbD0idXJsKCNnbCkiIG9wYWNpdHk9IjEiIC8+PGNpcmNsZSBjeD0iODEuNDAiIGN5PSI2Mi4wMCIgcj0iMS4wMCIgZmlsbD0iI0U5QzQ2QSIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik0xMi4wMCAzMCBoOS43NSBsLTEuMiA4LjUgaC05Ljc1IFoiIGZpbGw9IiM5QjZGNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjEiLz48cGF0aCBkPSJNMjEuNzUgMzAgaDkuNzUgbC0xLjIgOC41IGgtOS43NSBaIiBmaWxsPSIjZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTMxLjUwIDMwIGg5Ljc1IGwtMS4yIDguNSBoLTkuNzUgWiIgZmlsbD0iIzlCNkY3NSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik00MS4yNSAzMCBoOS43NSBsLTEuMiA4LjUgaC05Ljc1IFoiIGZpbGw9IiNmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjEiLz48cGF0aCBkPSJNNTEuMDAgMzAgaDkuNzUgbC0xLjIgOC41IGgtOS43NSBaIiBmaWxsPSIjOUI2Rjc1IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHBhdGggZD0iTTYwLjc1IDMwIGg5Ljc1IGwtMS4yIDguNSBoLTkuNzUgWiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgb3BhY2l0eT0iMSIvPjxwYXRoIGQ9Ik03MC41MCAzMCBoOS43NSBsLTEuMiA4LjUgaC05Ljc1IFoiIGZpbGw9IiM5QjZGNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjEiLz48cGF0aCBkPSJNODAuMjUgMzAgaDkuNzUgbC0xLjIgOC41IGgtOS43NSBaIiBmaWxsPSIjZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PHJlY3QgeD0iMTEuMDAiIHk9IjI5LjAwIiB3aWR0aD0iNzguMDAiIGhlaWdodD0iMS42MCIgcng9IjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMTIiIC8+PGVsbGlwc2UgY3g9IjExLjgwIiBjeT0iODMuNDAiIHJ4PSI0LjUwIiByeT0iMS4yMCIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC4xNCIvPjxwYXRoIGQ9Ik04IDc0IGg2IGwtMSA4IGgtNCBaIiBmaWxsPSIjQjY2QTQ1IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PGNpcmNsZSBjeD0iMTEuMDAiIGN5PSI3MC4wMCIgcj0iNC44MCIgZmlsbD0iIzVFOEMzQSIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9IjguODAiIGN5PSI3Mi4wMCIgcj0iMy4yMCIgZmlsbD0iIzRFN0EzMCIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9IjEzLjQwIiBjeT0iNzIuMDAiIHI9IjMuNDAiIGZpbGw9IiM2RTlBNDYiIG9wYWNpdHk9IjEiLz48ZWxsaXBzZSBjeD0iNjIuODAiIGN5PSI4My40MCIgcng9IjQuNTAiIHJ5PSIxLjIwIiBmaWxsPSIjMDAwIiBvcGFjaXR5PSIwLjE0Ii8+PHBhdGggZD0iTTU5IDc0IGg2IGwtMSA4IGgtNCBaIiBmaWxsPSIjQjY2QTQ1IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIxIi8+PGNpcmNsZSBjeD0iNjIuMDAiIGN5PSI3MC4wMCIgcj0iNC44MCIgZmlsbD0iIzVFOEMzQSIgb3BhY2l0eT0iMSIvPjxjaXJjbGUgY3g9IjU5LjgwIiBjeT0iNzIuMDAiIHI9IjMuMjAiIGZpbGw9IiM0RTdBMzAiIG9wYWNpdHk9IjEiLz48Y2lyY2xlIGN4PSI2NC40MCIgY3k9IjcyLjAwIiByPSIzLjQwIiBmaWxsPSIjNkU5QTQ2IiBvcGFjaXR5PSIxIi8+PC9zdmc+",
+      "alt": "가게 앞 (예시 그림)"
+    }
+  ],
+  "reviews": [],
+  "links": [],
+  "legal": {
+    "bizName": "",
+    "bizNumber": "",
+    "privacyUrl": "",
+    "credit": true
+  }
 }
 </script>
 
@@ -1157,6 +1268,8 @@ function stickyBlock(){
   if (bk && has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
   else if (km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (!parts.length) return "";
+  var kk = safeUrl(c.kakaoChannel);
+  if (kk) parts.push('<a class="btn k" href="'+esc(kk)+'" target="_blank" rel="noopener" aria-label="카카오톡 채널로 문의">'+I.chat+'</a>');
   return '<div class="sticky" id="sticky">'+parts.join("")+'</div>';
 }
 
