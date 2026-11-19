@@ -171,6 +171,7 @@ section.band{
 /* 버튼이 하나뿐이면 가로로 꽉 채운다. 반만 차 있으면 허전해 보인다 */
 .hero-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
 .hero-actions .btn:only-child{ flex:1 1 100%; }
+@media (max-width:767px){ .hero-actions .btn{ flex:1 1 auto; } }
 
 /* 사진이 있으면 첫 화면을 사진이 통째로 채우고, 그 위에 상호와 영업 상태를 얹는다 */
 .hero-cover{ position:relative; height:clamp(300px, 52vh, 440px); overflow:hidden; background:var(--primary-soft); }
@@ -466,6 +467,9 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
 
 .sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
+.rev-lead{ margin:0; font-size:16px; color:var(--ink-2); line-height:1.75; max-width:34ch; }
+.rev-more{ margin-top:18px; }
+
 /* ============================================================
    간단히 남기기 — 서버에 저장하지 않고, 적은 내용을 문자·카톡 창으로 넘긴다
    ============================================================ */
@@ -699,7 +703,8 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
     "bizNumber": "",
     "privacyUrl": "",
     "credit": true
-  }
+  },
+  "reviewUrl": "https://map.naver.com/"
 }
 </script>
 
@@ -973,12 +978,12 @@ function heroBlock(){
   var km = kakaoMapLink();
   var bk = safeUrl(c.booking);
   if (bk){
-    acts.push('<a class="btn btn-primary" href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + '예약하기</a>');
+    acts.push('<a class="btn btn-primary" href="' + esc(bk) + '" target="_blank" rel="noopener">' + I.cal + bookLabel(bk) + '</a>');
     if (km) acts.push('<a class="btn btn-ghost" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
-    else if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
+    else if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화로 주문·문의</a>');
   } else {
     if (km) acts.push('<a class="btn btn-primary" href="' + esc(km) + '" target="_blank" rel="noopener">' + I.pin + '길찾기</a>');
-    if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화하기</a>');
+    if (has(c.phone)) acts.push('<a class="btn btn-ghost" href="' + esc(telUrl(c.phone)) + '">' + I.phone + '전화로 주문·문의</a>');
   }
   var actsHtml = acts.length ? '<div class="hero-actions">' + acts.join("") + '</div>' : "";
 
@@ -1254,9 +1259,19 @@ function placeBlock(){
   return h;
 }
 
+/* ---------- 단추 글자: 어디로 가는지 드러나게 ---------- */
+function bookLabel(u){ return /naver\.(com|me)/i.test(String(u)) ? "네이버로 예약" : "예약하기"; }
+function revLabel(u){
+  u = String(u);
+  if (/naver\.(com|me)/i.test(u)) return "네이버에서 후기 보기";
+  if (/kakao\.com/i.test(u)) return "카카오맵에서 후기 보기";
+  return "후기 보러 가기";
+}
+
 function reviewBlock(){
   var r = (SITE.reviews || []).filter(function(x){ return x && has(x.text); });
-  if (!r.length) return "";   /* 실제 후기가 없으면 섹션 자체가 나오지 않습니다 */
+  var ru = safeUrl(SITE.reviewUrl);
+  if (!r.length && !ru) return "";   /* 후기도, 후기 모음 주소도 없으면 섹션 자체가 나오지 않습니다 */
   var h = '<section id="sec-review" class="reveal band"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Reviews</span><h2 class="t-sec">손님 후기</h2></div>';
   r.forEach(function(x){
@@ -1267,6 +1282,10 @@ function reviewBlock(){
     if (meta.length) h += '<div class="meta">'+esc(meta.join(" · "))+'</div>';
     h += '</div>';
   });
+  if (ru){
+    if (!r.length) h += '<p class="rev-lead">후기는 저희가 고르지 않았습니다. 손님들이 남긴 그대로 보실 수 있습니다.</p>';
+    h += '<a class="btn btn-ghost rev-more" href="' + esc(ru) + '" target="_blank" rel="noopener">' + I.link + revLabel(ru) + '</a>';
+  }
   h += '</div></section>';
   return h;
 }
@@ -1319,7 +1338,7 @@ function contactBlock(){
   var c = SITE.contact || {}, btns = [];
   var bk0 = safeUrl(c.booking);
   if (bk0)
-    btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+'예약하기</a>');
+    btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk0)+'</a>');
   if (has(c.phone))
     btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
@@ -1369,7 +1388,7 @@ function footerBlock(){
 function stickyBlock(){
   var c = SITE.contact || {}, km = kakaoMapLink(), bk = safeUrl(c.booking);
   var parts = [];
-  if (bk) parts.push('<a class="btn btn-primary lead" href="'+esc(bk)+'" target="_blank" rel="noopener">'+I.cal+'예약하기</a>');
+  if (bk) parts.push('<a class="btn btn-primary lead" href="'+esc(bk)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk)+'</a>');
   else if (km) parts.push('<a class="btn btn-primary lead" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');
   if (has(c.phone)) parts.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+'전화</a>');
   else if (bk && km) parts.push('<a class="btn btn-ghost" href="'+esc(km)+'" target="_blank" rel="noopener">'+I.pin+'길찾기</a>');

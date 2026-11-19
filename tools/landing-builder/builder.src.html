@@ -589,6 +589,10 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
       <summary><span class="n">10</span>손님 후기</summary>
       <div class="fs-body">
         <span class="hint" style="display:block;margin-top:12px">실제 손님이 남긴 후기만 넣어 주세요. 하나도 없으면 후기 칸은 화면에 아예 나오지 않습니다.</span>
+        <label class="f"><span>후기 모음 주소 <span class="opt">선택 · 후기를 직접 안 넣어도 됩니다</span></span>
+          <input type="url" id="f-reviewurl" placeholder="https://naver.me/xxxxx">
+          <span class="hint">네이버 지도나 카카오맵에서 내 가게를 열고 <b>공유 → 링크 복사</b> 한 주소를 넣으세요. "네이버에서 후기 보기" 단추가 생깁니다. 후기를 옮겨 적지 않아도 손님이 진짜 후기를 직접 볼 수 있습니다.</span>
+        </label>
         <div class="rows" id="rows-reviews"></div>
         <button class="add" data-add="reviews">＋ 후기 추가</button>
       </div>
@@ -1227,6 +1231,7 @@ function readForm(){
     steps: readRows("steps").filter(function(x){ return x.name; }),
     gallery: GALLERY.map(function(s){ return { src:s, alt:"" }; }),
     reviews: readRows("reviews").filter(function(x){ return x.text; }),
+    reviewUrl: val("#f-reviewurl"),
     links: readRows("links").filter(function(x){ return x.label && x.url; }),
     site: { url: cleanSiteUrl(val("#f-siteurl")) },
     legal: {
@@ -1293,6 +1298,7 @@ function fillForm(d){
   (t.links || []).forEach(function(x){ addRow("dlinks", x, true); });
   (d.links || []).forEach(function(x){ addRow("links", x, true); });
   (d.reviews || []).forEach(function(x){ addRow("reviews", x, true); });
+  setVal("#f-reviewurl", d.reviewUrl || "");
   (d.steps || []).forEach(function(x){ addRow("steps", x, true); });
 
   GALLERY = (d.gallery || []).map(function(x){ return x && x.src; }).filter(Boolean);
