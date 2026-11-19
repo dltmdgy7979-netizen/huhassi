@@ -354,6 +354,13 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           </div>
         </div>
 
+        <div class="f"><span>분위기</span>
+          <div class="swatches">
+            <label class="chk" style="margin:0 14px 0 0"><input type="radio" name="mood" value="day" id="mood-day" checked><span><b style="font-weight:600">기본</b><i>밝은 바탕 (손님 휴대폰이 어두운 화면이면 따라감)</i></span></label>
+            <label class="chk" style="margin:0"><input type="radio" name="mood" value="night" id="mood-night"><span><b style="font-weight:600">밤</b><i>항상 짙은 바탕 · 주점, 바, 저녁 장사</i></span></label>
+          </div>
+        </div>
+
         <div class="f"><span>가게 색 <span class="opt">버튼과 포인트에 쓰입니다</span></span>
           <div class="swatches" id="swatches">
             <button class="sw" data-color="#C0452C" style="background:#C0452C" aria-pressed="true" title="따뜻한 붉은색"></button>
@@ -1215,6 +1222,91 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
   .contact-grid{ max-width:720px; }
   .fab{ right:28px; bottom:28px; }
 }
+
+/* ============================================================
+   분위기 '밤' — 손님 휴대폰 설정과 상관없이 짙은 바탕으로 고정
+   (주점·바·저녁 장사처럼 밤 사진이 많은 가게용)
+   ============================================================ */
+html[data-mood="night"]{
+  color-scheme:dark;
+  --ink:#F6F1F3; --ink-2:#C6BCC2; --ink-3:#9F959B;
+  --line:#2B252A; --bg:#0D0B0E; --card:#18151A;
+  --ok:#4FBF88; --ok-soft:#15291F;
+  --warn:#D9A24E; --warn-soft:#2A2013;
+  --off:#99908A; --off-soft:#231F1C;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-m:0 2px 6px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.4);
+}
+html[data-mood="night"] .btn-primary{ box-shadow:0 0 0 1px var(--primary-shadow), 0 10px 30px var(--primary-shadow); }
+html[data-mood="night"] .hero-veil{ background:linear-gradient(to top, #0D0B0E 0%, rgba(13,11,14,.72) 34%, rgba(13,11,14,.12) 100%); }
+html[data-mood="night"] .hero.has-photo::before{ display:none; }
+html[data-mood="night"] .hero-over .t-hero{ text-shadow:0 0 34px var(--primary-shadow); font-size:clamp(34px,10.4vw,48px); }
+html[data-mood="night"] section.band{
+  background:radial-gradient(90% 120% at 50% 0%, var(--primary-soft) 0%, transparent 70%), var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* 칸 번호 — 01, 02 … 순서가 보이면 페이지가 '짜여진 것'으로 읽힌다 */
+.sec-no{
+  display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  font-size:12px; font-weight:700; letter-spacing:.2em; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.sec-no::after{ content:""; width:34px; height:1px; background:var(--line); }
+
+/* 사진 넘겨 보기 — 크게 한 장씩, 설명은 사진 위에 */
+.gal.reel{
+  display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+  margin:0 calc(var(--pad) * -1); padding:0 var(--pad) 4px; scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.gal.reel::-webkit-scrollbar{ display:none; }
+.gal.reel figure{
+  position:relative; margin:0; flex:none; width:80%; max-width:340px; aspect-ratio:4/5;
+  border-radius:var(--radius); overflow:hidden; scroll-snap-align:center;
+  background:var(--primary-soft); box-shadow:var(--shadow-m);
+}
+.gal.reel figure img{ display:block; width:100%; height:100%; max-width:none; aspect-ratio:auto; object-fit:cover; border-radius:0; }
+.gal.reel figcaption{
+  position:absolute; inset:auto 0 0; padding:44px 16px 14px;
+  background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+  color:#fff; font-size:14.5px; font-weight:650; letter-spacing:-.015em; line-height:1.4;
+}
+.reel-dots{ display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.reel-dots i{ width:6px; height:6px; border-radius:99px; background:var(--line); transition:width .25s, background .25s; }
+.reel-dots i.on{ width:20px; background:var(--primary); }
+@media (prefers-reduced-motion:reduce){ .reel-dots i{ transition:none; } }
+
+/* 전화 카드 — 번호를 크게. 문의 칸에서 가장 먼저 눈에 들어와야 한다 */
+.call-card{
+  display:block; text-align:center; text-decoration:none; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 20px 20px; margin-bottom:10px; box-shadow:var(--shadow-s);
+}
+.call-card .cc-l{ display:block; font-size:13.5px; color:var(--ink-3); font-weight:600; }
+.call-card .cc-n{
+  display:block; margin:6px 0 16px; font-size:clamp(28px,8.6vw,40px); font-weight:800;
+  letter-spacing:-.02em; line-height:1.15; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
+}
+.call-card .btn{ width:100%; pointer-events:none; }
+
+/* 맨 아래 — 가게 이름을 크게 비쳐 놓는다 */
+footer{ position:relative; overflow:hidden; }
+footer .wrap{ position:relative; z-index:1; }
+.f-ghost{
+  position:absolute; right:-6px; bottom:-.24em; z-index:0; pointer-events:none; white-space:nowrap;
+  font-family:var(--font-title); font-weight:800; font-size:clamp(64px,22vw,150px); line-height:1;
+  letter-spacing:-.05em; color:var(--ink); opacity:.05; user-select:none;
+}
+
+@media (min-width:1024px){
+  .gal.reel{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; overflow:visible; margin:0; padding:0; }
+  .gal.reel figure{ width:100%; max-width:none; aspect-ratio:4/3; box-shadow:var(--shadow-s); }
+  .reel-dots{ display:none; }
+  .call-card{ max-width:720px; padding:34px 28px 26px; }
+  .call-card .btn{ width:auto; min-width:240px; }
+  .sec-no{ margin-bottom:16px; }
+}
 </script>
 <script type="text/plain" id="tpl-runtime-restaurant">
 (function(){
@@ -1300,10 +1392,14 @@ function mix(rgb, to, t){
     return ("0" + Math.max(0, Math.min(255, x)).toString(16)).slice(-2);
   }).join("");
 }
+function isNight(){ return !!(SITE.theme && SITE.theme.mood === "night"); }
 function isDark(){
+  if (isNight()) return true;
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
 function applyTheme(){
+  if (isNight()) document.documentElement.setAttribute("data-mood", "night");
+  else document.documentElement.removeAttribute("data-mood");
   var tf = (SITE.theme && SITE.theme.titleFont) || "serif";
   document.body.setAttribute("data-title-font", tf === "sans" ? "sans" : "serif");
 
@@ -1611,14 +1707,21 @@ function menuBlock(){
 function galleryBlock(){
   var g = (SITE.gallery || []).filter(function(x){ return x && has(x.src); });
   if (!g.length) return "";
-  var scroll = g.length >= 4;
+  var reel = g.length >= 2;
   var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">가게 사진</h2></div>'
-        + '<div class="gal'+(scroll ? " scroll" : "")+'">';
+        + '<div class="gal'+(reel ? " reel" : "")+'"'+(reel ? ' id="reel" tabindex="0" aria-label="가게 사진, 옆으로 넘겨 보기"' : "")+'>';
   g.forEach(function(x, gi){
-    h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("가게 사진 " + (gi + 1)))+'" loading="lazy">';
+    var img = '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("가게 사진 " + (gi + 1)))+'" loading="lazy">';
+    h += reel ? '<figure>' + img + (has(x.alt) ? '<figcaption>'+esc(x.alt)+'</figcaption>' : "") + '</figure>' : img;
   });
-  h += '</div></div></section>';
+  h += '</div>';
+  if (reel){
+    h += '<div class="reel-dots" id="reel-dots" aria-hidden="true">';
+    g.forEach(function(x, gi){ h += '<i'+(gi === 0 ? ' class="on"' : "")+'></i>'; });
+    h += '</div>';
+  }
+  h += '</div></section>';
   return h;
 }
 
@@ -1838,12 +1941,16 @@ function sendAsk(kind){
 }
 
 function contactBlock(){
-  var c = SITE.contact || {}, btns = [];
+  var c = SITE.contact || {}, btns = [], callCard = "";
   var bk0 = safeUrl(c.booking);
   if (bk0)
     btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk0)+'</a>');
-  if (has(c.phone))
-    btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
+  if (has(c.phone) && !bk0)
+    callCard = '<a class="call-card" href="'+esc(telUrl(c.phone))+'" aria-label="전화 걸기 '+esc(c.phone)+'">'
+      + '<span class="cc-l">전화 문의</span><span class="cc-n">'+esc(c.phone)+'</span>'
+      + '<span class="btn btn-primary">'+I.phone+'지금 전화하기</span></a>';
+  else if (has(c.phone))
+    btns.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
     btns.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'문자 보내기</a>');
   var kk = safeUrl(c.kakaoChannel);
@@ -1858,11 +1965,12 @@ function contactBlock(){
       btns.push('<a class="btn btn-ghost" href="'+esc(u)+'" target="_blank" rel="noopener">'+I.link+esc(l.label)+'</a>');
   });
 
-  if (!btns.length) return "";
+  if (!btns.length && !callCard) return "";
 
   var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
-        + '<div class="contact-grid">'+btns.join("")+'</div>'
+        + callCard
+        + (btns.length ? '<div class="contact-grid">'+btns.join("")+'</div>' : "")
         + askForm()
         + '<div class="share">'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-share">'+I.share+'공유하기</button>'
@@ -1884,7 +1992,9 @@ function footerBlock(){
   if (pu) meta.push('<a href="'+esc(pu)+'" target="_blank" rel="noopener">개인정보처리방침</a>');
   if (meta.length) h += '<div class="f-meta">'+meta.join("<br>")+'</div>';
   if (L.credit !== false) h += '<div class="credit">내 가게 홈페이지로 만들었습니다</div>';
-  h += '</div></footer>';
+  h += '</div>';
+  if (has(s.name)) h += '<div class="f-ghost" aria-hidden="true">'+esc(s.name)+'</div>';
+  h += '</footer>';
   return h;
 }
 
@@ -1940,6 +2050,29 @@ function render(){
   document.body.classList.toggle("lean", secCount <= 5);
 
   if (!document.title && has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
+
+  /* 칸 번호 */
+  var heads = document.querySelectorAll("#app section .sec-head");
+  if (heads.length >= 3) for (var hi = 0; hi < heads.length; hi++){
+    heads[hi].insertAdjacentHTML("afterbegin", '<span class="sec-no" aria-hidden="true">' + ("0" + (hi + 1)).slice(-2) + '</span>');
+  }
+  /* 사진 넘길 때 아래 점 옮기기 */
+  var reel = document.getElementById("reel"), dots = document.getElementById("reel-dots");
+  if (reel && dots){
+    var rt = 0;
+    reel.addEventListener("scroll", function(){
+      if (rt) return;
+      rt = setTimeout(function(){
+        rt = 0;
+        var figs = reel.children, mid = reel.scrollLeft + reel.clientWidth / 2, best = 0, bd = 1e9;
+        for (var i = 0; i < figs.length; i++){
+          var d = Math.abs(figs[i].offsetLeft + figs[i].offsetWidth / 2 - mid);
+          if (d < bd){ bd = d; best = i; }
+        }
+        for (var j = 0; j < dots.children.length; j++) dots.children[j].className = j === best ? "on" : "";
+      }, 80);
+    }, { passive:true });
+  }
 
   bind();
   revealOn();
@@ -2540,6 +2673,91 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
   .contact-grid{ max-width:720px; }
   .fab{ right:28px; bottom:28px; }
 }
+
+/* ============================================================
+   분위기 '밤' — 손님 휴대폰 설정과 상관없이 짙은 바탕으로 고정
+   (주점·바·저녁 장사처럼 밤 사진이 많은 가게용)
+   ============================================================ */
+html[data-mood="night"]{
+  color-scheme:dark;
+  --ink:#F6F1F3; --ink-2:#C6BCC2; --ink-3:#9F959B;
+  --line:#2B252A; --bg:#0D0B0E; --card:#18151A;
+  --ok:#4FBF88; --ok-soft:#15291F;
+  --warn:#D9A24E; --warn-soft:#2A2013;
+  --off:#99908A; --off-soft:#231F1C;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-m:0 2px 6px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.4);
+}
+html[data-mood="night"] .btn-primary{ box-shadow:0 0 0 1px var(--primary-shadow), 0 10px 30px var(--primary-shadow); }
+html[data-mood="night"] .hero-veil{ background:linear-gradient(to top, #0D0B0E 0%, rgba(13,11,14,.72) 34%, rgba(13,11,14,.12) 100%); }
+html[data-mood="night"] .hero.has-photo::before{ display:none; }
+html[data-mood="night"] .hero-over .t-hero{ text-shadow:0 0 34px var(--primary-shadow); font-size:clamp(34px,10.4vw,48px); }
+html[data-mood="night"] section.band{
+  background:radial-gradient(90% 120% at 50% 0%, var(--primary-soft) 0%, transparent 70%), var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* 칸 번호 — 01, 02 … 순서가 보이면 페이지가 '짜여진 것'으로 읽힌다 */
+.sec-no{
+  display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  font-size:12px; font-weight:700; letter-spacing:.2em; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.sec-no::after{ content:""; width:34px; height:1px; background:var(--line); }
+
+/* 사진 넘겨 보기 — 크게 한 장씩, 설명은 사진 위에 */
+.gal.reel{
+  display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+  margin:0 calc(var(--pad) * -1); padding:0 var(--pad) 4px; scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.gal.reel::-webkit-scrollbar{ display:none; }
+.gal.reel figure{
+  position:relative; margin:0; flex:none; width:80%; max-width:340px; aspect-ratio:4/5;
+  border-radius:var(--radius); overflow:hidden; scroll-snap-align:center;
+  background:var(--primary-soft); box-shadow:var(--shadow-m);
+}
+.gal.reel figure img{ display:block; width:100%; height:100%; max-width:none; aspect-ratio:auto; object-fit:cover; border-radius:0; }
+.gal.reel figcaption{
+  position:absolute; inset:auto 0 0; padding:44px 16px 14px;
+  background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+  color:#fff; font-size:14.5px; font-weight:650; letter-spacing:-.015em; line-height:1.4;
+}
+.reel-dots{ display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.reel-dots i{ width:6px; height:6px; border-radius:99px; background:var(--line); transition:width .25s, background .25s; }
+.reel-dots i.on{ width:20px; background:var(--primary); }
+@media (prefers-reduced-motion:reduce){ .reel-dots i{ transition:none; } }
+
+/* 전화 카드 — 번호를 크게. 문의 칸에서 가장 먼저 눈에 들어와야 한다 */
+.call-card{
+  display:block; text-align:center; text-decoration:none; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 20px 20px; margin-bottom:10px; box-shadow:var(--shadow-s);
+}
+.call-card .cc-l{ display:block; font-size:13.5px; color:var(--ink-3); font-weight:600; }
+.call-card .cc-n{
+  display:block; margin:6px 0 16px; font-size:clamp(28px,8.6vw,40px); font-weight:800;
+  letter-spacing:-.02em; line-height:1.15; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
+}
+.call-card .btn{ width:100%; pointer-events:none; }
+
+/* 맨 아래 — 가게 이름을 크게 비쳐 놓는다 */
+footer{ position:relative; overflow:hidden; }
+footer .wrap{ position:relative; z-index:1; }
+.f-ghost{
+  position:absolute; right:-6px; bottom:-.24em; z-index:0; pointer-events:none; white-space:nowrap;
+  font-family:var(--font-title); font-weight:800; font-size:clamp(64px,22vw,150px); line-height:1;
+  letter-spacing:-.05em; color:var(--ink); opacity:.05; user-select:none;
+}
+
+@media (min-width:1024px){
+  .gal.reel{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; overflow:visible; margin:0; padding:0; }
+  .gal.reel figure{ width:100%; max-width:none; aspect-ratio:4/3; box-shadow:var(--shadow-s); }
+  .reel-dots{ display:none; }
+  .call-card{ max-width:720px; padding:34px 28px 26px; }
+  .call-card .btn{ width:auto; min-width:240px; }
+  .sec-no{ margin-bottom:16px; }
+}
 </script>
 <script type="text/plain" id="tpl-runtime-shop">
 (function(){
@@ -2625,10 +2843,14 @@ function mix(rgb, to, t){
     return ("0" + Math.max(0, Math.min(255, x)).toString(16)).slice(-2);
   }).join("");
 }
+function isNight(){ return !!(SITE.theme && SITE.theme.mood === "night"); }
 function isDark(){
+  if (isNight()) return true;
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
 function applyTheme(){
+  if (isNight()) document.documentElement.setAttribute("data-mood", "night");
+  else document.documentElement.removeAttribute("data-mood");
   var tf = (SITE.theme && SITE.theme.titleFont) || "serif";
   document.body.setAttribute("data-title-font", tf === "sans" ? "sans" : "serif");
 
@@ -2938,14 +3160,21 @@ function menuBlock(){
 function galleryBlock(){
   var g = (SITE.gallery || []).filter(function(x){ return x && has(x.src); });
   if (!g.length) return "";
-  var scroll = g.length >= 4;
+  var reel = g.length >= 2;
   var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">가게 사진</h2></div>'
-        + '<div class="gal'+(scroll ? " scroll" : "")+'">';
+        + '<div class="gal'+(reel ? " reel" : "")+'"'+(reel ? ' id="reel" tabindex="0" aria-label="가게 사진, 옆으로 넘겨 보기"' : "")+'>';
   g.forEach(function(x, gi){
-    h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("가게 사진 " + (gi + 1)))+'" loading="lazy">';
+    var img = '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("가게 사진 " + (gi + 1)))+'" loading="lazy">';
+    h += reel ? '<figure>' + img + (has(x.alt) ? '<figcaption>'+esc(x.alt)+'</figcaption>' : "") + '</figure>' : img;
   });
-  h += '</div></div></section>';
+  h += '</div>';
+  if (reel){
+    h += '<div class="reel-dots" id="reel-dots" aria-hidden="true">';
+    g.forEach(function(x, gi){ h += '<i'+(gi === 0 ? ' class="on"' : "")+'></i>'; });
+    h += '</div>';
+  }
+  h += '</div></section>';
   return h;
 }
 
@@ -3165,12 +3394,16 @@ function sendAsk(kind){
 }
 
 function contactBlock(){
-  var c = SITE.contact || {}, btns = [];
+  var c = SITE.contact || {}, btns = [], callCard = "";
   var bk0 = safeUrl(c.booking);
   if (bk0)
     btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk0)+'</a>');
-  if (has(c.phone))
-    btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
+  if (has(c.phone) && !bk0)
+    callCard = '<a class="call-card" href="'+esc(telUrl(c.phone))+'" aria-label="전화 걸기 '+esc(c.phone)+'">'
+      + '<span class="cc-l">전화 문의</span><span class="cc-n">'+esc(c.phone)+'</span>'
+      + '<span class="btn btn-primary">'+I.phone+'지금 전화하기</span></a>';
+  else if (has(c.phone))
+    btns.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
     btns.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'문자 보내기</a>');
   var kk = safeUrl(c.kakaoChannel);
@@ -3185,11 +3418,12 @@ function contactBlock(){
       btns.push('<a class="btn btn-ghost" href="'+esc(u)+'" target="_blank" rel="noopener">'+I.link+esc(l.label)+'</a>');
   });
 
-  if (!btns.length) return "";
+  if (!btns.length && !callCard) return "";
 
   var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
-        + '<div class="contact-grid">'+btns.join("")+'</div>'
+        + callCard
+        + (btns.length ? '<div class="contact-grid">'+btns.join("")+'</div>' : "")
         + askForm()
         + '<div class="share">'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-share">'+I.share+'공유하기</button>'
@@ -3211,7 +3445,9 @@ function footerBlock(){
   if (pu) meta.push('<a href="'+esc(pu)+'" target="_blank" rel="noopener">개인정보처리방침</a>');
   if (meta.length) h += '<div class="f-meta">'+meta.join("<br>")+'</div>';
   if (L.credit !== false) h += '<div class="credit">내 가게 홈페이지로 만들었습니다</div>';
-  h += '</div></footer>';
+  h += '</div>';
+  if (has(s.name)) h += '<div class="f-ghost" aria-hidden="true">'+esc(s.name)+'</div>';
+  h += '</footer>';
   return h;
 }
 
@@ -3267,6 +3503,29 @@ function render(){
   document.body.classList.toggle("lean", secCount <= 5);
 
   if (!document.title && has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
+
+  /* 칸 번호 */
+  var heads = document.querySelectorAll("#app section .sec-head");
+  if (heads.length >= 3) for (var hi = 0; hi < heads.length; hi++){
+    heads[hi].insertAdjacentHTML("afterbegin", '<span class="sec-no" aria-hidden="true">' + ("0" + (hi + 1)).slice(-2) + '</span>');
+  }
+  /* 사진 넘길 때 아래 점 옮기기 */
+  var reel = document.getElementById("reel"), dots = document.getElementById("reel-dots");
+  if (reel && dots){
+    var rt = 0;
+    reel.addEventListener("scroll", function(){
+      if (rt) return;
+      rt = setTimeout(function(){
+        rt = 0;
+        var figs = reel.children, mid = reel.scrollLeft + reel.clientWidth / 2, best = 0, bd = 1e9;
+        for (var i = 0; i < figs.length; i++){
+          var d = Math.abs(figs[i].offsetLeft + figs[i].offsetWidth / 2 - mid);
+          if (d < bd){ bd = d; best = i; }
+        }
+        for (var j = 0; j < dots.children.length; j++) dots.children[j].className = j === best ? "on" : "";
+      }, 80);
+    }, { passive:true });
+  }
 
   bind();
   revealOn();
@@ -3863,6 +4122,91 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
   .contact-grid{ max-width:720px; }
   .fab{ right:28px; bottom:28px; }
 }
+
+/* ============================================================
+   분위기 '밤' — 손님 휴대폰 설정과 상관없이 짙은 바탕으로 고정
+   (주점·바·저녁 장사처럼 밤 사진이 많은 가게용)
+   ============================================================ */
+html[data-mood="night"]{
+  color-scheme:dark;
+  --ink:#F6F1F3; --ink-2:#C6BCC2; --ink-3:#9F959B;
+  --line:#2B252A; --bg:#0D0B0E; --card:#18151A;
+  --ok:#4FBF88; --ok-soft:#15291F;
+  --warn:#D9A24E; --warn-soft:#2A2013;
+  --off:#99908A; --off-soft:#231F1C;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-m:0 2px 6px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.4);
+}
+html[data-mood="night"] .btn-primary{ box-shadow:0 0 0 1px var(--primary-shadow), 0 10px 30px var(--primary-shadow); }
+html[data-mood="night"] .hero-veil{ background:linear-gradient(to top, #0D0B0E 0%, rgba(13,11,14,.72) 34%, rgba(13,11,14,.12) 100%); }
+html[data-mood="night"] .hero.has-photo::before{ display:none; }
+html[data-mood="night"] .hero-over .t-hero{ text-shadow:0 0 34px var(--primary-shadow); font-size:clamp(34px,10.4vw,48px); }
+html[data-mood="night"] section.band{
+  background:radial-gradient(90% 120% at 50% 0%, var(--primary-soft) 0%, transparent 70%), var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* 칸 번호 — 01, 02 … 순서가 보이면 페이지가 '짜여진 것'으로 읽힌다 */
+.sec-no{
+  display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  font-size:12px; font-weight:700; letter-spacing:.2em; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.sec-no::after{ content:""; width:34px; height:1px; background:var(--line); }
+
+/* 사진 넘겨 보기 — 크게 한 장씩, 설명은 사진 위에 */
+.gal.reel{
+  display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+  margin:0 calc(var(--pad) * -1); padding:0 var(--pad) 4px; scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.gal.reel::-webkit-scrollbar{ display:none; }
+.gal.reel figure{
+  position:relative; margin:0; flex:none; width:80%; max-width:340px; aspect-ratio:4/5;
+  border-radius:var(--radius); overflow:hidden; scroll-snap-align:center;
+  background:var(--primary-soft); box-shadow:var(--shadow-m);
+}
+.gal.reel figure img{ display:block; width:100%; height:100%; max-width:none; aspect-ratio:auto; object-fit:cover; border-radius:0; }
+.gal.reel figcaption{
+  position:absolute; inset:auto 0 0; padding:44px 16px 14px;
+  background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+  color:#fff; font-size:14.5px; font-weight:650; letter-spacing:-.015em; line-height:1.4;
+}
+.reel-dots{ display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.reel-dots i{ width:6px; height:6px; border-radius:99px; background:var(--line); transition:width .25s, background .25s; }
+.reel-dots i.on{ width:20px; background:var(--primary); }
+@media (prefers-reduced-motion:reduce){ .reel-dots i{ transition:none; } }
+
+/* 전화 카드 — 번호를 크게. 문의 칸에서 가장 먼저 눈에 들어와야 한다 */
+.call-card{
+  display:block; text-align:center; text-decoration:none; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 20px 20px; margin-bottom:10px; box-shadow:var(--shadow-s);
+}
+.call-card .cc-l{ display:block; font-size:13.5px; color:var(--ink-3); font-weight:600; }
+.call-card .cc-n{
+  display:block; margin:6px 0 16px; font-size:clamp(28px,8.6vw,40px); font-weight:800;
+  letter-spacing:-.02em; line-height:1.15; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
+}
+.call-card .btn{ width:100%; pointer-events:none; }
+
+/* 맨 아래 — 가게 이름을 크게 비쳐 놓는다 */
+footer{ position:relative; overflow:hidden; }
+footer .wrap{ position:relative; z-index:1; }
+.f-ghost{
+  position:absolute; right:-6px; bottom:-.24em; z-index:0; pointer-events:none; white-space:nowrap;
+  font-family:var(--font-title); font-weight:800; font-size:clamp(64px,22vw,150px); line-height:1;
+  letter-spacing:-.05em; color:var(--ink); opacity:.05; user-select:none;
+}
+
+@media (min-width:1024px){
+  .gal.reel{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; overflow:visible; margin:0; padding:0; }
+  .gal.reel figure{ width:100%; max-width:none; aspect-ratio:4/3; box-shadow:var(--shadow-s); }
+  .reel-dots{ display:none; }
+  .call-card{ max-width:720px; padding:34px 28px 26px; }
+  .call-card .btn{ width:auto; min-width:240px; }
+  .sec-no{ margin-bottom:16px; }
+}
 </script>
 <script type="text/plain" id="tpl-runtime-beauty">
 (function(){
@@ -3948,10 +4292,14 @@ function mix(rgb, to, t){
     return ("0" + Math.max(0, Math.min(255, x)).toString(16)).slice(-2);
   }).join("");
 }
+function isNight(){ return !!(SITE.theme && SITE.theme.mood === "night"); }
 function isDark(){
+  if (isNight()) return true;
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
 function applyTheme(){
+  if (isNight()) document.documentElement.setAttribute("data-mood", "night");
+  else document.documentElement.removeAttribute("data-mood");
   var tf = (SITE.theme && SITE.theme.titleFont) || "serif";
   document.body.setAttribute("data-title-font", tf === "sans" ? "sans" : "serif");
 
@@ -4520,12 +4868,16 @@ function sendAsk(kind){
 }
 
 function contactBlock(){
-  var c = SITE.contact || {}, btns = [];
+  var c = SITE.contact || {}, btns = [], callCard = "";
   var bk0 = safeUrl(c.booking);
   if (bk0)
     btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk0)+'</a>');
-  if (has(c.phone))
-    btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
+  if (has(c.phone) && !bk0)
+    callCard = '<a class="call-card" href="'+esc(telUrl(c.phone))+'" aria-label="전화 걸기 '+esc(c.phone)+'">'
+      + '<span class="cc-l">전화 문의</span><span class="cc-n">'+esc(c.phone)+'</span>'
+      + '<span class="btn btn-primary">'+I.phone+'지금 전화하기</span></a>';
+  else if (has(c.phone))
+    btns.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
     btns.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'문자 보내기</a>');
   var kk = safeUrl(c.kakaoChannel);
@@ -4540,11 +4892,12 @@ function contactBlock(){
       btns.push('<a class="btn btn-ghost" href="'+esc(u)+'" target="_blank" rel="noopener">'+I.link+esc(l.label)+'</a>');
   });
 
-  if (!btns.length) return "";
+  if (!btns.length && !callCard) return "";
 
   var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
-        + '<div class="contact-grid">'+btns.join("")+'</div>'
+        + callCard
+        + (btns.length ? '<div class="contact-grid">'+btns.join("")+'</div>' : "")
         + askForm()
         + '<div class="share">'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-share">'+I.share+'공유하기</button>'
@@ -4566,7 +4919,9 @@ function footerBlock(){
   if (pu) meta.push('<a href="'+esc(pu)+'" target="_blank" rel="noopener">개인정보처리방침</a>');
   if (meta.length) h += '<div class="f-meta">'+meta.join("<br>")+'</div>';
   if (L.credit !== false) h += '<div class="credit">내 가게 홈페이지로 만들었습니다</div>';
-  h += '</div></footer>';
+  h += '</div>';
+  if (has(s.name)) h += '<div class="f-ghost" aria-hidden="true">'+esc(s.name)+'</div>';
+  h += '</footer>';
   return h;
 }
 
@@ -4622,6 +4977,29 @@ function render(){
   document.body.classList.toggle("lean", secCount <= 5);
 
   if (!document.title && has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
+
+  /* 칸 번호 */
+  var heads = document.querySelectorAll("#app section .sec-head");
+  if (heads.length >= 3) for (var hi = 0; hi < heads.length; hi++){
+    heads[hi].insertAdjacentHTML("afterbegin", '<span class="sec-no" aria-hidden="true">' + ("0" + (hi + 1)).slice(-2) + '</span>');
+  }
+  /* 사진 넘길 때 아래 점 옮기기 */
+  var reel = document.getElementById("reel"), dots = document.getElementById("reel-dots");
+  if (reel && dots){
+    var rt = 0;
+    reel.addEventListener("scroll", function(){
+      if (rt) return;
+      rt = setTimeout(function(){
+        rt = 0;
+        var figs = reel.children, mid = reel.scrollLeft + reel.clientWidth / 2, best = 0, bd = 1e9;
+        for (var i = 0; i < figs.length; i++){
+          var d = Math.abs(figs[i].offsetLeft + figs[i].offsetWidth / 2 - mid);
+          if (d < bd){ bd = d; best = i; }
+        }
+        for (var j = 0; j < dots.children.length; j++) dots.children[j].className = j === best ? "on" : "";
+      }, 80);
+    }, { passive:true });
+  }
 
   bind();
   revealOn();
@@ -5219,6 +5597,91 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
   .contact-grid{ max-width:720px; }
   .fab{ right:28px; bottom:28px; }
 }
+
+/* ============================================================
+   분위기 '밤' — 손님 휴대폰 설정과 상관없이 짙은 바탕으로 고정
+   (주점·바·저녁 장사처럼 밤 사진이 많은 가게용)
+   ============================================================ */
+html[data-mood="night"]{
+  color-scheme:dark;
+  --ink:#F6F1F3; --ink-2:#C6BCC2; --ink-3:#9F959B;
+  --line:#2B252A; --bg:#0D0B0E; --card:#18151A;
+  --ok:#4FBF88; --ok-soft:#15291F;
+  --warn:#D9A24E; --warn-soft:#2A2013;
+  --off:#99908A; --off-soft:#231F1C;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-m:0 2px 6px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.4);
+}
+html[data-mood="night"] .btn-primary{ box-shadow:0 0 0 1px var(--primary-shadow), 0 10px 30px var(--primary-shadow); }
+html[data-mood="night"] .hero-veil{ background:linear-gradient(to top, #0D0B0E 0%, rgba(13,11,14,.72) 34%, rgba(13,11,14,.12) 100%); }
+html[data-mood="night"] .hero.has-photo::before{ display:none; }
+html[data-mood="night"] .hero-over .t-hero{ text-shadow:0 0 34px var(--primary-shadow); font-size:clamp(34px,10.4vw,48px); }
+html[data-mood="night"] section.band{
+  background:radial-gradient(90% 120% at 50% 0%, var(--primary-soft) 0%, transparent 70%), var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* 칸 번호 — 01, 02 … 순서가 보이면 페이지가 '짜여진 것'으로 읽힌다 */
+.sec-no{
+  display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  font-size:12px; font-weight:700; letter-spacing:.2em; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.sec-no::after{ content:""; width:34px; height:1px; background:var(--line); }
+
+/* 사진 넘겨 보기 — 크게 한 장씩, 설명은 사진 위에 */
+.gal.reel{
+  display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+  margin:0 calc(var(--pad) * -1); padding:0 var(--pad) 4px; scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.gal.reel::-webkit-scrollbar{ display:none; }
+.gal.reel figure{
+  position:relative; margin:0; flex:none; width:80%; max-width:340px; aspect-ratio:4/5;
+  border-radius:var(--radius); overflow:hidden; scroll-snap-align:center;
+  background:var(--primary-soft); box-shadow:var(--shadow-m);
+}
+.gal.reel figure img{ display:block; width:100%; height:100%; max-width:none; aspect-ratio:auto; object-fit:cover; border-radius:0; }
+.gal.reel figcaption{
+  position:absolute; inset:auto 0 0; padding:44px 16px 14px;
+  background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+  color:#fff; font-size:14.5px; font-weight:650; letter-spacing:-.015em; line-height:1.4;
+}
+.reel-dots{ display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.reel-dots i{ width:6px; height:6px; border-radius:99px; background:var(--line); transition:width .25s, background .25s; }
+.reel-dots i.on{ width:20px; background:var(--primary); }
+@media (prefers-reduced-motion:reduce){ .reel-dots i{ transition:none; } }
+
+/* 전화 카드 — 번호를 크게. 문의 칸에서 가장 먼저 눈에 들어와야 한다 */
+.call-card{
+  display:block; text-align:center; text-decoration:none; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 20px 20px; margin-bottom:10px; box-shadow:var(--shadow-s);
+}
+.call-card .cc-l{ display:block; font-size:13.5px; color:var(--ink-3); font-weight:600; }
+.call-card .cc-n{
+  display:block; margin:6px 0 16px; font-size:clamp(28px,8.6vw,40px); font-weight:800;
+  letter-spacing:-.02em; line-height:1.15; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
+}
+.call-card .btn{ width:100%; pointer-events:none; }
+
+/* 맨 아래 — 가게 이름을 크게 비쳐 놓는다 */
+footer{ position:relative; overflow:hidden; }
+footer .wrap{ position:relative; z-index:1; }
+.f-ghost{
+  position:absolute; right:-6px; bottom:-.24em; z-index:0; pointer-events:none; white-space:nowrap;
+  font-family:var(--font-title); font-weight:800; font-size:clamp(64px,22vw,150px); line-height:1;
+  letter-spacing:-.05em; color:var(--ink); opacity:.05; user-select:none;
+}
+
+@media (min-width:1024px){
+  .gal.reel{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; overflow:visible; margin:0; padding:0; }
+  .gal.reel figure{ width:100%; max-width:none; aspect-ratio:4/3; box-shadow:var(--shadow-s); }
+  .reel-dots{ display:none; }
+  .call-card{ max-width:720px; padding:34px 28px 26px; }
+  .call-card .btn{ width:auto; min-width:240px; }
+  .sec-no{ margin-bottom:16px; }
+}
 </script>
 <script type="text/plain" id="tpl-runtime-academy">
 (function(){
@@ -5304,10 +5767,14 @@ function mix(rgb, to, t){
     return ("0" + Math.max(0, Math.min(255, x)).toString(16)).slice(-2);
   }).join("");
 }
+function isNight(){ return !!(SITE.theme && SITE.theme.mood === "night"); }
 function isDark(){
+  if (isNight()) return true;
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
 function applyTheme(){
+  if (isNight()) document.documentElement.setAttribute("data-mood", "night");
+  else document.documentElement.removeAttribute("data-mood");
   var tf = (SITE.theme && SITE.theme.titleFont) || "serif";
   document.body.setAttribute("data-title-font", tf === "sans" ? "sans" : "serif");
 
@@ -5874,12 +6341,16 @@ function sendAsk(kind){
 }
 
 function contactBlock(){
-  var c = SITE.contact || {}, btns = [];
+  var c = SITE.contact || {}, btns = [], callCard = "";
   var bk0 = safeUrl(c.booking);
   if (bk0)
     btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk0)+'</a>');
-  if (has(c.phone))
-    btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
+  if (has(c.phone) && !bk0)
+    callCard = '<a class="call-card" href="'+esc(telUrl(c.phone))+'" aria-label="전화 걸기 '+esc(c.phone)+'">'
+      + '<span class="cc-l">전화 문의</span><span class="cc-n">'+esc(c.phone)+'</span>'
+      + '<span class="btn btn-primary">'+I.phone+'지금 전화하기</span></a>';
+  else if (has(c.phone))
+    btns.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
     btns.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'문자 보내기</a>');
   var kk = safeUrl(c.kakaoChannel);
@@ -5894,11 +6365,12 @@ function contactBlock(){
       btns.push('<a class="btn btn-ghost" href="'+esc(u)+'" target="_blank" rel="noopener">'+I.link+esc(l.label)+'</a>');
   });
 
-  if (!btns.length) return "";
+  if (!btns.length && !callCard) return "";
 
   var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
-        + '<div class="contact-grid">'+btns.join("")+'</div>'
+        + callCard
+        + (btns.length ? '<div class="contact-grid">'+btns.join("")+'</div>' : "")
         + askForm()
         + '<div class="share">'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-share">'+I.share+'공유하기</button>'
@@ -5920,7 +6392,9 @@ function footerBlock(){
   if (pu) meta.push('<a href="'+esc(pu)+'" target="_blank" rel="noopener">개인정보처리방침</a>');
   if (meta.length) h += '<div class="f-meta">'+meta.join("<br>")+'</div>';
   if (L.credit !== false) h += '<div class="credit">내 가게 홈페이지로 만들었습니다</div>';
-  h += '</div></footer>';
+  h += '</div>';
+  if (has(s.name)) h += '<div class="f-ghost" aria-hidden="true">'+esc(s.name)+'</div>';
+  h += '</footer>';
   return h;
 }
 
@@ -5976,6 +6450,29 @@ function render(){
   document.body.classList.toggle("lean", secCount <= 5);
 
   if (!document.title && has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
+
+  /* 칸 번호 */
+  var heads = document.querySelectorAll("#app section .sec-head");
+  if (heads.length >= 3) for (var hi = 0; hi < heads.length; hi++){
+    heads[hi].insertAdjacentHTML("afterbegin", '<span class="sec-no" aria-hidden="true">' + ("0" + (hi + 1)).slice(-2) + '</span>');
+  }
+  /* 사진 넘길 때 아래 점 옮기기 */
+  var reel = document.getElementById("reel"), dots = document.getElementById("reel-dots");
+  if (reel && dots){
+    var rt = 0;
+    reel.addEventListener("scroll", function(){
+      if (rt) return;
+      rt = setTimeout(function(){
+        rt = 0;
+        var figs = reel.children, mid = reel.scrollLeft + reel.clientWidth / 2, best = 0, bd = 1e9;
+        for (var i = 0; i < figs.length; i++){
+          var d = Math.abs(figs[i].offsetLeft + figs[i].offsetWidth / 2 - mid);
+          if (d < bd){ bd = d; best = i; }
+        }
+        for (var j = 0; j < dots.children.length; j++) dots.children[j].className = j === best ? "on" : "";
+      }, 80);
+    }, { passive:true });
+  }
 
   bind();
   revealOn();
@@ -6592,6 +7089,91 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
   .contact-grid{ max-width:720px; }
   .fab{ right:28px; bottom:28px; }
 }
+
+/* ============================================================
+   분위기 '밤' — 손님 휴대폰 설정과 상관없이 짙은 바탕으로 고정
+   (주점·바·저녁 장사처럼 밤 사진이 많은 가게용)
+   ============================================================ */
+html[data-mood="night"]{
+  color-scheme:dark;
+  --ink:#F6F1F3; --ink-2:#C6BCC2; --ink-3:#9F959B;
+  --line:#2B252A; --bg:#0D0B0E; --card:#18151A;
+  --ok:#4FBF88; --ok-soft:#15291F;
+  --warn:#D9A24E; --warn-soft:#2A2013;
+  --off:#99908A; --off-soft:#231F1C;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-m:0 2px 6px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.4);
+}
+html[data-mood="night"] .btn-primary{ box-shadow:0 0 0 1px var(--primary-shadow), 0 10px 30px var(--primary-shadow); }
+html[data-mood="night"] .hero-veil{ background:linear-gradient(to top, #0D0B0E 0%, rgba(13,11,14,.72) 34%, rgba(13,11,14,.12) 100%); }
+html[data-mood="night"] .hero.has-photo::before{ display:none; }
+html[data-mood="night"] .hero-over .t-hero{ text-shadow:0 0 34px var(--primary-shadow); font-size:clamp(34px,10.4vw,48px); }
+html[data-mood="night"] section.band{
+  background:radial-gradient(90% 120% at 50% 0%, var(--primary-soft) 0%, transparent 70%), var(--card);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* 칸 번호 — 01, 02 … 순서가 보이면 페이지가 '짜여진 것'으로 읽힌다 */
+.sec-no{
+  display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  font-size:12px; font-weight:700; letter-spacing:.2em; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.sec-no::after{ content:""; width:34px; height:1px; background:var(--line); }
+
+/* 사진 넘겨 보기 — 크게 한 장씩, 설명은 사진 위에 */
+.gal.reel{
+  display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+  margin:0 calc(var(--pad) * -1); padding:0 var(--pad) 4px; scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.gal.reel::-webkit-scrollbar{ display:none; }
+.gal.reel figure{
+  position:relative; margin:0; flex:none; width:80%; max-width:340px; aspect-ratio:4/5;
+  border-radius:var(--radius); overflow:hidden; scroll-snap-align:center;
+  background:var(--primary-soft); box-shadow:var(--shadow-m);
+}
+.gal.reel figure img{ display:block; width:100%; height:100%; max-width:none; aspect-ratio:auto; object-fit:cover; border-radius:0; }
+.gal.reel figcaption{
+  position:absolute; inset:auto 0 0; padding:44px 16px 14px;
+  background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+  color:#fff; font-size:14.5px; font-weight:650; letter-spacing:-.015em; line-height:1.4;
+}
+.reel-dots{ display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.reel-dots i{ width:6px; height:6px; border-radius:99px; background:var(--line); transition:width .25s, background .25s; }
+.reel-dots i.on{ width:20px; background:var(--primary); }
+@media (prefers-reduced-motion:reduce){ .reel-dots i{ transition:none; } }
+
+/* 전화 카드 — 번호를 크게. 문의 칸에서 가장 먼저 눈에 들어와야 한다 */
+.call-card{
+  display:block; text-align:center; text-decoration:none; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 20px 20px; margin-bottom:10px; box-shadow:var(--shadow-s);
+}
+.call-card .cc-l{ display:block; font-size:13.5px; color:var(--ink-3); font-weight:600; }
+.call-card .cc-n{
+  display:block; margin:6px 0 16px; font-size:clamp(28px,8.6vw,40px); font-weight:800;
+  letter-spacing:-.02em; line-height:1.15; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
+}
+.call-card .btn{ width:100%; pointer-events:none; }
+
+/* 맨 아래 — 가게 이름을 크게 비쳐 놓는다 */
+footer{ position:relative; overflow:hidden; }
+footer .wrap{ position:relative; z-index:1; }
+.f-ghost{
+  position:absolute; right:-6px; bottom:-.24em; z-index:0; pointer-events:none; white-space:nowrap;
+  font-family:var(--font-title); font-weight:800; font-size:clamp(64px,22vw,150px); line-height:1;
+  letter-spacing:-.05em; color:var(--ink); opacity:.05; user-select:none;
+}
+
+@media (min-width:1024px){
+  .gal.reel{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; overflow:visible; margin:0; padding:0; }
+  .gal.reel figure{ width:100%; max-width:none; aspect-ratio:4/3; box-shadow:var(--shadow-s); }
+  .reel-dots{ display:none; }
+  .call-card{ max-width:720px; padding:34px 28px 26px; }
+  .call-card .btn{ width:auto; min-width:240px; }
+  .sec-no{ margin-bottom:16px; }
+}
 </script>
 <script type="text/plain" id="tpl-runtime-repair">
 (function(){
@@ -6677,10 +7259,14 @@ function mix(rgb, to, t){
     return ("0" + Math.max(0, Math.min(255, x)).toString(16)).slice(-2);
   }).join("");
 }
+function isNight(){ return !!(SITE.theme && SITE.theme.mood === "night"); }
 function isDark(){
+  if (isNight()) return true;
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 }
 function applyTheme(){
+  if (isNight()) document.documentElement.setAttribute("data-mood", "night");
+  else document.documentElement.removeAttribute("data-mood");
   var tf = (SITE.theme && SITE.theme.titleFont) || "serif";
   document.body.setAttribute("data-title-font", tf === "sans" ? "sans" : "serif");
 
@@ -7256,12 +7842,16 @@ function sendAsk(kind){
 }
 
 function contactBlock(){
-  var c = SITE.contact || {}, btns = [];
+  var c = SITE.contact || {}, btns = [], callCard = "";
   var bk0 = safeUrl(c.booking);
   if (bk0)
     btns.push('<a class="btn btn-primary" href="'+esc(bk0)+'" target="_blank" rel="noopener">'+I.cal+bookLabel(bk0)+'</a>');
-  if (has(c.phone))
-    btns.push('<a class="btn '+(bk0 ? "btn-ghost" : "btn-primary")+'" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
+  if (has(c.phone) && !bk0)
+    callCard = '<a class="call-card" href="'+esc(telUrl(c.phone))+'" aria-label="전화 걸기 '+esc(c.phone)+'">'
+      + '<span class="cc-l">전화 문의</span><span class="cc-n">'+esc(c.phone)+'</span>'
+      + '<span class="btn btn-primary">'+I.phone+'지금 전화하기</span></a>';
+  else if (has(c.phone))
+    btns.push('<a class="btn btn-ghost" href="'+esc(telUrl(c.phone))+'">'+I.phone+esc(c.phone)+'</a>');
   if (has(c.sms))
     btns.push('<a class="btn btn-ghost" href="sms:'+esc(String(c.sms).replace(/[^0-9+]/g,""))+'">'+I.sms+'문자 보내기</a>');
   var kk = safeUrl(c.kakaoChannel);
@@ -7276,11 +7866,12 @@ function contactBlock(){
       btns.push('<a class="btn btn-ghost" href="'+esc(u)+'" target="_blank" rel="noopener">'+I.link+esc(l.label)+'</a>');
   });
 
-  if (!btns.length) return "";
+  if (!btns.length && !callCard) return "";
 
   var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
-        + '<div class="contact-grid">'+btns.join("")+'</div>'
+        + callCard
+        + (btns.length ? '<div class="contact-grid">'+btns.join("")+'</div>' : "")
         + askForm()
         + '<div class="share">'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-share">'+I.share+'공유하기</button>'
@@ -7302,7 +7893,9 @@ function footerBlock(){
   if (pu) meta.push('<a href="'+esc(pu)+'" target="_blank" rel="noopener">개인정보처리방침</a>');
   if (meta.length) h += '<div class="f-meta">'+meta.join("<br>")+'</div>';
   if (L.credit !== false) h += '<div class="credit">내 가게 홈페이지로 만들었습니다</div>';
-  h += '</div></footer>';
+  h += '</div>';
+  if (has(s.name)) h += '<div class="f-ghost" aria-hidden="true">'+esc(s.name)+'</div>';
+  h += '</footer>';
   return h;
 }
 
@@ -7358,6 +7951,29 @@ function render(){
   document.body.classList.toggle("lean", secCount <= 5);
 
   if (!document.title && has(SITE.shop && SITE.shop.name)) document.title = SITE.shop.name;
+
+  /* 칸 번호 */
+  var heads = document.querySelectorAll("#app section .sec-head");
+  if (heads.length >= 3) for (var hi = 0; hi < heads.length; hi++){
+    heads[hi].insertAdjacentHTML("afterbegin", '<span class="sec-no" aria-hidden="true">' + ("0" + (hi + 1)).slice(-2) + '</span>');
+  }
+  /* 사진 넘길 때 아래 점 옮기기 */
+  var reel = document.getElementById("reel"), dots = document.getElementById("reel-dots");
+  if (reel && dots){
+    var rt = 0;
+    reel.addEventListener("scroll", function(){
+      if (rt) return;
+      rt = setTimeout(function(){
+        rt = 0;
+        var figs = reel.children, mid = reel.scrollLeft + reel.clientWidth / 2, best = 0, bd = 1e9;
+        for (var i = 0; i < figs.length; i++){
+          var d = Math.abs(figs[i].offsetLeft + figs[i].offsetWidth / 2 - mid);
+          if (d < bd){ bd = d; best = i; }
+        }
+        for (var j = 0; j < dots.children.length; j++) dots.children[j].className = j === best ? "on" : "";
+      }, 80);
+    }, { passive:true });
+  }
 
   bind();
   revealOn();
@@ -7889,7 +8505,8 @@ function readForm(){
     tpl: TPL,
     theme: {
       primary: val("#f-color") || "#C0452C",
-      titleFont: chk("#tf-sans") ? "sans" : "serif"
+      titleFont: chk("#tf-sans") ? "sans" : "serif",
+      mood: chk("#mood-night") ? "night" : "day"
     },
     shop: {
       name: val("#f-name"),
@@ -7962,6 +8579,8 @@ function fillForm(d){
   setVal("#f-quoteby", s.quoteBy);
   var tf = (d.theme && d.theme.titleFont) === "sans" ? "sans" : "serif";
   setChk("#tf-serif", tf === "serif"); setChk("#tf-sans", tf === "sans");
+  var md = (d.theme && d.theme.mood) === "night";
+  setChk("#mood-day", !md); setChk("#mood-night", md);
   setVal("#f-color", (d.theme && d.theme.primary) || TD().color);
   markSwatch(val("#f-color"));
 

@@ -353,6 +353,13 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           </div>
         </div>
 
+        <div class="f"><span>분위기</span>
+          <div class="swatches">
+            <label class="chk" style="margin:0 14px 0 0"><input type="radio" name="mood" value="day" id="mood-day" checked><span><b style="font-weight:600">기본</b><i>밝은 바탕 (손님 휴대폰이 어두운 화면이면 따라감)</i></span></label>
+            <label class="chk" style="margin:0"><input type="radio" name="mood" value="night" id="mood-night"><span><b style="font-weight:600">밤</b><i>항상 짙은 바탕 · 주점, 바, 저녁 장사</i></span></label>
+          </div>
+        </div>
+
         <div class="f"><span>가게 색 <span class="opt">버튼과 포인트에 쓰입니다</span></span>
           <div class="swatches" id="swatches">
             <button class="sw" data-color="#C0452C" style="background:#C0452C" aria-pressed="true" title="따뜻한 붉은색"></button>
@@ -1179,7 +1186,8 @@ function readForm(){
     tpl: TPL,
     theme: {
       primary: val("#f-color") || "#C0452C",
-      titleFont: chk("#tf-sans") ? "sans" : "serif"
+      titleFont: chk("#tf-sans") ? "sans" : "serif",
+      mood: chk("#mood-night") ? "night" : "day"
     },
     shop: {
       name: val("#f-name"),
@@ -1252,6 +1260,8 @@ function fillForm(d){
   setVal("#f-quoteby", s.quoteBy);
   var tf = (d.theme && d.theme.titleFont) === "sans" ? "sans" : "serif";
   setChk("#tf-serif", tf === "serif"); setChk("#tf-sans", tf === "sans");
+  var md = (d.theme && d.theme.mood) === "night";
+  setChk("#mood-day", !md); setChk("#mood-night", md);
   setVal("#f-color", (d.theme && d.theme.primary) || TD().color);
   markSwatch(val("#f-color"));
 
