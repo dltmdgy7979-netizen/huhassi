@@ -622,6 +622,15 @@ footer .wrap{ position:relative; z-index:1; }
   .call-card .btn{ width:auto; min-width:240px; }
   .sec-no{ margin-bottom:16px; }
 }
+
+/* 가로로 꽉 차는 사진 띠 — 카드가 이어지는 중간에 숨 쉴 곳을 만든다 */
+#sec-band{ position:relative; overflow:hidden; background:var(--primary-soft); }
+#sec-band img{ display:block; width:100%; height:clamp(210px,60vw,340px); object-fit:cover; }
+html[data-mood="night"] #sec-band::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to bottom, var(--bg) 0%, rgba(13,11,14,0) 22%, rgba(13,11,14,0) 78%, var(--bg) 100%);
+}
+@media (min-width:1024px){ #sec-band img{ height:clamp(380px,36vw,540px); } }
 </style>
 </head>
 <body>
@@ -1194,17 +1203,31 @@ function menuBlock(){
   return h;
 }
 
+function bandBlock(){
+  var sh = SITE.shop || {};
+  if (!has(sh.band)) return "";
+  return '<section id="sec-band" class="reveal" aria-label="가게 사진">'
+    + '<img src="' + esc(sh.band) + '" alt="' + esc((sh.name || "가게") + " 사진") + '" loading="lazy"></section>';
+}
+
 function galleryBlock(){
   var g = (SITE.gallery || []).filter(function(x){ return x && has(x.src); });
   if (!g.length) return "";
-  var scroll = g.length >= 4;
+  var reel = g.length >= 2;
   var h = '<section id="sec-photo" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Photos</span><h2 class="t-sec">교실 사진</h2></div>'
-        + '<div class="gal'+(scroll ? " scroll" : "")+'">';
+        + '<div class="gal'+(reel ? " reel" : "")+'"'+(reel ? ' id="reel" tabindex="0" aria-label="교실 사진, 옆으로 넘겨 보기"' : "")+'>';
   g.forEach(function(x, gi){
-    h += '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("가게 사진 " + (gi + 1)))+'" loading="lazy">';
+    var img = '<img src="'+esc(x.src)+'" alt="'+esc(x.alt || ("사진 " + (gi + 1)))+'" loading="lazy">';
+    h += reel ? '<figure>' + img + (has(x.alt) ? '<figcaption>'+esc(x.alt)+'</figcaption>' : "") + '</figure>' : img;
   });
-  h += '</div></div></section>';
+  h += '</div>';
+  if (reel){
+    h += '<div class="reel-dots" id="reel-dots" aria-hidden="true">';
+    g.forEach(function(x, gi){ h += '<i'+(gi === 0 ? ' class="on"' : "")+'></i>'; });
+    h += '</div>';
+  }
+  h += '</div></section>';
   return h;
 }
 
@@ -1540,7 +1563,7 @@ function render(){
   if (SITE.demo){
     html += '<div class="demo-ribbon"><b>틀 미리보기</b> · 내용은 모양을 보려고 넣은 예시입니다. 빌더에서 받는 파일에는 이 줄이 없습니다.</div>';
   }
-  [heroBlock, quoteBlock, menuBlock, galleryBlock, ownerBlock, bookingBlock, hoursBlock, placeBlock, reviewBlock, contactBlock, footerBlock].forEach(function(fn){
+  [heroBlock, quoteBlock, menuBlock, bandBlock, galleryBlock, ownerBlock, bookingBlock, hoursBlock, placeBlock, reviewBlock, contactBlock, footerBlock].forEach(function(fn){
     try { html += fn(); } catch (e) { if (window.console) console.warn("칸 하나를 건너뜀:", e); }
   });
 

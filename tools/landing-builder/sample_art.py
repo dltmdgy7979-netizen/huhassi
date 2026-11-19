@@ -310,6 +310,55 @@ PLAN = {
       gallery=[(p_van(), "작업 차량 (예시 그림)"), (p_tools(), "공구 (예시 그림)"), (p_outdoor(), "실외기 (예시 그림)")]),
 }
 
+# ---------- 밤 분위기 예시 (주점) ----------
+def _glow(i, c): return f'<radialGradient id="{i}"><stop offset="0" stop-color="{c}" stop-opacity=".55"/><stop offset="1" stop-color="{c}" stop-opacity="0"/></radialGradient>'
+def n_front(neon="#E8306F"):
+    d = grad("nsky", "#0E0C16", "#1B1420") + grad("nwin", "#FFD98A", "#F2A65A") + _glow("ng", neon) + _glow("wg", "#FFC978")
+    b = R(0, 0, 100, 100, "url(#nsky)")
+    for x, y, r in ((12, 8, .35), (30, 5, .25), (55, 9, .3), (78, 6, .35), (90, 12, .25), (44, 3, .2)): b += C(x, y, r, "#fff", .6)
+    b += R(0, 82, 100, 18, "#15121A") + R(0, 82, 100, .6, "#fff", 0, .06)
+    b += R(8, 16, 84, 66, "#221B24", 1.5) + R(8, 16, 84, 66, "none", 1.5, 1, 'stroke="#2E2530" stroke-width=".6"')
+    b += E(50, 26, 44, 13, "url(#ng)") + R(22, 20, 56, 11, "#17121A", 1.6)
+    b += R(22, 20, 56, 11, "none", 1.6, 1, f'stroke="{neon}" stroke-width=".9"')
+    b += P("M30 27.5 q4 -6 8 0 t8 0 t8 0 t8 0 t8 0", s=neon, sw=1.5) + C(27, 23.4, .9, neon) + C(73, 23.4, .9, neon)
+    for x in (14, 40):
+        b += E(x + 10.5, 60, 17, 22, "url(#wg)", .55) + R(x, 42, 21, 34, "url(#nwin)", 1)
+        b += R(x + 10, 42, 1, 34, "#221B24") + R(x, 58, 21, 1, "#221B24")
+        b += E(x + 5.5, 70, 3, 5, "#3A2A22", .55) + E(x + 15.5, 69, 3.2, 6, "#3A2A22", .5)
+    b += R(68, 40, 18, 42, "#2E2530", 1) + R(70.5, 43, 13, 24, "url(#nwin)", .8, .85) + C(83.6, 63, .9, "#FFD98A")
+    b += E(50, 86, 40, 4.5, "url(#wg)", .5) + E(50, 90, 30, 3, "url(#ng)", .45)
+    return svg(b, d)
+def _mug(x, y, s=1):
+    b = E(x + 9 * s, y + 31 * s, 11 * s, 2.2 * s, "#000", .3)
+    b += P(f"M{x + 17*s} {y + 9*s} h4.5 a3 3 0 0 1 3 3 v9 a3 3 0 0 1 -3 3 h-4.5", s="#E9E2D6", sw=2.2 * s, op=.85)
+    b += R(x, y + 3 * s, 18 * s, 27 * s, "#E8A53A", 2 * s) + R(x + 1.6 * s, y + 6 * s, 3 * s, 21 * s, "#fff", 1.2 * s, .3)
+    for i in range(3): b += C(x + (6 + i * 3.6) * s, y + (20 - i * 4.5) * s, .7 * s, "#fff", .5)
+    b += R(x - 1 * s, y, 20 * s, 6.5 * s, "#FBF6EA", 3 * s) + C(x + 4 * s, y + .5 * s, 3.2 * s, "#FBF6EA") + C(x + 11 * s, y - .6 * s, 3.8 * s, "#FBF6EA") + C(x + 16.5 * s, y + .8 * s, 2.8 * s, "#FBF6EA")
+    return b
+def n_table(neon="#E8306F"):
+    w, d = wood("#33241E", "#241915")
+    d += _glow("tg", "#FFC978") + _glow("tn", neon)
+    b = w + E(30, 34, 46, 34, "url(#tg)", .5) + E(88, 80, 36, 28, "url(#tn)", .35)
+    b += _mug(18, 32, 1.15) + _mug(46, 38, 1.05)
+    b += plate(79, 36, 13, "#3A3138", "#2C252B") + dots(79, 36, 8, ["#D98E3A", "#C4762A", "#E8B15A"], 12, 11, (1.6, 2.8))
+    b += bowl(76, 72, 7, "#2E2A27", "#B5352A") + chopsticks(34, 88, 30, -6)
+    return svg(b, d)
+def n_anju(cols, seed, sauce="#B5352A"):
+    w, d = wood("#33241E", "#241915")
+    d += _glow("ag", "#FFC978")
+    b = w + E(50, 46, 52, 44, "url(#ag)", .45)
+    b += plate(46, 50, 30, "#EDE6DA", "#F7F2E9") + dots(46, 50, 19, cols, 22, seed, (2.4, 4.2))
+    b += dots(46, 50, 16, ["#5E8C3A"], 6, seed + 5, (.8, 1.3))
+    b += bowl(83, 26, 9, "#2E2A27", sauce) + chopsticks(60, 90, 32, -5)
+    return svg(b, d)
+def night_sample():
+    """build.py 가 밤 분위기 예시(sample/night.html)를 만들 때 쓰는 그림 묶음."""
+    top = lambda a: a.replace("xMidYMid slice", "xMidYMin slice")   # 넓은 화면에서도 간판이 잘리지 않게 위쪽 기준
+    return dict(hero=uri(top(n_front())), band=uri(n_table()),
+                items=[uri(n_anju(["#D98E3A", "#C4762A", "#E8B15A"], 21)), uri(n_anju(["#E9D9A8", "#F2E6C0", "#D9C48A"], 22, "#E3B23C"))],
+                gallery=[(uri(n_front()), "가게 앞 (예시 그림)"), (uri(n_table()), "한 상 (예시 그림)"),
+                         (uri(n_anju(["#B5352A", "#D9603F", "#8A3F1E"], 23, "#F2EFE6")), "안주 (예시 그림)")])
+
 def apply():
     pat = re.compile(r'(<script type="application/json" id="site-data">)(.*?)(</script>)', re.S)
     for name, plan in PLAN.items():

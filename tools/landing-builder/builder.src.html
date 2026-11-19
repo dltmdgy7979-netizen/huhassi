@@ -336,6 +336,16 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           </div>
         </div>
 
+        <div class="f"><span>띠 사진 <span class="opt">선택 · 메뉴 아래에 가로로 꽉 차게</span></span>
+          <div class="pick">
+            <img class="thumb" id="th-band" alt="">
+            <div class="pt"><b id="nm-band">아직 없음</b>가로로 긴 사진이 잘 어울립니다 (간판, 가게 안 전경)</div>
+            <label class="tbtn" for="fi-band">고르기</label>
+            <button class="mini del" data-clearfor="band" title="지우기">✕</button>
+            <input type="file" accept="image/*" id="fi-band" class="filein">
+          </div>
+        </div>
+
         <div class="f"><span>로고 <span class="opt">선택</span></span>
           <div class="pick">
             <img class="thumb" id="th-logo" alt="">
@@ -858,7 +868,7 @@ function romanize(name){
    1. 사진 — 브라우저에서 WebP, 가로 800px 로 줄입니다
    ============================================================ */
 var MAXW = 800;
-var IMG = { hero:"", logo:"", mapImage:"", owner:"" };
+var IMG = { hero:"", band:"", logo:"", mapImage:"", owner:"" };
 var GALLERY = [];
 
 function shrink(file, cb, bigW){
@@ -893,8 +903,8 @@ function shrink(file, cb, bigW){
 
 function wireOne(slot){
   var fi = $("#fi-" + slot);
-  var map = { hero:"#th-hero", logo:"#th-logo", mapImage:"#th-map", owner:"#th-owner" };
-  var nmap = { hero:"#nm-hero", logo:"#nm-logo", mapImage:"#nm-map", owner:"#nm-owner" };
+  var map = { hero:"#th-hero", band:"#th-band", logo:"#th-logo", mapImage:"#th-map", owner:"#th-owner" };
+  var nmap = { hero:"#nm-hero", band:"#nm-band", logo:"#nm-logo", mapImage:"#nm-map", owner:"#nm-owner" };
   $$('[data-clearfor="' + slot + '"]').forEach(function(b){ b.onclick = function(){
     IMG[slot] = ""; $(map[slot]).removeAttribute("src"); $(nmap[slot]).textContent = "아직 없음"; changed();
   }; });
@@ -907,10 +917,10 @@ function wireOne(slot){
       $(map[slot]).src = data;
       $(nmap[slot]).textContent = "넣었어요";
       changed();
-    }, slot === "hero" ? 1440 : 0);
+    }, (slot === "hero" || slot === "band") ? 1440 : 0);
   };
 }
-["hero","logo","mapImage","owner"].forEach(wireOne);
+["hero","band","logo","mapImage","owner"].forEach(wireOne);
 
 $("#fi-gallery").onchange = function(){
   var files = Array.prototype.slice.call(this.files || []);
@@ -1195,7 +1205,8 @@ function readForm(){
       quote: ($("#f-quote").value || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim(),
       quoteBy: val("#f-quoteby"),
       logo: IMG.logo,
-      hero: IMG.hero
+      hero: IMG.hero,
+      band: IMG.band
     },
     contact: {
       phone: val("#f-phone"), sms: val("#f-sms"), booking: val("#f-booking"),
@@ -1273,8 +1284,8 @@ function fillForm(d){
   setVal("#f-owner-name", ow.name); setVal("#f-owner-role", ow.role);
   $("#f-owner-text").value = ow.text || "";
 
-  IMG.hero = s.hero || ""; IMG.logo = s.logo || ""; IMG.mapImage = p.mapImage || ""; IMG.owner = ow.photo || "";
-  [["hero","#th-hero","#nm-hero"],["logo","#th-logo","#nm-logo"],["mapImage","#th-map","#nm-map"],["owner","#th-owner","#nm-owner"]].forEach(function(a){
+  IMG.hero = s.hero || ""; IMG.band = s.band || ""; IMG.logo = s.logo || ""; IMG.mapImage = p.mapImage || ""; IMG.owner = ow.photo || "";
+  [["hero","#th-hero","#nm-hero"],["band","#th-band","#nm-band"],["logo","#th-logo","#nm-logo"],["mapImage","#th-map","#nm-map"],["owner","#th-owner","#nm-owner"]].forEach(function(a){
     if (IMG[a[0]]){ $(a[1]).src = IMG[a[0]]; $(a[2]).textContent = "넣었어요"; }
     else { $(a[1]).removeAttribute("src"); $(a[2]).textContent = "아직 없음"; }
   });
