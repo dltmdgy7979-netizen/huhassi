@@ -389,6 +389,9 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
         <label class="f"><span>이메일 <span class="opt">선택</span></span>
           <input type="email" id="f-email" placeholder="예: sodam@example.com">
         </label>
+        <label class="chk"><input type="checkbox" id="f-askform" checked>
+          <span><b>문의 칸에 "간단히 남기기" 넣기</b><i>손님이 이름과 내용을 적고 누르면, 그 내용이 채워진 문자·카톡 창이 열립니다. 서버에 저장하지 않아서 관리할 것이 없습니다. 휴대폰 번호나 카카오톡 채널이 있어야 나옵니다.</i></span>
+        </label>
       </div>
     </details>
 
@@ -1180,7 +1183,7 @@ function readForm(){
     },
     contact: {
       phone: val("#f-phone"), sms: val("#f-sms"), booking: val("#f-booking"),
-      kakaoChannel: val("#f-kakao"), email: val("#f-email")
+      kakaoChannel: val("#f-kakao"), email: val("#f-email"), form: chk("#f-askform")
     },
     place: {
       address: val("#f-address"),
@@ -1277,6 +1280,7 @@ function fillForm(d){
   setVal("#f-privacy", L.privacyUrl);
   setVal("#f-siteurl", (d.site && d.site.url) || "");
   setChk("#f-credit", L.credit !== false);
+  setChk("#f-askform", !d.contact || d.contact.form !== false);
 
   ["menu","origin","info","dlinks","links","reviews","steps"].forEach(function(k){ clearRows(k); });
   (m.items || []).forEach(function(x){ addRow("menu", x, true); });

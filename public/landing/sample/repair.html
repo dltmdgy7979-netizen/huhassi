@@ -483,6 +483,24 @@ footer .credit{ margin-top:16px; font-size:12px; color:var(--ink-3); }
 .sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
 /* ============================================================
+   간단히 남기기 — 서버에 저장하지 않고, 적은 내용을 문자·카톡 창으로 넘긴다
+   ============================================================ */
+.ask{ margin-top:22px; padding:20px; border-radius:var(--radius); background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow-s); max-width:720px; }
+.ask-title{ font-size:17px; font-weight:750; letter-spacing:-.025em; }
+.ask-sub{ margin:5px 0 2px; font-size:13.5px; color:var(--ink-3); line-height:1.6; }
+.ask-f{ display:block; margin-top:13px; }
+.ask-f span{ display:block; font-size:13.5px; font-weight:650; color:var(--ink-2); margin-bottom:6px; }
+.ask-f input, .ask-f textarea{
+  width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--bg);
+  border:1px solid var(--line); border-radius:12px; padding:12px 14px; -webkit-appearance:none; appearance:none;
+}
+.ask-f textarea{ resize:vertical; min-height:108px; line-height:1.6; display:block; }
+.ask-f input:focus, .ask-f textarea:focus{ outline:2px solid var(--primary-text, var(--primary)); outline-offset:1px; }
+.ask-acts{ display:grid; gap:10px; margin-top:16px; }
+.ask-acts .btn{ width:100%; }
+@media (min-width:520px){ .ask-acts{ grid-template-columns:1fr 1fr; } .ask-acts .btn:only-child{ grid-column:1 / -1; } }
+
+/* ============================================================
    PC 화면 (1024px 이상) — 휴대폰 화면을 늘린 것처럼 보이지 않게
    ============================================================ */
 @media (min-width:1024px){
@@ -1340,6 +1358,50 @@ function reviewBlock(){
   return h;
 }
 
+/* ---------- 간단히 남기기 ---------- */
+function askNumber(){
+  var c = SITE.contact || {}, n = String(c.sms || c.phone || "").replace(/[^0-9+]/g, "");
+  return /^(\+?82|0)1[016789]/.test(n) ? n : "";      /* 휴대폰 번호일 때만 문자를 보낼 수 있다 */
+}
+function askForm(){
+  var c = SITE.contact || {};
+  if (c.form === false) return "";
+  var mob = askNumber(), kk = safeUrl(c.kakaoChannel), em = has(c.email), b = "";
+  if (!mob && !kk && !em) return "";
+  if (mob) b += '<button type="button" class="btn btn-primary" data-ask="sms">' + I.sms + '문자로 보내기</button>';
+  if (kk)  b += '<button type="button" class="btn ' + (mob ? "btn-ghost" : "btn-primary") + '" data-ask="kakao">' + I.chat + '카톡으로 보내기</button>';
+  if (em && !mob && !kk) b += '<button type="button" class="btn btn-primary" data-ask="mail">' + I.mail + '메일로 보내기</button>';
+  return '<div class="ask" role="group" aria-label="간단히 남기기">'
+    + '<div class="ask-title">간단히 남기기</div>'
+    + '<p class="ask-sub">적으신 내용이 채워진 채로 문자·카톡 창이 열립니다. 이 홈페이지에는 아무것도 저장되지 않습니다.</p>'
+    + '<label class="ask-f"><span>이름</span><input type="text" id="ask-name" maxlength="20" autocomplete="name" placeholder="예: 김소담"></label>'
+    + '<label class="ask-f"><span>문의 내용</span><textarea id="ask-body" rows="4" maxlength="500" placeholder="예: 벽걸이 에어컨에서 물이 떨어집니다. 내일 방문 가능할까요?"></textarea></label>'
+    + '<div class="ask-acts">' + b + '</div></div>';
+}
+function sendAsk(kind){
+  var nmEl = document.getElementById("ask-name"), bdEl = document.getElementById("ask-body");
+  if (!bdEl) return;
+  var nm = (nmEl && nmEl.value || "").trim(), body = (bdEl.value || "").trim();
+  if (body.length < 2){ toast("문의 내용을 적어 주세요"); bdEl.focus(); return; }
+  var c = SITE.contact || {}, shop = (SITE.shop && SITE.shop.name) || "";
+  var text = (shop ? "[" + shop + " 문의]\n" : "") + (nm ? "이름: " + nm + "\n" : "") + body;
+  if (SITE.demo){ toast("예시 화면이라 실제로 보내지지는 않습니다"); return; }
+  if (kind === "sms"){
+    if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+      copy(text, "내용을 복사했어요. " + (c.sms || c.phone) + " 로 문자를 보내 주세요"); return;
+    }
+    location.href = "sms:" + askNumber() + "?&body=" + encodeURIComponent(text);
+  } else if (kind === "kakao"){
+    var u = safeUrl(c.kakaoChannel);
+    if (!u) return;
+    window.open(u.replace(/\/+$/, "") + "/chat", "_blank", "noopener");
+    copy(text, "내용을 복사했어요. 카톡 창에 붙여넣어 주세요");
+  } else if (kind === "mail" && has(c.email)){
+    location.href = "mailto:" + encodeURIComponent(c.email).replace(/%40/g, "@")
+      + "?subject=" + encodeURIComponent((shop ? "[" + shop + "] " : "") + "문의") + "&body=" + encodeURIComponent(text);
+  }
+}
+
 function contactBlock(){
   var c = SITE.contact || {}, btns = [];
   var bk0 = safeUrl(c.booking);
@@ -1366,6 +1428,7 @@ function contactBlock(){
   var h = '<section id="sec-contact" class="reveal"><div class="wrap">'
         + '<div class="sec-head"><span class="eyebrow">Contact</span><h2 class="t-sec">문의하기</h2></div>'
         + '<div class="contact-grid">'+btns.join("")+'</div>'
+        + askForm()
         + '<div class="share">'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-share">'+I.share+'공유하기</button>'
         + '<button type="button" class="btn btn-ghost btn-sm" id="btn-copylink">'+I.copy+'링크 복사</button>'
@@ -1450,6 +1513,9 @@ function render(){
 
 function bind(){
   document.addEventListener("click", function(e){
+    var ask = e.target.closest("[data-ask]");
+    if (ask){ sendAsk(ask.getAttribute("data-ask")); return; }
+
     var t = e.target.closest("[data-copy]");
     if (t){ copy(t.getAttribute("data-copy"), t.getAttribute("data-msg")); return; }
 
