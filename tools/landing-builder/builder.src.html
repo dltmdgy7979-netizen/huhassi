@@ -336,6 +336,14 @@ input[type=color]{ width:44px; height:34px; padding:2px; border:1px solid var(--
           </div>
         </div>
 
+        <label class="f"><span>대표 사진에서 보여 줄 곳 <span class="opt">간판이 잘리면 '위쪽'</span></span>
+          <select id="f-heropos">
+            <option value="">가운데</option>
+            <option value="top">위쪽 (간판이 위에 있을 때)</option>
+            <option value="bottom">아래쪽</option>
+          </select>
+        </label>
+
         <div class="f"><span>띠 사진 <span class="opt">선택 · 메뉴 아래에 가로로 꽉 차게</span></span>
           <div class="pick">
             <img class="thumb" id="th-band" alt="">
@@ -1206,6 +1214,7 @@ function readForm(){
       quoteBy: val("#f-quoteby"),
       logo: IMG.logo,
       hero: IMG.hero,
+      heroPos: val("#f-heropos"),
       band: IMG.band
     },
     contact: {
@@ -1284,6 +1293,7 @@ function fillForm(d){
   setVal("#f-owner-name", ow.name); setVal("#f-owner-role", ow.role);
   $("#f-owner-text").value = ow.text || "";
 
+  setVal("#f-heropos", s.heroPos || "");
   IMG.hero = s.hero || ""; IMG.band = s.band || ""; IMG.logo = s.logo || ""; IMG.mapImage = p.mapImage || ""; IMG.owner = ow.photo || "";
   [["hero","#th-hero","#nm-hero"],["band","#th-band","#nm-band"],["logo","#th-logo","#nm-logo"],["mapImage","#th-map","#nm-map"],["owner","#th-owner","#nm-owner"]].forEach(function(a){
     if (IMG[a[0]]){ $(a[1]).src = IMG[a[0]]; $(a[2]).textContent = "넣었어요"; }

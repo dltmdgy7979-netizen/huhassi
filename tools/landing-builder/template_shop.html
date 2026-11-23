@@ -613,8 +613,10 @@ footer .wrap{ position:relative; z-index:1; }
 .f-ghost{
   position:absolute; right:-6px; bottom:-.24em; z-index:0; pointer-events:none; white-space:nowrap;
   font-family:var(--font-title); font-weight:800; font-size:clamp(64px,22vw,150px); line-height:1;
-  letter-spacing:-.05em; color:var(--ink); opacity:.05; user-select:none;
+  letter-spacing:-.05em; color:var(--ink); opacity:.04; user-select:none;
 }
+/* 큰 이름이 맨 아래 글자와 겹치지 않게 그 높이만큼 자리를 비운다 */
+footer:has(.f-ghost){ padding-bottom:clamp(64px, 19vw, 130px); }
 
 @media (min-width:1024px){
   .gal.reel{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; overflow:visible; margin:0; padding:0; }
@@ -1102,7 +1104,8 @@ function heroBlock(){
     /* 사진이 첫 화면을 꽉 채우고, 상호·영업 상태를 그 위에 얹는다 */
     return '<header class="hero has-photo">'
       + '<div class="hero-cover">'
-      +   '<img src="' + esc(s.hero) + '" alt="' + esc(s.name || "") + ' 대표 사진" loading="eager">'
+      +   '<img src="' + esc(s.hero) + '" alt="' + esc(s.name || "") + ' 대표 사진" loading="eager"'
+      +     (s.heroPos === "top" ? ' style="object-position:50% 0%"' : s.heroPos === "bottom" ? ' style="object-position:50% 100%"' : "") + '>'
       +   '<div class="hero-veil"></div>'
       +   '<div class="hero-over"><div class="wrap">'
       +     (has(s.logo) ? '<img class="hero-logo on-photo" src="' + esc(s.logo) + '" alt="">' : "")
